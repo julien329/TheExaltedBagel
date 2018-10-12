@@ -6,18 +6,21 @@ public class CameraFollow : MonoBehaviour {
     [SerializeField] private Vector3 cameraOffset;
     [SerializeField] private float followSpeed = 7f;
 
-    private Transform player;
+    private Player player;
+    private Transform playerTranform;
     private Vector3 targetPosition;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Start () {
-        player = GameObject.Find("Player").transform;
-	}
+    void Awake () {
+        GameObject playerObject = GameObject.Find("Player");
+        this.playerTranform = playerObject.transform;
+        this.player = playerObject.GetComponent<Player>();
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update () {
-        targetPosition = player.position + cameraOffset;
+        this.targetPosition = this.playerTranform.position + this.cameraOffset;
 
-        transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
+        this.transform.position = Vector3.Lerp(this.transform.position, this.targetPosition, this.followSpeed * Time.deltaTime);
 	}
 }

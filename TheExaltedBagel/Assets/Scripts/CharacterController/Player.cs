@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 [RequireComponent (typeof(Collider2D))]
 public class Player : MonoBehaviour {
@@ -10,20 +11,32 @@ public class Player : MonoBehaviour {
     [SerializeField] private float accelerationTimeAirborne = 0.2f;
     [SerializeField] private float accelerationTimeGrounded = 0.1f;
 
+    private float facingDirection;
     private float gravity;
     private float jumpVelocity;
     private float velocityXSmoothing;
     private Vector3 velocity;
     private Controller2D controller;
+    private Transform visualTransform;
+    private Animator animator;
+
+    [NonSerialized] public float gravityDirection = 1f; 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void Awake() {
+        this.controller = GetComponent<Controller2D>();
+        this.visualTransform = this.transform.Find("Q-Mon1");
+        this.animator = this.visualTransform.GetComponent<Animator>();
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start () {
-        controller = GetComponent<Controller2D>();
+        this.controller = GetComponent<Controller2D>();
 
         // Formula : deltaMovement = velocityInitial * time + (acceleration * time^2) / 2  -->  where acceleration = gravity and velocityInitial is null
-        gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+        this.gravity = -(2 * this.jumpHeight) / Mathf.Pow(this.timeToJumpApex, 2);
         // Formula : velocityFinal = velocityInitial + acceleration * time  -->  where velocityFinal = jumpVelocity and velocityInitial is null
-        jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+        this.jumpVelocity = Mathf.Abs(this.gravity) * this.timeToJumpApex;
 	}
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,37 +47,64 @@ public class Player : MonoBehaviour {
         // Check horizontal and vertical movements
         MoveH(input);
         MoveV(input);
+        Animate(input);
 
         // Call move to check collisions and translate the player
-        controller.Move(velocity * Time.deltaTime);
+        this.controller.Move(this.velocity * Time.deltaTime);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void MoveH(Vector2 input) {
         // Set target velocity according to user input
-        float targetVelocityX = input.x * moveSpeed;
+        float targetVelocityX = input.x * this.moveSpeed;
         // Smooth velocity (use acceleration). Change smoothing value if grounded or airborne
-        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+        this.velocity.x = Mathf.SmoothDamp(this.velocity.x, targetVelocityX, ref this.velocityXSmoothing, 
+            (this.controller.collisions.below) ? this.accelerationTimeGrounded : this.accelerationTimeAirborne);
 
         // If speed too small, set to null
-        if (Mathf.Abs(velocity.x) < 0.1f) {
-            velocity.x = 0f;
+        if (Mathf.Abs(this.velocity.x) < 0.1f) {
+            this.velocity.x = 0f;
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void MoveV(Vector2 input) {
         // If there is a collision in Y axis, reset velocity
-        if (controller.collisions.above || controller.collisions.below) {
-            velocity.y = 0;
+        if (this.controller.collisions.above || this.controller.collisions.below) {
+            this.velocity.y = 0;
         }
 
         // If the jump key is pressed
-        if (Input.GetKeyDown(KeyCode.Space) && controller.collisions.below) {
-            velocity.y = jumpVelocity;
+        if (Input.GetKeyDown(KeyCode.Space) && this.controller.collisions.below) {
+            this.velocity.y = this.jumpVelocity * this.gravityDirection;
+        }
+
+        // Invert gravity if key is pressed
+        if (Input.GetKeyDown(KeyCode.LeftControl)) {
+            this.gravityDirection *= -1;
         }
 
         // Add gravity force downward to Y velocity
-        velocity.y += gravity * Time.deltaTime;
+        this.velocity.y += this.gravity * this.gravityDirection * Time.deltaTime;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void Animate(Vector2 input) {
+        if (input.x != 0f) {
+            // Running anim
+            this.animator.SetBool("IsRunning", true);
+            this.animator.SetFloat("RunningSpeed", Mathf.Abs(this.velocity.x) / this.moveSpeed);
+
+            // Set proper facing direction according to x velocity
+            float velocityXDirection = Mathf.Sign(input.x);
+            if (this.facingDirection != velocityXDirection) {
+                this.facingDirection = velocityXDirection;
+                this.visualTransform.localScale = new Vector3(this.visualTransform.localScale.x, this.visualTransform.localScale.y, velocityXDirection);
+            }
+        }
+        else {
+            // Idle anim
+            this.animator.SetBool("IsRunning", false);
+        }
     }
 }
