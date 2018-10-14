@@ -6,23 +6,28 @@ public class HUDInfos : MonoBehaviour {
 
     private Text below, above;
     private Text left, right;
-    private Controller2D playerController;
+    private Text velocityX, velocityY;
+    private Controller2D playerCollisions;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Start () {
+    void Awake() {
         this.below = GameObject.Find("Below").GetComponent<Text>();
         this.above = GameObject.Find("Above").GetComponent<Text>();
         this.left = GameObject.Find("Left").GetComponent<Text>();
         this.right = GameObject.Find("Right").GetComponent<Text>();
+        this.velocityX = GameObject.Find("VelocityX").GetComponent<Text>();
+        this.velocityY = GameObject.Find("VelocityY").GetComponent<Text>();
 
-        this.playerController = GameObject.Find("Player").GetComponent<Controller2D>();
+        this.playerCollisions = GameObject.Find("Player").GetComponent<Controller2D>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Update () {
-        this.below.text = (this.playerController.collisions.below) ? "Below: True" : "Below: False";
-        this.above.text = (this.playerController.collisions.above) ? "Above: True" : "Above: False";
-        this.left.text = (this.playerController.collisions.left) ? "Left: True" : "Left: False";
-        this.right.text = (this.playerController.collisions.right) ? "Right: True" : "Right: False";
+    void Update() {
+        this.below.text = (this.playerCollisions.collisions.below) ? "Below: True" : "Below: False";
+        this.above.text = (this.playerCollisions.collisions.above) ? "Above: True" : "Above: False";
+        this.left.text = (this.playerCollisions.collisions.left) ? "Left: True" : "Left: False";
+        this.right.text = (this.playerCollisions.collisions.right) ? "Right: True" : "Right: False";
+        this.velocityX.text = "VelocityX: " + this.playerCollisions.collisions.velocity.x.ToString("F1");
+        this.velocityY.text = "VelocityY: " +  this.playerCollisions.collisions.velocity.y.ToString("F1");
     }
 }

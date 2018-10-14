@@ -17,8 +17,12 @@ public class Controller2D : MonoBehaviour {
     private RaycastOrigins raycastOrigins;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Start () {
+    void Awake() {
         this.playerCollider = GetComponent<BoxCollider2D>();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void Start () {   
         this.collisions = new CollisionInfo();
         CalculateRaySpacing();
     }
@@ -27,7 +31,7 @@ public class Controller2D : MonoBehaviour {
     public void Move(Vector3 velocity, float gravityDirection) {
         // Get new Raycast origins, reset collision infos and save old velocity
         UpdateRaycastOrigins();
-        collisions.Reset(gravityDirection);
+        this.collisions.Reset(gravityDirection);
 
         // If player moving horizontally, check horizontal collisions
         if (velocity.x != 0) {
@@ -37,6 +41,9 @@ public class Controller2D : MonoBehaviour {
         if (velocity.y != 0) {
             VerticalCollisions(ref velocity);
         }
+
+        // Save resulting velocity
+        this.collisions.velocity = velocity / Time.deltaTime;
 
         // Translate player by the amount specified by the final velocity value
         this.transform.Translate(velocity);
