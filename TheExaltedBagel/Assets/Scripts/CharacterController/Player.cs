@@ -5,6 +5,7 @@ using System;
 [RequireComponent (typeof(Collider2D))]
 public class Player : MonoBehaviour {
 
+    [SerializeField] private float timeToIdle = 4f;
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float maxVelocityY = 17.5f;
     [SerializeField] private float timeToJumpApex = 0.35f;
@@ -12,6 +13,7 @@ public class Player : MonoBehaviour {
     [SerializeField] private float accelerationTimeAirborne = 0.2f;
     [SerializeField] private float accelerationTimeGrounded = 0.1f;
 
+    private float idleTimer = -1f;
     private float charHeight;
     private float facingDirection;
     private float gravity;
@@ -101,20 +103,36 @@ public class Player : MonoBehaviour {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void Animate(Vector2 input) {
         if (input.x != 0f) {
+            idleTimer = timeToIdle;
+
             // Running anim
             this.animator.SetBool("IsRunning", true);
             this.animator.SetFloat("RunningSpeed", Mathf.Abs(this.velocity.x) / this.moveSpeed);
 
             // Set proper facing direction according to x velocity
             float velocityXDirection = Mathf.Sign(input.x);
-            if (this.facingDirection != velocityXDirection) {
-                this.facingDirection = velocityXDirection;
-                this.visualTransform.localScale = new Vector3(1f, this.visualTransform.localScale.y, velocityXDirection);
+            this.facingDirection = velocityXDirection;
+
+            if (velocityXDirection == 1) {
+                this.animator.SetTrigger("FlipRight");
+            }
+            else {
+                this.animator.SetTrigger("FlipLeft");
             }
         }
         else {
             // Idle anim
             this.animator.SetBool("IsRunning", false);
+
+            if (idleTimer > 0f) {
+                idleTimer -= Time.deltaTime;
+                if (idleTimer <= 0f) {
+                    idleTimer = -1f;
+                    this.animator.ResetTrigger("FlipRight");
+                    this.animator.ResetTrigger("FlipLeft");
+                    this.animator.SetTrigger("Idle");
+                }
+            }
         }
     }
 }
