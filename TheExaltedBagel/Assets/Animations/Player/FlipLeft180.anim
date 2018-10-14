@@ -5,7 +5,7 @@ AnimationClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: FlipXL180
+  m_Name: FlipLeft180
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0

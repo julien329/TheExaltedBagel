@@ -1107,6 +1107,11 @@ Prefab:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114363270797986730, guid: 14b12ef42860e3649bd97a623ff84a55,
+        type: 2}
+      propertyPath: timeToIdle
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 14b12ef42860e3649bd97a623ff84a55, type: 2}
   m_IsPrefabAsset: 0
