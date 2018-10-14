@@ -11,6 +11,7 @@ public class Player : MonoBehaviour {
     [SerializeField] private float accelerationTimeAirborne = 0.2f;
     [SerializeField] private float accelerationTimeGrounded = 0.1f;
 
+    private float charHeight;
     private float facingDirection;
     private float gravity;
     private float jumpVelocity;
@@ -27,6 +28,7 @@ public class Player : MonoBehaviour {
         this.controller = GetComponent<Controller2D>();
         this.visualTransform = this.transform.Find("Q-Mon1");
         this.animator = this.visualTransform.GetComponent<Animator>();
+        this.charHeight = GetComponent<Collider2D>().offset.y * 2f;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +52,7 @@ public class Player : MonoBehaviour {
         Animate(input);
 
         // Call move to check collisions and translate the player
-        this.controller.Move(this.velocity * Time.deltaTime);
+        this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,14 +76,17 @@ public class Player : MonoBehaviour {
             this.velocity.y = 0;
         }
 
-        // If the jump key is pressed
-        if (Input.GetKeyDown(KeyCode.Space) && this.controller.collisions.below) {
-            this.velocity.y = this.jumpVelocity * this.gravityDirection;
-        }
-
         // Invert gravity if key is pressed
         if (Input.GetKeyDown(KeyCode.LeftControl)) {
             this.gravityDirection *= -1;
+            float posOffset = (this.gravityDirection == 1) ? 0f : this.charHeight;
+            this.visualTransform.localPosition = new Vector3(0f, posOffset, 0f);
+            this.visualTransform.localScale = new Vector3(1f, gravityDirection, this.visualTransform.localScale.z);
+        }
+
+        // If the jump key is pressed
+        if (Input.GetKeyDown(KeyCode.Space) && this.controller.collisions.below) {
+            this.velocity.y = this.jumpVelocity * this.gravityDirection;
         }
 
         // Add gravity force downward to Y velocity
@@ -99,7 +104,7 @@ public class Player : MonoBehaviour {
             float velocityXDirection = Mathf.Sign(input.x);
             if (this.facingDirection != velocityXDirection) {
                 this.facingDirection = velocityXDirection;
-                this.visualTransform.localScale = new Vector3(this.visualTransform.localScale.x, this.visualTransform.localScale.y, velocityXDirection);
+                this.visualTransform.localScale = new Vector3(1f, this.visualTransform.localScale.y, velocityXDirection);
             }
         }
         else {

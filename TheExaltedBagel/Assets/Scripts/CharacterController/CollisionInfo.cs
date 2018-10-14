@@ -5,13 +5,12 @@ public class CollisionInfo {
 
     public bool above, below;
     public bool left, right;
-    public Vector3 velocityOld;
+    public float gravityDirection;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void Reset(Vector3 velocity) {
-        above = below = false;
-        left = right = false;
-
-        velocityOld = velocity;
+    public void Reset(float gravityDirection) {
+        this.above = this.below = false;
+        this.left = this.right = false;
+        this.gravityDirection = gravityDirection;
     }
 }

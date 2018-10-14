@@ -24,10 +24,10 @@ public class Controller2D : MonoBehaviour {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void Move(Vector3 velocity) {
+    public void Move(Vector3 velocity, float gravityDirection) {
         // Get new Raycast origins, reset collision infos and save old velocity
         UpdateRaycastOrigins();
-        collisions.Reset(velocity);
+        collisions.Reset(gravityDirection);
 
         // If player moving horizontally, check horizontal collisions
         if (velocity.x != 0) {
@@ -47,27 +47,27 @@ public class Controller2D : MonoBehaviour {
         // Get direction sign in x axis
         float directionX = Mathf.Sign(velocity.x);
         // Calculate needed rayLength with requested velocity (distance) and skinWitdh
-        float rayLength = Mathf.Abs(velocity.x) + skinWidth;
+        float rayLength = Mathf.Abs(velocity.x) + this.skinWidth;
 
         // For every horizontal ray...
-        for (int i = 0; i < horizontalRayCount; i++) {
+        for (int i = 0; i < this.horizontalRayCount; ++i) {
             // Find starting point according to direction
-            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            Vector2 rayOrigin = (directionX == -1) ? this.raycastOrigins.bottomLeft : this.raycastOrigins.bottomRight;
             // Add distance offset beween each ray
-            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+            rayOrigin += Vector2.up * (this.horizontalRaySpacing * i);
 
             // Cast ray with collisonMask looking or specific layer
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, this.collisionMask);
             // If the Raycast hit something...
             if (hit) {
                 // Stop the player from going further than the hit distance
-                velocity.x = (hit.distance - skinWidth) * directionX;
+                velocity.x = (hit.distance - this.skinWidth) * directionX;
                 // Set current hit distance as max length for following rays (prevent higher velocity)
-                rayLength = hit.distance;              
+                rayLength = hit.distance;
 
                 // Set collisions bool for left and right
-                collisions.left = (directionX == -1);
-                collisions.right = (directionX == 1);
+                this.collisions.left = (directionX == -1);
+                this.collisions.right = (directionX == 1);
             }
         }
     }
@@ -75,29 +75,29 @@ public class Controller2D : MonoBehaviour {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void VerticalCollisions(ref Vector3 velocity) {
         // Get direction sign in y axis
-        float directionY = Mathf.Sign (velocity.y);
+        float directionY = Mathf.Sign(velocity.y);
         // Calculate needed rayLength with requested velocity (distance) and skinWitdh
-        float rayLength = Mathf.Abs (velocity.y) + skinWidth;
+        float rayLength = Mathf.Abs(velocity.y) + this.skinWidth;
 
         // For every vertical ray...
-		for (int i = 0; i < verticalRayCount; i ++) {
+		for (int i = 0; i < this.verticalRayCount; ++i) {
             // Find starting point according to direction
-            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            Vector2 rayOrigin = (directionY == -1) ? this.raycastOrigins.bottomLeft : this.raycastOrigins.topLeft;
             // Add distance offset beween each ray
-            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            rayOrigin += Vector2.right * (this.verticalRaySpacing * i + velocity.x);
 
             // Cast ray with collisonMask looking or specific layer
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, this.collisionMask);
             // If the Raycast hit something...
             if (hit) {
                 // Stop the player from going further than the hit distance
-                velocity.y = (hit.distance - skinWidth) * directionY;
+                velocity.y = (hit.distance - this.skinWidth) * directionY;
                 // Set current hit distance as max length for following rays (prevent higher velocity)
                 rayLength = hit.distance;
 
                 // Set collisions bool for above and below
-                collisions.below = (directionY == -1);
-                collisions.above = (directionY == 1);
+                this.collisions.below = (directionY * this.collisions.gravityDirection == -1);
+                this.collisions.above = (directionY * this.collisions.gravityDirection == 1);
             }
         }
     }
@@ -105,33 +105,33 @@ public class Controller2D : MonoBehaviour {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void UpdateRaycastOrigins() {
         // Get player collider bounds and substract skinWidth on each side
-        Bounds bounds = playerCollider.bounds;
-        bounds.Expand(-2 * skinWidth);
+        Bounds bounds = this.playerCollider.bounds;
+        bounds.Expand(-2 * this.skinWidth);
 
         // Set min/max origin points
-        raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
-        raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
-        raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-        raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
+        this.raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
+        this.raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
+        this.raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
+        this.raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void CalculateRaySpacing() {
         // Get player collider bounds and substract skinWidth on each side
-        Bounds bounds = playerCollider.bounds;
-        bounds.Expand(-2 * skinWidth);
+        Bounds bounds = this.playerCollider.bounds;
+        bounds.Expand(-2 * this.skinWidth);
 
         // Clamp the rayCount with a minimal value
-        horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
-        verticalRayCount = Mathf.Clamp(verticalRayCount, 2, int.MaxValue);
+        this.horizontalRayCount = Mathf.Clamp(this.horizontalRayCount, 2, int.MaxValue);
+        this.verticalRayCount = Mathf.Clamp(this.verticalRayCount, 2, int.MaxValue);
 
         // Calculate required spacing between rays
-        horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
-        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
+        this.horizontalRaySpacing = bounds.size.y / (this.horizontalRayCount - 1);
+        this.verticalRaySpacing = bounds.size.x / (this.verticalRayCount - 1);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    struct RaycastOrigins {
+    private struct RaycastOrigins {
         public Vector2 topLeft, topRight;
         public Vector2 bottomLeft, bottomRight;
     }
