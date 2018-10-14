@@ -18,8 +18,8 @@ public class Controller2D : MonoBehaviour {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start () {
-        playerCollider = GetComponent<BoxCollider2D>();
-        collisions = new CollisionInfo();
+        this.playerCollider = GetComponent<BoxCollider2D>();
+        this.collisions = new CollisionInfo();
         CalculateRaySpacing();
     }
 
@@ -39,7 +39,7 @@ public class Controller2D : MonoBehaviour {
         }
 
         // Translate player by the amount specified by the final velocity value
-        transform.Translate(velocity);
+        this.transform.Translate(velocity);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

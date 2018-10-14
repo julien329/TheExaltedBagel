@@ -6,10 +6,13 @@ using System;
 public class Player : MonoBehaviour {
 
     [SerializeField] private float moveSpeed = 7f;
+    [SerializeField] private float maxVelocityY = 7f;
     [SerializeField] private float timeToJumpApex = 0.35f;
     [SerializeField] private float jumpHeight = 3f;
     [SerializeField] private float accelerationTimeAirborne = 0.2f;
     [SerializeField] private float accelerationTimeGrounded = 0.1f;
+
+    [SerializeField] private float speed = 0.1f;
 
     private float charHeight;
     private float facingDirection;
@@ -91,6 +94,14 @@ public class Player : MonoBehaviour {
 
         // Add gravity force downward to Y velocity
         this.velocity.y += this.gravity * this.gravityDirection * Time.deltaTime;
+
+        if (Mathf.Abs(this.velocity.y) > this.maxVelocityY) {
+            this.velocity.y = Mathf.Sign(this.velocity.y) * this.maxVelocityY;
+        }
+
+        if (this.velocity.y > this.speed) {
+            this.speed = this.velocity.y;
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

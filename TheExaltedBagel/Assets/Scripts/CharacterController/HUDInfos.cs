@@ -10,19 +10,19 @@ public class HUDInfos : MonoBehaviour {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start () {
-        below = GameObject.Find("Below").GetComponent<Text>();
-        above = GameObject.Find("Above").GetComponent<Text>();
-        left = GameObject.Find("Left").GetComponent<Text>();
-        right = GameObject.Find("Right").GetComponent<Text>();
+        this.below = GameObject.Find("Below").GetComponent<Text>();
+        this.above = GameObject.Find("Above").GetComponent<Text>();
+        this.left = GameObject.Find("Left").GetComponent<Text>();
+        this.right = GameObject.Find("Right").GetComponent<Text>();
 
-        playerController = GameObject.Find("Player").GetComponent<Controller2D>();
+        this.playerController = GameObject.Find("Player").GetComponent<Controller2D>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update () {
-        below.text = (playerController.collisions.below) ? "Below: True" : "Below: False";
-        above.text = (playerController.collisions.above) ? "Above: True" : "Above: False";
-        left.text = (playerController.collisions.left) ? "Left: True" : "Left: False";
-        right.text = (playerController.collisions.right) ? "Right: True" : "Right: False";
+        this.below.text = (this.playerController.collisions.below) ? "Below: True" : "Below: False";
+        this.above.text = (this.playerController.collisions.above) ? "Above: True" : "Above: False";
+        this.left.text = (this.playerController.collisions.left) ? "Left: True" : "Left: False";
+        this.right.text = (this.playerController.collisions.right) ? "Right: True" : "Right: False";
     }
 }
