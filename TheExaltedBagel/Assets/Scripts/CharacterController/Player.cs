@@ -22,10 +22,14 @@ public class Player : MonoBehaviour {
     private Transform visualTransform;
     private Animator animator;
 
+    private CheckpointManager gm;
+    private bool deathSpawn = false;
+
     [NonSerialized] public float gravityDirection = 1f; 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Awake() {
+    void Awake()
+    {
         this.controller = GetComponent<Controller2D>();
         this.visualTransform = this.transform.Find("Q-Mon1");
         this.animator = this.visualTransform.GetComponent<Animator>();
@@ -33,7 +37,13 @@ public class Player : MonoBehaviour {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Start () {
+    void Start ()
+    {
+        gm = GameObject.FindGameObjectWithTag("CM").GetComponent<CheckpointManager>();
+
+        //Initialisation spawn position player
+        transform.position = gm.lastCheckpointPos;
+
         this.controller = GetComponent<Controller2D>();
 
         // Formula : deltaMovement = velocityInitial * time + (acceleration * time^2) / 2  -->  where acceleration = gravity and velocityInitial is null
@@ -43,7 +53,15 @@ public class Player : MonoBehaviour {
 	}
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Update () {
+    void Update ()
+    {
+        if (gm.spawnPlayerToCheckpoint || Input.GetKeyDown(KeyCode.K))
+        {
+            transform.position = gm.lastCheckpointPos;
+            ResetPhysicPlayer(gm.gravityDirectionLastCheckpoint);
+            gm.spawnPlayerToCheckpoint = false;
+        }
+
         // Get player input in raw states
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
@@ -57,7 +75,8 @@ public class Player : MonoBehaviour {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void MoveH(Vector2 input) {
+    private void MoveH(Vector2 input)
+    {
         // Set target velocity according to user input
         float targetVelocityX = input.x * this.moveSpeed;
         // Smooth velocity (use acceleration). Change smoothing value if grounded or airborne
@@ -65,7 +84,8 @@ public class Player : MonoBehaviour {
             (this.controller.collisions.below) ? this.accelerationTimeGrounded : this.accelerationTimeAirborne);
 
         // If speed too small, set to null
-        if (Mathf.Abs(this.velocity.x) < 0.1f) {
+        if (Mathf.Abs(this.velocity.x) < 0.1f)
+        {
             this.velocity.x = 0f;
         }
     }
@@ -73,48 +93,70 @@ public class Player : MonoBehaviour {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void MoveV(Vector2 input) {
         // If there is a collision in Y axis, reset velocity
-        if (this.controller.collisions.above || this.controller.collisions.below) {
+        if (this.controller.collisions.above || this.controller.collisions.below)
+        {
             this.velocity.y = 0;
         }
 
-        // Invert gravity if key is pressed
-        if (Input.GetKeyDown(KeyCode.LeftControl)) {
-            this.gravityDirection *= -1;
+        // Invert gravity if key is pressed or when the player, we need to spawn the player upside down
+        if (Input.GetKeyDown(KeyCode.LeftControl) || deathSpawn)
+        {
+            if(!deathSpawn)
+            {
+                this.gravityDirection *= -1;
+            }
             float posOffset = (this.gravityDirection == 1) ? 0f : this.charHeight;
             this.visualTransform.localPosition = new Vector3(0f, posOffset, 0f);
             this.visualTransform.localScale = new Vector3(1f, gravityDirection, this.visualTransform.localScale.z);
+            deathSpawn = false;
         }
 
         // If the jump key is pressed
-        if (Input.GetKeyDown(KeyCode.Space) && this.controller.collisions.below) {
+        if (Input.GetKeyDown(KeyCode.Space) && this.controller.collisions.below)
+        {
             this.velocity.y = this.jumpVelocity * this.gravityDirection;
         }
 
         // Add gravity force downward to Y velocity
         this.velocity.y += this.gravity * this.gravityDirection * Time.deltaTime;
 
-        if (Mathf.Abs(this.velocity.y) > this.maxVelocityY) {
+        if (Mathf.Abs(this.velocity.y) > this.maxVelocityY)
+        {
             this.velocity.y = Mathf.Sign(this.velocity.y) * this.maxVelocityY;
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void Animate(Vector2 input) {
-        if (input.x != 0f) {
+    private void Animate(Vector2 input)
+    {
+        if (input.x != 0f)
+        {
             // Running anim
             this.animator.SetBool("IsRunning", true);
             this.animator.SetFloat("RunningSpeed", Mathf.Abs(this.velocity.x) / this.moveSpeed);
 
             // Set proper facing direction according to x velocity
             float velocityXDirection = Mathf.Sign(input.x);
-            if (this.facingDirection != velocityXDirection) {
+            if (this.facingDirection != velocityXDirection)
+            {
                 this.facingDirection = velocityXDirection;
                 this.visualTransform.localScale = new Vector3(1f, this.visualTransform.localScale.y, velocityXDirection);
             }
         }
-        else {
+        else
+        {
             // Idle anim
             this.animator.SetBool("IsRunning", false);
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void ResetPhysicPlayer(float gravityDirection)
+    {
+        this.velocity.x = 0f;
+        this.velocity.y = 0f;
+        this.velocityXSmoothing = 0f;
+        this.gravityDirection = gravityDirection;
+        deathSpawn = true;
     }
 }
