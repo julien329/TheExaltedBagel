@@ -5,7 +5,7 @@ using System;
 [RequireComponent (typeof(Collider2D))]
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float rotationSpeedX = 400f;
+    [SerializeField] private float rotationSpeed = 1000f;
     [SerializeField] private float timeToIdle = 4f;
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float maxVelocityY = 17.5f;
@@ -15,7 +15,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float accelerationTimeGrounded = 0.1f;
 
     private float gravityDirection = 1f; 
-    private float rotationXTarget = 180f;
+    private float rotationHTarget = 180f;
+    private float rotationVTarget = 0f;
     private float idleTimer = -1f;
     private float charHeight;
     private float gravity;
@@ -23,20 +24,26 @@ public class Player : MonoBehaviour
     private float velocityXSmoothing;
     private Vector3 velocity;
     private Controller2D controller;
-    private Transform visualTransform;
     private Animator animator;
+    private Transform rotYTransform;
+    private Transform rotZTransform;
 
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
     private const float ROTATION_LEFT = 270f;
+    private const float ROTATION_UP = 180f;
+    private const float ROTATION_DOWN = 0f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
         this.controller = GetComponent<Controller2D>();
-        this.visualTransform = this.transform.Find("Q-Mon1");
-        this.animator = this.visualTransform.GetComponent<Animator>();
         this.charHeight = GetComponent<Collider2D>().offset.y * 2f;
+
+        this.rotYTransform = this.transform.Find("RotationY");
+        this.rotZTransform = this.rotYTransform.Find("RotationZ");
+
+        this.animator = this.rotZTransform.Find("Q-Mon1").GetComponent<Animator>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +66,12 @@ public class Player : MonoBehaviour
         // Check horizontal and vertical movements
         MoveH(input);
         MoveV(input);
+
+        // Rotate player according to movements and gravity
+        RotationH();
+        RotationV();
+
+        // Send info to animator
         Animate(input);
 
         // Call move to check collisions and translate the player
@@ -93,10 +106,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             this.gravityDirection *= -1;
-            float posOffset = (this.gravityDirection == 1) ? 0f : this.charHeight;
-
-            this.visualTransform.localPosition = new Vector3(0f, posOffset, 0f);
-            this.visualTransform.localScale = new Vector3(1f, gravityDirection, this.visualTransform.localScale.z);
+            this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
         }
 
         // If the jump key is pressed
@@ -115,6 +125,48 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void RotationH()
+    {
+        // Rotate the player according to the target rotation (left / right / idle)
+        if ((this.rotationHTarget == ROTATION_RIGHT && this.rotYTransform.localEulerAngles.y > ROTATION_RIGHT)
+            || (this.rotationHTarget == ROTATION_LEFT && this.rotYTransform.localEulerAngles.y < ROTATION_LEFT)
+            || (this.rotationHTarget == ROTATION_IDLE && this.rotYTransform.localEulerAngles.y != ROTATION_IDLE))
+        {
+            float direction = (this.rotationHTarget == ROTATION_RIGHT || (this.rotationHTarget == ROTATION_IDLE && this.rotYTransform.localEulerAngles.y > ROTATION_IDLE)) ? -1f : 1f;
+            float rotateAngle = direction * Time.deltaTime * rotationSpeed;
+
+            float newRot = this.rotYTransform.localEulerAngles.y + rotateAngle;
+            if (newRot < ROTATION_RIGHT || newRot > ROTATION_LEFT || (Mathf.Abs(newRot - ROTATION_IDLE) < Time.deltaTime * rotationSpeed && this.rotationHTarget == ROTATION_IDLE))
+            {
+                rotateAngle = direction * Mathf.Abs(this.rotYTransform.localEulerAngles.y - this.rotationHTarget);
+            }
+
+            this.rotYTransform.Rotate(rotYTransform.up, rotateAngle, Space.World);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void RotationV()
+    {
+        // Rotate the player according to the gravity (up / down / idle)
+        if ((this.rotationVTarget == ROTATION_DOWN && this.rotZTransform.localEulerAngles.z > ROTATION_DOWN)
+            || (this.rotationVTarget == ROTATION_UP && this.rotZTransform.localEulerAngles.z < ROTATION_UP))
+        {
+            float direction = (this.rotationVTarget == ROTATION_DOWN) ? -1f : 1f;
+            Vector3 centerPos = GetComponent<Collider2D>().bounds.center;
+            float rotateAngle = direction * Time.deltaTime * rotationSpeed;
+
+            float newRot = this.rotZTransform.localEulerAngles.z + rotateAngle;
+            if (newRot < ROTATION_DOWN || newRot > ROTATION_UP)
+            {
+                rotateAngle = direction * Mathf.Abs(this.rotZTransform.localEulerAngles.z - this.rotationVTarget);
+            }
+
+            this.rotZTransform.RotateAround(centerPos, rotZTransform.forward, rotateAngle);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void Animate(Vector2 input) 
     {
         // Moving animations
@@ -125,7 +177,7 @@ public class Player : MonoBehaviour
             this.animator.SetBool("IsRunning", true);
             this.animator.SetFloat("RunningSpeed", Mathf.Abs(this.velocity.x) / this.moveSpeed);
 
-            this.rotationXTarget = (Mathf.Sign(input.x) == 1) ? ROTATION_RIGHT : ROTATION_LEFT;
+            this.rotationHTarget = (Mathf.Sign(input.x) == 1) ? ROTATION_RIGHT : ROTATION_LEFT;
         }
         // Idle animations
         else
@@ -139,30 +191,8 @@ public class Player : MonoBehaviour
                 if (this.idleTimer <= 0f)
                 {
                     this.idleTimer = -1f;
-                    this.rotationXTarget = ROTATION_IDLE;
+                    this.rotationHTarget = ROTATION_IDLE;
                 }
-            }
-        }
-
-        // Rotate the player according to the target rotation (left / right / idle)
-        if ((this.rotationXTarget == ROTATION_RIGHT && this.visualTransform.localEulerAngles.y >= ROTATION_RIGHT) 
-            || (this.rotationXTarget == ROTATION_LEFT && this.visualTransform.localEulerAngles.y <= ROTATION_LEFT)
-            || (this.rotationXTarget == ROTATION_IDLE && this.visualTransform.localEulerAngles.y != ROTATION_IDLE))
-        { 
-            float direction = (this.rotationXTarget == ROTATION_RIGHT || (this.rotationXTarget == ROTATION_IDLE && this.visualTransform.localEulerAngles.y > ROTATION_IDLE)) ? -1f : 1f;
-            this.visualTransform.Rotate(Vector3.up * direction * Time.deltaTime * rotationSpeedX);
-            
-            if (this.rotationXTarget == ROTATION_RIGHT && this.visualTransform.localEulerAngles.y < ROTATION_RIGHT)
-            {
-                this.visualTransform.localEulerAngles = new Vector3(this.visualTransform.localEulerAngles.x, ROTATION_RIGHT, this.visualTransform.localEulerAngles.z);
-            }
-            else if (this.rotationXTarget == ROTATION_LEFT && this.visualTransform.localEulerAngles.y > ROTATION_LEFT)
-            {
-                this.visualTransform.localEulerAngles = new Vector3(this.visualTransform.localEulerAngles.x, ROTATION_LEFT, this.visualTransform.localEulerAngles.z);
-            }
-            else if (this.rotationXTarget == ROTATION_IDLE && Mathf.Abs(this.visualTransform.localEulerAngles.y - ROTATION_IDLE) < Time.deltaTime * rotationSpeedX)
-            {
-                this.visualTransform.localEulerAngles = new Vector3(this.visualTransform.localEulerAngles.x, ROTATION_IDLE, this.visualTransform.localEulerAngles.z);
             }
         }
     }
@@ -173,9 +203,7 @@ public class Player : MonoBehaviour
         this.transform.position = spawnPosition;
         this.gravityDirection = gravityDirection;
 
-        float posOffset = (this.gravityDirection == 1) ? 0f : this.charHeight;
-        this.visualTransform.localPosition = new Vector3(0f, posOffset, 0f);
-        this.visualTransform.localScale = new Vector3(1f, gravityDirection, this.visualTransform.localScale.z);
+        this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
 
         this.velocity = Vector3.zero;
         this.velocityXSmoothing = 0f;  
