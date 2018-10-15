@@ -2,15 +2,16 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class HUDInfos : MonoBehaviour {
-
+public class HUDInfos : MonoBehaviour
+{
     private Text below, above;
     private Text left, right;
     private Text velocityX, velocityY;
     private Controller2D playerCollisions;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Awake() {
+    void Awake()
+    {
         this.below = GameObject.Find("Below").GetComponent<Text>();
         this.above = GameObject.Find("Above").GetComponent<Text>();
         this.left = GameObject.Find("Left").GetComponent<Text>();
@@ -22,7 +23,8 @@ public class HUDInfos : MonoBehaviour {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Update() {
+    void Update()
+    {
         this.below.text = (this.playerCollisions.collisions.below) ? "Below: True" : "Below: False";
         this.above.text = (this.playerCollisions.collisions.above) ? "Above: True" : "Above: False";
         this.left.text = (this.playerCollisions.collisions.left) ? "Left: True" : "Left: False";

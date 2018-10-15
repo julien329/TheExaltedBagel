@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float accelerationTimeAirborne = 0.2f;
     [SerializeField] private float accelerationTimeGrounded = 0.1f;
 
+    private float gravityDirection = 1f; 
     private float rotationXTarget = 180f;
     private float idleTimer = -1f;
     private float charHeight;
@@ -28,8 +29,6 @@ public class Player : MonoBehaviour
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
     private const float ROTATION_LEFT = 270f;
-
-    [NonSerialized] public float gravityDirection = 1f; 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
@@ -90,11 +89,12 @@ public class Player : MonoBehaviour
             this.velocity.y = 0;
         }
 
-        // Invert gravity if key is pressed
+        // Invert gravity if key is pressed or when the player, we need to spawn the player upside down
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             this.gravityDirection *= -1;
             float posOffset = (this.gravityDirection == 1) ? 0f : this.charHeight;
+
             this.visualTransform.localPosition = new Vector3(0f, posOffset, 0f);
             this.visualTransform.localScale = new Vector3(1f, gravityDirection, this.visualTransform.localScale.z);
         }
@@ -115,7 +115,8 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void Animate(Vector2 input) {
+    private void Animate(Vector2 input) 
+    {
         // Moving animations
         if (input.x != 0f)
         {
@@ -164,5 +165,19 @@ public class Player : MonoBehaviour
                 this.visualTransform.localEulerAngles = new Vector3(this.visualTransform.localEulerAngles.x, ROTATION_IDLE, this.visualTransform.localEulerAngles.z);
             }
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void RespawnPlayer(Vector3 spawnPosition, float gravityDirection)
+    {
+        this.transform.position = spawnPosition;
+        this.gravityDirection = gravityDirection;
+
+        float posOffset = (this.gravityDirection == 1) ? 0f : this.charHeight;
+        this.visualTransform.localPosition = new Vector3(0f, posOffset, 0f);
+        this.visualTransform.localScale = new Vector3(1f, gravityDirection, this.visualTransform.localScale.z);
+
+        this.velocity = Vector3.zero;
+        this.velocityXSmoothing = 0f;  
     }
 }
