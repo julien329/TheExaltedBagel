@@ -3,8 +3,9 @@ using System.Collections;
 using System;
 
 [RequireComponent (typeof(Collider2D))]
-public class Player : MonoBehaviour {
-
+public class Player : MonoBehaviour
+{
+    [SerializeField] private float rotationSpeedX = 400f;
     [SerializeField] private float timeToIdle = 4f;
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float maxVelocityY = 17.5f;
@@ -13,9 +14,9 @@ public class Player : MonoBehaviour {
     [SerializeField] private float accelerationTimeAirborne = 0.2f;
     [SerializeField] private float accelerationTimeGrounded = 0.1f;
 
+    private float rotationXTarget = 180f;
     private float idleTimer = -1f;
     private float charHeight;
-    private float facingDirection;
     private float gravity;
     private float jumpVelocity;
     private float velocityXSmoothing;
@@ -24,10 +25,15 @@ public class Player : MonoBehaviour {
     private Transform visualTransform;
     private Animator animator;
 
+    private const float ROTATION_RIGHT = 90f;
+    private const float ROTATION_IDLE = 180f;
+    private const float ROTATION_LEFT = 270f;
+
     [NonSerialized] public float gravityDirection = 1f; 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Awake() {
+    void Awake()
+    {
         this.controller = GetComponent<Controller2D>();
         this.visualTransform = this.transform.Find("Q-Mon1");
         this.animator = this.visualTransform.GetComponent<Animator>();
@@ -35,7 +41,8 @@ public class Player : MonoBehaviour {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Start () {
+    void Start ()
+    {
         this.controller = GetComponent<Controller2D>();
 
         // Formula : deltaMovement = velocityInitial * time + (acceleration * time^2) / 2  -->  where acceleration = gravity and velocityInitial is null
@@ -45,7 +52,8 @@ public class Player : MonoBehaviour {
 	}
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Update () {
+    void Update ()
+    {
         // Get player input in raw states
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
@@ -59,7 +67,8 @@ public class Player : MonoBehaviour {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void MoveH(Vector2 input) {
+    private void MoveH(Vector2 input)
+    {
         // Set target velocity according to user input
         float targetVelocityX = input.x * this.moveSpeed;
         // Smooth velocity (use acceleration). Change smoothing value if grounded or airborne
@@ -67,7 +76,8 @@ public class Player : MonoBehaviour {
             (this.controller.collisions.below) ? this.accelerationTimeGrounded : this.accelerationTimeAirborne);
 
         // If speed too small, set to null
-        if (Mathf.Abs(this.velocity.x) < 0.1f) {
+        if (Mathf.Abs(this.velocity.x) < 0.1f)
+        {
             this.velocity.x = 0f;
         }
     }
@@ -75,12 +85,14 @@ public class Player : MonoBehaviour {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void MoveV(Vector2 input) {
         // If there is a collision in Y axis, reset velocity
-        if (this.controller.collisions.above || this.controller.collisions.below) {
+        if (this.controller.collisions.above || this.controller.collisions.below)
+        {
             this.velocity.y = 0;
         }
 
         // Invert gravity if key is pressed
-        if (Input.GetKeyDown(KeyCode.LeftControl)) {
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
             this.gravityDirection *= -1;
             float posOffset = (this.gravityDirection == 1) ? 0f : this.charHeight;
             this.visualTransform.localPosition = new Vector3(0f, posOffset, 0f);
@@ -88,50 +100,68 @@ public class Player : MonoBehaviour {
         }
 
         // If the jump key is pressed
-        if (Input.GetKeyDown(KeyCode.Space) && this.controller.collisions.below) {
+        if (Input.GetKeyDown(KeyCode.Space) && this.controller.collisions.below)
+        {
             this.velocity.y = this.jumpVelocity * this.gravityDirection;
         }
 
         // Add gravity force downward to Y velocity
         this.velocity.y += this.gravity * this.gravityDirection * Time.deltaTime;
 
-        if (Mathf.Abs(this.velocity.y) > this.maxVelocityY) {
+        if (Mathf.Abs(this.velocity.y) > this.maxVelocityY)
+        {
             this.velocity.y = Mathf.Sign(this.velocity.y) * this.maxVelocityY;
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void Animate(Vector2 input) {
-        if (input.x != 0f) {
-            idleTimer = timeToIdle;
+        // Moving animations
+        if (input.x != 0f)
+        {
+            this.idleTimer = this.timeToIdle;
 
-            // Running anim
             this.animator.SetBool("IsRunning", true);
             this.animator.SetFloat("RunningSpeed", Mathf.Abs(this.velocity.x) / this.moveSpeed);
 
-            // Set proper facing direction according to x velocity
-            float velocityXDirection = Mathf.Sign(input.x);
-            this.facingDirection = velocityXDirection;
-
-            if (velocityXDirection == 1) {
-                this.animator.SetTrigger("FlipRight");
-            }
-            else {
-                this.animator.SetTrigger("FlipLeft");
-            }
+            this.rotationXTarget = (Mathf.Sign(input.x) == 1) ? ROTATION_RIGHT : ROTATION_LEFT;
         }
-        else {
-            // Idle anim
+        // Idle animations
+        else
+        {
             this.animator.SetBool("IsRunning", false);
 
-            if (idleTimer > 0f) {
-                idleTimer -= Time.deltaTime;
-                if (idleTimer <= 0f) {
-                    idleTimer = -1f;
-                    this.animator.ResetTrigger("FlipRight");
-                    this.animator.ResetTrigger("FlipLeft");
-                    this.animator.SetTrigger("Idle");
+            // Countdown before idle
+            if (this.idleTimer > 0f)
+            {
+                this.idleTimer -= Time.deltaTime;
+                if (this.idleTimer <= 0f)
+                {
+                    this.idleTimer = -1f;
+                    this.rotationXTarget = ROTATION_IDLE;
                 }
+            }
+        }
+
+        // Rotate the player according to the target rotation (left / right / idle)
+        if ((this.rotationXTarget == ROTATION_RIGHT && this.visualTransform.localEulerAngles.y >= ROTATION_RIGHT) 
+            || (this.rotationXTarget == ROTATION_LEFT && this.visualTransform.localEulerAngles.y <= ROTATION_LEFT)
+            || (this.rotationXTarget == ROTATION_IDLE && this.visualTransform.localEulerAngles.y != ROTATION_IDLE))
+        { 
+            float direction = (this.rotationXTarget == ROTATION_RIGHT || (this.rotationXTarget == ROTATION_IDLE && this.visualTransform.localEulerAngles.y > ROTATION_IDLE)) ? -1f : 1f;
+            this.visualTransform.Rotate(Vector3.up * direction * Time.deltaTime * rotationSpeedX);
+            
+            if (this.rotationXTarget == ROTATION_RIGHT && this.visualTransform.localEulerAngles.y < ROTATION_RIGHT)
+            {
+                this.visualTransform.localEulerAngles = new Vector3(this.visualTransform.localEulerAngles.x, ROTATION_RIGHT, this.visualTransform.localEulerAngles.z);
+            }
+            else if (this.rotationXTarget == ROTATION_LEFT && this.visualTransform.localEulerAngles.y > ROTATION_LEFT)
+            {
+                this.visualTransform.localEulerAngles = new Vector3(this.visualTransform.localEulerAngles.x, ROTATION_LEFT, this.visualTransform.localEulerAngles.z);
+            }
+            else if (this.rotationXTarget == ROTATION_IDLE && Mathf.Abs(this.visualTransform.localEulerAngles.y - ROTATION_IDLE) < Time.deltaTime * rotationSpeedX)
+            {
+                this.visualTransform.localEulerAngles = new Vector3(this.visualTransform.localEulerAngles.x, ROTATION_IDLE, this.visualTransform.localEulerAngles.z);
             }
         }
     }
