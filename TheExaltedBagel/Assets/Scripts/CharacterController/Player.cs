@@ -18,7 +18,6 @@ public class Player : MonoBehaviour
     private float rotationHTarget = 180f;
     private float rotationVTarget = 0f;
     private float idleTimer = -1f;
-    private float charHeight;
     private float gravity;
     private float jumpVelocity;
     private float velocityXSmoothing;
@@ -38,7 +37,6 @@ public class Player : MonoBehaviour
     void Awake()
     {
         this.controller = GetComponent<Controller2D>();
-        this.charHeight = GetComponent<Collider2D>().offset.y * 2f;
 
         this.rotYTransform = this.transform.Find("RotationY");
         this.rotZTransform = this.rotYTransform.Find("RotationZ");
