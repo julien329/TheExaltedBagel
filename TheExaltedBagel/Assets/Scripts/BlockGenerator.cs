@@ -16,7 +16,7 @@ public class BlockGenerator : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void OnValidate()
     {
-        if (!Application.isPlaying)
+        if (!Application.isPlaying && this.gameObject.activeInHierarchy)
         {
             if (sizeX != sizeXOld || sizeY != sizeYOld || blockObject != blockObjectOld)
             {
