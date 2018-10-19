@@ -8,20 +8,23 @@ public class BlockGenerator : MonoBehaviour
     [SerializeField] private GameObject blockObject;
     [SerializeField] private uint sizeX;
     [SerializeField] private uint sizeY;
+    [SerializeField] private uint sizeZ;
 
     private GameObject blockObjectOld;
     private uint sizeXOld;
     private uint sizeYOld;
+    private uint sizeZOld;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void OnValidate()
     {
         if (!Application.isPlaying && this.gameObject.activeInHierarchy)
         {
-            if (sizeX != sizeXOld || sizeY != sizeYOld || blockObject != blockObjectOld)
+            if (sizeX != sizeXOld || sizeY != sizeYOld || sizeZ != sizeZOld || blockObject != blockObjectOld)
             {
                 sizeXOld = sizeX;
                 sizeYOld = sizeX;
+                sizeZOld = sizeZ;
                 blockObjectOld = blockObject;
 
                 StartCoroutine(RegenerateBlocks());
@@ -45,9 +48,12 @@ public class BlockGenerator : MonoBehaviour
             {
                 for (uint j = 0; j < this.sizeY; ++j)
                 {
-                    GameObject newBlock = Instantiate(this.blockObject, this.transform);
-                    newBlock.transform.localPosition = new Vector3(i, j, 0f);
-                    newBlock.name = "Block (" + i + ", " + j + ")";
+                    for (uint k = 0; k < this.sizeZ; ++k)
+                    {
+                        GameObject newBlock = Instantiate(this.blockObject, this.transform);
+                        newBlock.transform.localPosition = new Vector3(i, j, k);
+                        newBlock.name = "Block (" + i + ", " + j + ", " + k + ")";
+                    }
                 }
             }
         }

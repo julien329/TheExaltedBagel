@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-[RequireComponent (typeof(Collider2D))]
+[RequireComponent (typeof(Collider))]
 public class Player : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed = 1000f;
@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     private float velocityXSmoothing;
     private Vector3 velocity;
     private Controller2D controller;
+    private BoxCollider boxCollider;
     private Animator animator;
     private Transform rotYTransform;
     private Transform rotZTransform;
@@ -37,6 +38,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         this.controller = GetComponent<Controller2D>();
+        this.boxCollider = GetComponent<BoxCollider>();
 
         this.rotYTransform = this.transform.Find("RotationY");
         this.rotZTransform = this.rotYTransform.Find("RotationZ");
@@ -151,7 +153,7 @@ public class Player : MonoBehaviour
             || (this.rotationVTarget == ROTATION_UP && this.rotZTransform.localEulerAngles.z < ROTATION_UP))
         {
             float direction = (this.rotationVTarget == ROTATION_DOWN) ? -1f : 1f;
-            Vector3 centerPos = GetComponent<Collider2D>().bounds.center;
+            Vector3 centerPos = this.boxCollider.bounds.center;
             float rotateAngle = direction * Time.deltaTime * rotationSpeed;
 
             float newRot = this.rotZTransform.localEulerAngles.z + rotateAngle;

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent (typeof(BoxCollider2D))]
+[RequireComponent (typeof(BoxCollider))]
 public class Controller2D : MonoBehaviour
 {
     [SerializeField] private float skinWidth = 0.015f;
@@ -13,13 +13,13 @@ public class Controller2D : MonoBehaviour
 
     private float horizontalRaySpacing;
     private float verticalRaySpacing;
-    private BoxCollider2D playerCollider;
+    private BoxCollider playerCollider;
     private RaycastOrigins raycastOrigins;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
-        this.playerCollider = GetComponent<BoxCollider2D>();
+        this.playerCollider = GetComponent<BoxCollider>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,14 +66,14 @@ public class Controller2D : MonoBehaviour
         for (int i = 0; i < this.horizontalRayCount; ++i)
         {
             // Find starting point according to direction
-            Vector2 rayOrigin = (directionX == -1) ? this.raycastOrigins.bottomLeft : this.raycastOrigins.bottomRight;
+            Vector3 rayOrigin = (directionX == -1) ? this.raycastOrigins.bottomLeft : this.raycastOrigins.bottomRight;
             // Add distance offset beween each ray
-            rayOrigin += Vector2.up * (this.horizontalRaySpacing * i);
+            rayOrigin += Vector3.up * (this.horizontalRaySpacing * i);
 
             // Cast ray with collisonMask looking or specific layer
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, this.collisionMask);
+            RaycastHit hit;
             // If the Raycast hit something...
-            if (hit)
+            if (Physics.Raycast(rayOrigin, Vector3.right * directionX, out hit, rayLength, this.collisionMask))
             {
                 // Stop the player from going further than the hit distance
                 velocity.x = (hit.distance - this.skinWidth) * directionX;
@@ -99,14 +99,14 @@ public class Controller2D : MonoBehaviour
 		for (int i = 0; i < this.verticalRayCount; ++i)
         {
             // Find starting point according to direction
-            Vector2 rayOrigin = (directionY == -1) ? this.raycastOrigins.bottomLeft : this.raycastOrigins.topLeft;
+            Vector3 rayOrigin = (directionY == -1) ? this.raycastOrigins.bottomLeft : this.raycastOrigins.topLeft;
             // Add distance offset beween each ray
-            rayOrigin += Vector2.right * (this.verticalRaySpacing * i + velocity.x);
+            rayOrigin += Vector3.right * (this.verticalRaySpacing * i + velocity.x);
 
             // Cast ray with collisonMask looking or specific layer
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, this.collisionMask);
+            RaycastHit hit;
             // If the Raycast hit something...
-            if (hit)
+            if (Physics.Raycast(rayOrigin, Vector3.up * directionY, out hit, rayLength, this.collisionMask))
             {
                 // Stop the player from going further than the hit distance
                 velocity.y = (hit.distance - this.skinWidth) * directionY;
