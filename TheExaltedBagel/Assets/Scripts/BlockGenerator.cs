@@ -6,13 +6,27 @@ using UnityEngine;
 public class BlockGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject blockObject;
-    [SerializeField] private uint sizeX = 1;
-    [SerializeField] private uint sizeY = 1;
+    [SerializeField] private uint sizeX;
+    [SerializeField] private uint sizeY;
+
+    private GameObject blockObjectOld;
+    private uint sizeXOld;
+    private uint sizeYOld;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void OnValidate()
     {
-        StartCoroutine(RegenerateBlocks());
+        if (!Application.isPlaying)
+        {
+            if (sizeX != sizeXOld || sizeY != sizeYOld || blockObject != blockObjectOld)
+            {
+                sizeXOld = sizeX;
+                sizeYOld = sizeX;
+                blockObjectOld = blockObject;
+
+                StartCoroutine(RegenerateBlocks());
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
