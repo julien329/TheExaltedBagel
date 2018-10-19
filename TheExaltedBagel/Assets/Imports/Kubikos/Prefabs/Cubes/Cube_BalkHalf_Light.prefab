@@ -21,8 +21,7 @@ GameObject:
   - component: {fileID: 4901963071872112}
   - component: {fileID: 33106381968028888}
   - component: {fileID: 23353481477943816}
-  - component: {fileID: 65890036290213952}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Cube_BalkHalf_Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,15 +83,3 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1417666723731940}
   m_Mesh: {fileID: 4300000, guid: 13520d5ed98fd144790b2d75ff70f874, type: 3}
---- !u!65 &65890036290213952
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1417666723731940}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.24999993, y: 0.2500002, z: 0.53749573}
-  m_Center: {x: 0, y: 0, z: 0}

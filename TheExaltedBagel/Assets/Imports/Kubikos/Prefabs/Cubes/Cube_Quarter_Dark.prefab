@@ -21,8 +21,7 @@ GameObject:
   - component: {fileID: 4506982737357674}
   - component: {fileID: 33806721712878256}
   - component: {fileID: 23291226772965918}
-  - component: {fileID: 65585783142145236}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Cube_Quarter_Dark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,15 +83,3 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1233670778593530}
   m_Mesh: {fileID: 4300000, guid: 8dc263dfdabbbb34086c4ce9e96db0de, type: 3}
---- !u!65 &65585783142145236
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1233670778593530}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 0.33376464, z: 1}
-  m_Center: {x: -0.000000074505806, y: 0.16688232, z: -0.00000031292439}

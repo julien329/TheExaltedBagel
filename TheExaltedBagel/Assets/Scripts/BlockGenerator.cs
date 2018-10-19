@@ -42,6 +42,9 @@ public class BlockGenerator : MonoBehaviour
             DestroyImmediate(this.transform.GetChild(0).gameObject);
         }
 
+        BoxCollider boxCollider = this.gameObject.GetComponent<BoxCollider>();
+        DestroyImmediate(boxCollider);
+
         if (blockObject != null)
         {
             for (uint i = 0; i < this.sizeX; ++i)
@@ -55,6 +58,13 @@ public class BlockGenerator : MonoBehaviour
                         newBlock.name = "Block (" + i + ", " + j + ", " + k + ")";
                     }
                 }
+            }
+
+            if (this.transform.childCount > 0)
+            {
+                boxCollider = this.gameObject.AddComponent<BoxCollider>();
+                boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
+                boxCollider.center = new Vector3((this.sizeX - 1f) / 2f , ((this.sizeY - 1f) / 2f) + 0.5f, (this.sizeZ - 1f) / 2f);
             }
         }
     }

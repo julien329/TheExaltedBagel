@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4997260064162092}
   - component: {fileID: 108089037008686832}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: 'Point light '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,8 +37,7 @@ GameObject:
   - component: {fileID: 4118624490078602}
   - component: {fileID: 33586633505409464}
   - component: {fileID: 23901086012621468}
-  - component: {fileID: 65550340867286818}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Cube_Ice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,18 +113,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1543585101569546}
   m_Mesh: {fileID: 4300000, guid: d73f25ac0bcef5b469863e30ce33634b, type: 3}
---- !u!65 &65550340867286818
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1543585101569546}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1.0000005, z: 1}
-  m_Center: {x: -0.000000074505806, y: 0.50000024, z: -0.00000031292439}
 --- !u!108 &108089037008686832
 Light:
   m_ObjectHideFlags: 1

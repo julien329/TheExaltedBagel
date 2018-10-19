@@ -21,8 +21,7 @@ GameObject:
   - component: {fileID: 4128166634420518}
   - component: {fileID: 33524750034021096}
   - component: {fileID: 23300068388674584}
-  - component: {fileID: 65295999072926266}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Cube_GroundWGrass_6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,15 +83,3 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1681195754145498}
   m_Mesh: {fileID: 4300000, guid: d73f25ac0bcef5b469863e30ce33634b, type: 3}
---- !u!65 &65295999072926266
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1681195754145498}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1.0000005, z: 1}
-  m_Center: {x: -0.000000074505806, y: 0.50000024, z: -0.00000031292439}

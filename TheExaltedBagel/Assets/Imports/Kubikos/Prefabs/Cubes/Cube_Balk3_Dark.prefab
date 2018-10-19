@@ -21,8 +21,7 @@ GameObject:
   - component: {fileID: 4006755443199834}
   - component: {fileID: 33419908437982056}
   - component: {fileID: 23501308290052338}
-  - component: {fileID: 65028668630479010}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Cube_Balk3_Dark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,15 +83,3 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1825798597702372}
   m_Mesh: {fileID: 4300000, guid: aac3219a223aac144a01ba9fb7e653bd, type: 3}
---- !u!65 &65028668630479010
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1825798597702372}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.25000015, y: 0.25, z: 0.99999934}
-  m_Center: {x: 0, y: 0, z: 0}

@@ -21,8 +21,7 @@ GameObject:
   - component: {fileID: 4105552169535688}
   - component: {fileID: 33166840073385128}
   - component: {fileID: 23557363652698860}
-  - component: {fileID: 65875381307754608}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Cube_Half_Dark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,15 +83,3 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1506904663846062}
   m_Mesh: {fileID: 4300000, guid: 7d183f5e4073ae348a3cdc85236c258a, type: 3}
---- !u!65 &65875381307754608
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1506904663846062}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.9999999, y: 0.5000003, z: 1}
-  m_Center: {x: 0, y: 0.25000015, z: 0}
