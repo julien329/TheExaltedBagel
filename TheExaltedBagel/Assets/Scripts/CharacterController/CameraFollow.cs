@@ -12,15 +12,13 @@ public class CameraFollow : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake ()
     {
-        GameObject playerObject = GameObject.Find("Player");
-        this.playerTranform = playerObject.transform;
+        this.playerTranform = GameObject.Find("Player").transform;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update ()
     {
         this.targetPosition = this.playerTranform.position + this.cameraOffset;
-
         this.transform.position = Vector3.Lerp(this.transform.position, this.targetPosition, this.followSpeed * Time.deltaTime);
 	}
 }
