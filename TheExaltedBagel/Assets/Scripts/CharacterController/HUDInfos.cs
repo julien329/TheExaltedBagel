@@ -7,7 +7,9 @@ public class HUDInfos : MonoBehaviour
     private Text below, above;
     private Text left, right;
     private Text velocityX, velocityY;
+    private Text charges;
     private Controller2D playerCollisions;
+    private Player player;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
@@ -18,8 +20,10 @@ public class HUDInfos : MonoBehaviour
         this.right = GameObject.Find("Right").GetComponent<Text>();
         this.velocityX = GameObject.Find("VelocityX").GetComponent<Text>();
         this.velocityY = GameObject.Find("VelocityY").GetComponent<Text>();
+        this.charges = GameObject.Find("Charges").GetComponent<Text>();
 
         this.playerCollisions = GameObject.Find("Player").GetComponent<Controller2D>();
+        this.player = GameObject.Find("Player").GetComponent<Player>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,5 +35,6 @@ public class HUDInfos : MonoBehaviour
         this.right.text = (this.playerCollisions.collisions.right) ? "Right: True" : "Right: False";
         this.velocityX.text = "VelocityX: " + this.playerCollisions.collisions.velocity.x.ToString("F1");
         this.velocityY.text = "VelocityY: " +  this.playerCollisions.collisions.velocity.y.ToString("F1");
+        this.charges.text = "Charges: " + this.player.gravityChargeCount + " / " + this.player.gravityChargeMax;
     }
 }

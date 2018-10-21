@@ -5,6 +5,9 @@ using System;
 [RequireComponent (typeof(Collider))]
 public class Player : MonoBehaviour
 {
+    [NonSerialized] public uint gravityChargeCount = 3;
+    public uint gravityChargeMax = 3;
+
     [SerializeField] private float rotationSpeed = 1000f;
     [SerializeField] private float timeToIdle = 4f;
     [SerializeField] private float moveSpeed = 7f;
@@ -102,9 +105,15 @@ public class Player : MonoBehaviour
             this.velocity.y = 0;
         }
 
-        // Invert gravity if key is pressed or when the player, we need to spawn the player upside down
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (this.controller.collisions.below)
         {
+            this.gravityChargeCount = this.gravityChargeMax;
+        }
+
+        // Invert gravity if key is pressed or when the player, we need to spawn the player upside down
+        if (Input.GetKeyDown(KeyCode.LeftControl) && this.gravityChargeCount > 0)
+        {
+            this.gravityChargeCount--;
             this.gravityDirection *= -1;
             this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
         }
