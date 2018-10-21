@@ -147,10 +147,12 @@ public class Player : MonoBehaviour
             float newRot = this.rotYTransform.localEulerAngles.y + rotateAngle;
             if (newRot < ROTATION_RIGHT || newRot > ROTATION_LEFT || (Mathf.Abs(newRot - ROTATION_IDLE) < Time.deltaTime * rotationSpeed && this.rotationHTarget == ROTATION_IDLE))
             {
-                rotateAngle = direction * Mathf.Abs(this.rotYTransform.localEulerAngles.y - this.rotationHTarget);
+                this.rotYTransform.localEulerAngles = new Vector3(this.rotYTransform.localEulerAngles.x, this.rotationHTarget, this.rotYTransform.localEulerAngles.z);
             }
-
-            this.rotYTransform.Rotate(rotYTransform.up, rotateAngle, Space.World);
+            else
+            {
+                this.rotYTransform.Rotate(this.rotYTransform.up, rotateAngle, Space.World);
+            }
         }
     }
 
@@ -162,16 +164,19 @@ public class Player : MonoBehaviour
             || (this.rotationVTarget == ROTATION_UP && this.rotZTransform.localEulerAngles.z < ROTATION_UP))
         {
             float direction = (this.rotationVTarget == ROTATION_DOWN) ? -1f : 1f;
-            Vector3 centerPos = this.boxCollider.bounds.center;
             float rotateAngle = direction * Time.deltaTime * rotationSpeed;
 
             float newRot = this.rotZTransform.localEulerAngles.z + rotateAngle;
             if (newRot < ROTATION_DOWN || newRot > ROTATION_UP)
             {
-                rotateAngle = direction * Mathf.Abs(this.rotZTransform.localEulerAngles.z - this.rotationVTarget);
+                float offset = (this.rotationVTarget == ROTATION_DOWN) ? 0f : this.boxCollider.size.y;
+                this.rotZTransform.localPosition = new Vector3(0f, offset, 0f);
+                this.rotZTransform.localEulerAngles = new Vector3(this.rotZTransform.localEulerAngles.x, this.rotZTransform.localEulerAngles.y, this.rotationVTarget);
             }
-
-            this.rotZTransform.RotateAround(centerPos, rotZTransform.forward, rotateAngle);
+            else
+            {
+                this.rotZTransform.RotateAround(this.boxCollider.bounds.center, this.rotZTransform.forward, rotateAngle);
+            }
         }
     }
 
