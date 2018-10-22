@@ -1,30 +1,25 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-[RequireComponent (typeof(Collider))]
-public class Player : MonoBehaviour
+public class AIMonster2 : MonoBehaviour
 {
-    [NonSerialized] public uint gravityChargeCount = 3;
-    public uint gravityChargeMax = 3;
+    [SerializeField] private float rotationSpeed = 500f;
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float animSpeedModifier = 1f;
+    private float maxVelocityY = 17.5f;
+    private float accelerationTimeAirborne = 0.2f;
+    private float accelerationTimeGrounded = 0.1f;
+    [SerializeField] private float flipInterval = 1.0f;
+    [SerializeField] private float gravity = -50f;
 
-    [SerializeField] private float rotationSpeed = 1000f;
-    [SerializeField] private float timeToIdle = 4f;
-    [SerializeField] private float moveSpeed = 7f;
-    [SerializeField] private float maxVelocityY = 17.5f;
-    [SerializeField] private float timeToJumpApex = 0.35f;
-    [SerializeField] private float jumpHeight = 3f;
-    [SerializeField] private float accelerationTimeAirborne = 0.2f;
-    [SerializeField] private float accelerationTimeGrounded = 0.1f;
-    [SerializeField] private float bumpForce = 10f;
-
-    private float gravityDirection = 1f; 
+    private float gravityDirection = 1f;
     private float rotationHTarget = 180f;
     private float rotationVTarget = 0f;
-    private float idleTimer = -1f;
-    private float gravity;
     private float jumpVelocity;
     private float velocityXSmoothing;
+    private float turnAroundTimer;
+    private int direction = 1;
     private Vector3 velocity;
     private Controller2D controller;
     private BoxCollider boxCollider;
@@ -47,25 +42,31 @@ public class Player : MonoBehaviour
         this.rotYTransform = this.transform.Find("RotationY");
         this.rotZTransform = this.rotYTransform.Find("RotationZ");
 
-        this.animator = this.rotZTransform.Find("Q-Mon1").GetComponent<Animator>();
+        this.animator = this.rotZTransform.Find("QMon").GetComponent<Animator>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Start ()
+    void Start()
     {
         this.controller = GetComponent<Controller2D>();
-
-        // Formula : deltaMovement = velocityInitial * time + (acceleration * time^2) / 2  -->  where acceleration = gravity and velocityInitial is null
-        this.gravity = -(2 * this.jumpHeight) / Mathf.Pow(this.timeToJumpApex, 2);
-        // Formula : velocityFinal = velocityInitial + acceleration * time  -->  where velocityFinal = jumpVelocity and velocityInitial is null
-        this.jumpVelocity = Mathf.Abs(this.gravity) * this.timeToJumpApex;
-	}
+        this.turnAroundTimer = this.flipInterval;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Update ()
+    void Update()
     {
+        //Timer tick
+        this.turnAroundTimer -= Time.deltaTime;
+
+        //Change the monster's direction when timer runs out. Reset timer.
+        if (this.turnAroundTimer < 0)
+        {
+            this.turnAroundTimer = this.flipInterval;
+            this.direction *= -1;
+        }
+
         // Get player input in raw states
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        Vector2 input = new Vector2(this.direction, 0);
 
         // Check horizontal and vertical movements
         MoveH(input);
@@ -73,7 +74,6 @@ public class Player : MonoBehaviour
 
         // Rotate player according to movements and gravity
         RotationH();
-        RotationV();
 
         // Send info to animator
         Animate(input);
@@ -83,27 +83,12 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.transform.tag == "KillTrigger")
-        {
-            this.velocity.y = this.bumpForce * this.gravityDirection;
-            this.gravityChargeCount = (uint)Mathf.Min(this.gravityChargeCount + 1, this.gravityChargeMax);
-        }
-
-        if (collision.transform.tag == "Enemy")
-        {
-            Destroy(this);
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void MoveH(Vector2 input)
     {
         // Set target velocity according to user input
         float targetVelocityX = input.x * this.moveSpeed;
         // Smooth velocity (use acceleration). Change smoothing value if grounded or airborne
-        this.velocity.x = Mathf.SmoothDamp(this.velocity.x, targetVelocityX, ref this.velocityXSmoothing, 
+        this.velocity.x = Mathf.SmoothDamp(this.velocity.x, targetVelocityX, ref this.velocityXSmoothing,
             (this.controller.collisions.below) ? this.accelerationTimeGrounded : this.accelerationTimeAirborne);
 
         // If speed too small, set to null
@@ -114,30 +99,12 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void MoveV(Vector2 input) {
+    private void MoveV(Vector2 input)
+    {
         // If there is a collision in Y axis, reset velocity
         if (this.controller.collisions.above || this.controller.collisions.below)
         {
             this.velocity.y = 0;
-        }
-
-        if (this.controller.collisions.below)
-        {
-            this.gravityChargeCount = this.gravityChargeMax;
-        }
-
-        // Invert gravity if key is pressed or when the player, we need to spawn the player upside down
-        if (Input.GetKeyDown(KeyCode.LeftControl) && this.gravityChargeCount > 0)
-        {
-            this.gravityChargeCount--;
-            this.gravityDirection *= -1;
-            this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
-        }
-
-        // If the jump key is pressed
-        if (Input.GetKeyDown(KeyCode.Space) && this.controller.collisions.below)
-        {
-            this.velocity.y = this.jumpVelocity * this.gravityDirection;
         }
 
         // Add gravity force downward to Y velocity
@@ -173,57 +140,20 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void RotationV()
-    {
-        // Rotate the player according to the gravity (up / down / idle)
-        if ((this.rotationVTarget == ROTATION_DOWN && this.rotZTransform.localEulerAngles.z > ROTATION_DOWN)
-            || (this.rotationVTarget == ROTATION_UP && this.rotZTransform.localEulerAngles.z < ROTATION_UP))
-        {
-            float direction = (this.rotationVTarget == ROTATION_DOWN) ? -1f : 1f;
-            float rotateAngle = direction * Time.deltaTime * rotationSpeed;
-
-            float newRot = this.rotZTransform.localEulerAngles.z + rotateAngle;
-            if (newRot < ROTATION_DOWN || newRot > ROTATION_UP)
-            {
-                float offset = (this.rotationVTarget == ROTATION_DOWN) ? 0f : this.boxCollider.size.y;
-                this.rotZTransform.localPosition = new Vector3(0f, offset, 0f);
-                this.rotZTransform.localEulerAngles = new Vector3(this.rotZTransform.localEulerAngles.x, this.rotZTransform.localEulerAngles.y, this.rotationVTarget);
-            }
-            else
-            {
-                this.rotZTransform.RotateAround(this.boxCollider.bounds.center, this.rotZTransform.forward, rotateAngle);
-            }
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void Animate(Vector2 input) 
+    private void Animate(Vector2 input)
     {
         // Moving animations
         if (input.x != 0f)
         {
-            this.idleTimer = this.timeToIdle;
-
-            this.animator.SetBool("IsRunning", true);
-            this.animator.SetFloat("RunningSpeed", Mathf.Abs(this.velocity.x) / this.moveSpeed);
+            this.animator.SetBool("IsMoving", true);
+            this.animator.SetFloat("MonsterSpeed", animSpeedModifier * Mathf.Abs(this.velocity.x) / this.moveSpeed);
 
             this.rotationHTarget = (Mathf.Sign(input.x) == 1) ? ROTATION_RIGHT : ROTATION_LEFT;
         }
         // Idle animations
         else
         {
-            this.animator.SetBool("IsRunning", false);
-
-            // Countdown before idle
-            if (this.idleTimer > 0f)
-            {
-                this.idleTimer -= Time.deltaTime;
-                if (this.idleTimer <= 0f)
-                {
-                    this.idleTimer = -1f;
-                    this.rotationHTarget = ROTATION_IDLE;
-                }
-            }
+            this.animator.SetBool("IsMoving", false);
         }
     }
 
@@ -236,6 +166,6 @@ public class Player : MonoBehaviour
         this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
 
         this.velocity = Vector3.zero;
-        this.velocityXSmoothing = 0f;  
+        this.velocityXSmoothing = 0f;
     }
 }
