@@ -44,7 +44,7 @@ Shader "Animmal/Fog"
 
 		void surf( Input i , inout SurfaceOutputStandard o )
 		{
-			UNITY_APPLY_DITHER_CROSSFADE(i);
+			UNITY_APPLY_DITHER_CROSSFADE((float2)i.screenPos);
 			o.Emission = _FogColor.rgb;
 			float4 ase_screenPos = float4( i.screenPos.xyz , i.screenPos.w + 0.00000000001 );
 			float eyeDepth10 = LinearEyeDepth(UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture,UNITY_PROJ_COORD(ase_screenPos))));
@@ -54,7 +54,7 @@ Shader "Animmal/Fog"
 
 		ENDCG
 	}
-	CustomEditor "ASEMaterialInspector"
+	//CustomEditor "ASEMaterialInspector"
 }
 /*ASEBEGIN
 Version=14501
