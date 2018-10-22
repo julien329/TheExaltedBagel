@@ -63,6 +63,7 @@ public class BlockGenerator : MonoBehaviour
             if (this.transform.childCount > 0)
             {
                 boxCollider = this.gameObject.AddComponent<BoxCollider>();
+                boxCollider.isTrigger = true;
                 boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
                 boxCollider.center = new Vector3((this.sizeX - 1f) / 2f , ((this.sizeY - 1f) / 2f) + 0.5f, (this.sizeZ - 1f) / 2f);
             }

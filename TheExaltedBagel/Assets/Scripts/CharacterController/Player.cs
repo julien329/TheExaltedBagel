@@ -64,19 +64,16 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update ()
     {
-        // Get player input in raw states
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-
         // Check horizontal and vertical movements
-        MoveH(input);
-        MoveV(input);
+        MoveH();
+        MoveV();
 
         // Rotate player according to movements and gravity
         RotationH();
         RotationV();
 
         // Send info to animator
-        Animate(input);
+        Animate();
 
         // Call move to check collisions and translate the player
         this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
@@ -98,10 +95,10 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void MoveH(Vector2 input)
+    private void MoveH()
     {
         // Set target velocity according to user input
-        float targetVelocityX = input.x * this.moveSpeed;
+        float targetVelocityX = Input.GetAxis("Horizontal") * this.moveSpeed;
         // Smooth velocity (use acceleration). Change smoothing value if grounded or airborne
         this.velocity.x = Mathf.SmoothDamp(this.velocity.x, targetVelocityX, ref this.velocityXSmoothing, 
             (this.controller.collisions.below) ? this.accelerationTimeGrounded : this.accelerationTimeAirborne);
@@ -114,7 +111,7 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void MoveV(Vector2 input) {
+    private void MoveV() {
         // If there is a collision in Y axis, reset velocity
         if (this.controller.collisions.above || this.controller.collisions.below)
         {
@@ -127,7 +124,7 @@ public class Player : MonoBehaviour
         }
 
         // Invert gravity if key is pressed or when the player, we need to spawn the player upside down
-        if (Input.GetKeyDown(KeyCode.LeftControl) && this.gravityChargeCount > 0)
+        if (Input.GetButtonDown("Gravity") && this.gravityChargeCount > 0)
         {
             this.gravityChargeCount--;
             this.gravityDirection *= -1;
@@ -135,7 +132,7 @@ public class Player : MonoBehaviour
         }
 
         // If the jump key is pressed
-        if (Input.GetKeyDown(KeyCode.Space) && this.controller.collisions.below)
+        if (Input.GetButtonDown("Jump") && this.controller.collisions.below)
         {
             this.velocity.y = this.jumpVelocity * this.gravityDirection;
         }
@@ -197,17 +194,18 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void Animate(Vector2 input) 
+    private void Animate() 
     {
         // Moving animations
-        if (input.x != 0f)
+        float inputX = Input.GetAxis("Horizontal");
+        if (inputX != 0f)
         {
             this.idleTimer = this.timeToIdle;
 
             this.animator.SetBool("IsRunning", true);
             this.animator.SetFloat("RunningSpeed", Mathf.Abs(this.velocity.x) / this.moveSpeed);
 
-            this.rotationHTarget = (Mathf.Sign(input.x) == 1) ? ROTATION_RIGHT : ROTATION_LEFT;
+            this.rotationHTarget = (Mathf.Sign(inputX) == 1) ? ROTATION_RIGHT : ROTATION_LEFT;
         }
         // Idle animations
         else

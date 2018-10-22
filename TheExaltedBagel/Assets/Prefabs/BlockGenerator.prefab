@@ -54,4 +54,4 @@ MonoBehaviour:
   blockObject: {fileID: 0}
   sizeX: 1
   sizeY: 1
-  sizeZ: 0
+  sizeZ: 1
