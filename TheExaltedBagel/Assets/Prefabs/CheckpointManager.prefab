@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4416930258654604}
-  - component: {fileID: 114007746936935110}
+  - component: {fileID: 114509787184690136}
   m_Layer: 0
   m_Name: CheckpointManager
   m_TagString: CM
@@ -40,7 +40,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114007746936935110
+--- !u!114 &114509787184690136
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}

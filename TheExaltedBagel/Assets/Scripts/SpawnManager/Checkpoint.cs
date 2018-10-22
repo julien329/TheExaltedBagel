@@ -19,7 +19,7 @@ public class Checkpoint : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if (!this.triggered && collision.CompareTag("Player"))
         {
