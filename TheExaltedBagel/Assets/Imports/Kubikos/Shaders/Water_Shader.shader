@@ -13,7 +13,7 @@ Shader "Animmal/Water"
 
 	SubShader
 	{
-		Tags{ "RenderType" = "Opaque"  "Queue" = "Geometry+0" }
+		Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
 		Cull Back
 		CGINCLUDE
 		#include "UnityShaderVariables.cginc"
@@ -66,12 +66,12 @@ Shader "Animmal/Water"
 			float2 panner42 = ( uv_TexCoord43 + 1 * _Time.y * float2( 0,0 ));
 			float2 uv_Cubes = i.uv_texcoord * _Cubes_ST.xy + _Cubes_ST.zw;
 			o.Albedo = ( triplanar2 * ( tex2D( _TextureSample6, panner42 ) + tex2D( _Cubes, uv_Cubes ) ) ).xyz;
-			o.Alpha = 1;
+			o.Alpha = 0.5;
 		}
 
 		ENDCG
 		CGPROGRAM
-		#pragma surface surf StandardSpecular keepalpha fullforwardshadows 
+		#pragma surface surf StandardSpecular alpha fullforwardshadows 
 
 		ENDCG
 		Pass
