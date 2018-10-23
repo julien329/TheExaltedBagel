@@ -122,7 +122,7 @@ public class Player : MonoBehaviour
                 Vector3 contactPos = new Vector3(this.transform.position.x, collision.collider.bounds.max.y, this.transform.position.z);
                 if (contactPos.x >= collision.collider.bounds.min.x && contactPos.x <= collision.collider.bounds.max.x)
                 {
-                    GameObject particles = Instantiate(this.splashParticles, collision.collider.transform);
+                    GameObject particles = Instantiate(this.splashParticles);
                     particles.transform.position = contactPos;
 
                     ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
