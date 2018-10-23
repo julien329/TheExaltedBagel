@@ -32,8 +32,6 @@ public class AIMonster2 : MonoBehaviour
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
     private const float ROTATION_LEFT = 270f;
-    private const float ROTATION_UP = 180f;
-    private const float ROTATION_DOWN = 0f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
@@ -50,7 +48,6 @@ public class AIMonster2 : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
-        this.controller = GetComponent<Controller2D>();
         this.turnAroundTimer = this.flipInterval;
     }
 

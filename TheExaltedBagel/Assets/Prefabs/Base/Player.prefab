@@ -1055,6 +1055,7 @@ MonoBehaviour:
   jumpHeight: 2.5
   accelerationTimeAirborne: 0.2
   accelerationTimeGrounded: 0.1
+  bumpForce: 10
 --- !u!137 &137769725481637566
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
