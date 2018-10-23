@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    [SerializeField] private float gravityDirection = 1f;
     [SerializeField] private uint index = 0;
+    [SerializeField] private float gravityDirection = 1f;
+    [SerializeField] private GameObject spawnParticles;
 
+    private GameObject currentParticles;
     private Renderer rend;
     private bool triggered = false;
 
@@ -67,6 +69,16 @@ public class Checkpoint : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void SpawnObject(bool isFirstSpawn)
     {
-        // Broadcast Receiver
+        if (this.spawnParticles != null)
+        {
+            if (this.currentParticles != null)
+            {
+                Destroy(this.currentParticles);
+            }
+
+            this.currentParticles = Instantiate(this.spawnParticles, this.transform);
+            ParticleSystem particleSystem = this.currentParticles.GetComponent<ParticleSystem>();
+            particleSystem.Play();
+        }
     }
 }
