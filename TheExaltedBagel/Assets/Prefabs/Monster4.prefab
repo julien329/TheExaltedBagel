@@ -549,7 +549,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1913874689772746}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.15, y: 2.08, z: -0.060461044}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4067566458336256}
@@ -1031,8 +1031,11 @@ MonoBehaviour:
   rotationSpeed: 500
   moveSpeed: 3.5
   animSpeedModifier: 2
-  flipInterval: 2
+  flipInterval: 4
   gravity: -50
+  surpriseDelay: 1
+  surpriseTimer: 1
+  chargeDirection: 1
 --- !u!114 &114503077762189246
 MonoBehaviour:
   m_ObjectHideFlags: 1

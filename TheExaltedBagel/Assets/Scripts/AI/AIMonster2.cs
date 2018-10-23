@@ -1,20 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class AIMonster2 : MonoBehaviour
 {
-    enum EnemyType { SlowMover, FastMover, Charger }
+    public enum EnemyType { SlowMover, FastMover, Charger, FastFollow }
 
-    [SerializeField] private EnemyType type = EnemyType.SlowMover;
+    //For all enemies:
+    [SerializeField] public EnemyType type = EnemyType.SlowMover;
     [SerializeField] private float rotationSpeed = 500f;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float animSpeedModifier = 1f;
+    [SerializeField] private float flipInterval = 2.0f;
+    [SerializeField] private float gravity = -50f;
     private float maxVelocityY = 17.5f;
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
-    [SerializeField] private float flipInterval = 2.0f;
-    [SerializeField] private float gravity = -50f;
 
     private float gravityDirection = 1f;
     private float rotationHTarget = 180f;
@@ -33,6 +35,11 @@ public class AIMonster2 : MonoBehaviour
     private const float ROTATION_IDLE = 180f;
     private const float ROTATION_LEFT = 270f;
 
+    //For Charger:
+    [SerializeField] private float surpriseDelay = 1f;
+    [SerializeField] private float surpriseTimer;
+    [SerializeField] private int chargeDirection = 1;
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
@@ -49,6 +56,7 @@ public class AIMonster2 : MonoBehaviour
     void Start()
     {
         this.turnAroundTimer = this.flipInterval;
+        this.surpriseTimer = this.surpriseDelay;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,18 +166,37 @@ public class AIMonster2 : MonoBehaviour
 
     Vector2 Behaviour()
     {
+        int dir = playerTranform.position.x - this.transform.position.x > 0 ? 1 : -1;
+        float distance = Mathf.Abs(playerTranform.position.x - this.transform.position.x);
+
         switch (this.type)
         {
             case EnemyType.SlowMover:
             case EnemyType.FastMover:
+
                 return Wander();
-            case EnemyType.Charger:
-                float distance = Mathf.Abs(playerTranform.position.x - this.transform.position.x);
+
+            case EnemyType.FastFollow:
+
 
                 if (distance <= 5 && distance > 1)
                 {
-                    int dir = playerTranform.position.x - this.transform.position.x > 0 ? 1 : -1;
-                    return new Vector2(2*dir, 0);
+                    return new Vector2(3*dir, 0);
+                }
+                else if (this.controller.collisions.left || this.controller.collisions.right)
+                {
+                    this.turnAroundTimer = this.flipInterval;
+
+                    if (this.controller.collisions.left && this.direction == -1)
+                    {
+                        this.direction = 1;
+                    }
+                    if (this.controller.collisions.right && this.direction == 1)
+                    {
+                        this.direction = -1;
+                    }
+
+                    return Wander();
                 }
                 else if (distance > 5)
                 {
@@ -177,11 +204,51 @@ public class AIMonster2 : MonoBehaviour
                 }
                 else
                 {
-                    return new Vector2(0, 0);
+                    return Wander();
                 }
 
+            case EnemyType.Charger:
+                
+                if (this.controller.collisions.left || this.controller.collisions.right)
+                {
+                    this.surpriseTimer = this.surpriseDelay;
+                    this.turnAroundTimer = this.flipInterval;
+
+                    if (this.controller.collisions.left && this.direction == -1)
+                    {
+                        this.direction = 1;
+                    }
+                    if (this.controller.collisions.right && this.direction == 1)
+                    {
+                        this.direction = -1;
+                    }
+
+                    return Wander();
+                }
+                else if (distance <= 5 && distance > 1 && this.surpriseTimer == 1f)
+                {
+                    this.chargeDirection = dir;
+                    this.surpriseTimer -= Time.deltaTime;
+                    return new Vector2(this.chargeDirection, 0);
+                }
+                else if (this.surpriseTimer < this.surpriseDelay && this.surpriseTimer > 0)
+                {
+                    this.surpriseTimer -= Time.deltaTime;
+                    if (surpriseTimer <= 0)
+                    {
+                        return new Vector2(this.chargeDirection * 3, 0);
+                    }
+                    return new Vector2(0, 0);
+                }
+                else if(surpriseTimer <= 0)
+                {
+                    return new Vector2(this.chargeDirection * 3, 0);
+                }
+
+                return Wander();
+
             default:
-                return new Vector2(1, 0);
+                return Wander();
         }
         
     }
