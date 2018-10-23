@@ -31,6 +31,12 @@ public class ObjectSpawner : MonoBehaviour
             }
 
             this.objectInstance = Instantiate(this.spawningObject, this.transform);
+            this.objectInstance.transform.localPosition = Vector3.zero;
+            this.objectInstance.transform.localEulerAngles = Vector3.zero;
+
+            this.objectInstance.transform.localScale = Vector3.Scale(
+                this.objectInstance.transform.localScale, 
+                new Vector3(1f / this.transform.lossyScale.x, 1f / this.transform.lossyScale.y, 1f / this.transform.lossyScale.z));
 
             OnDestroyListener listener = this.objectInstance.AddComponent<OnDestroyListener>();
             listener.onDestroyDelegate = OnObjectDestroyed;
