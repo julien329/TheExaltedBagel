@@ -4,28 +4,30 @@ using UnityEngine;
 
 public class AIMonster2 : MonoBehaviour
 {
+    enum EnemyType { SlowMover, FastMover, Charger }
+
+    [SerializeField] private EnemyType type = EnemyType.SlowMover;
     [SerializeField] private float rotationSpeed = 500f;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float animSpeedModifier = 1f;
     private float maxVelocityY = 17.5f;
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
-    [SerializeField] private float flipInterval = 1.0f;
+    [SerializeField] private float flipInterval = 2.0f;
     [SerializeField] private float gravity = -50f;
 
     private float gravityDirection = 1f;
     private float rotationHTarget = 180f;
-    private float rotationVTarget = 0f;
     private float jumpVelocity;
     private float velocityXSmoothing;
     private float turnAroundTimer;
     private int direction = 1;
     private Vector3 velocity;
     private Controller2D controller;
-    private BoxCollider boxCollider;
     private Animator animator;
     private Transform rotYTransform;
     private Transform rotZTransform;
+    private Transform playerTranform;
 
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
@@ -37,12 +39,12 @@ public class AIMonster2 : MonoBehaviour
     void Awake()
     {
         this.controller = GetComponent<Controller2D>();
-        this.boxCollider = GetComponent<BoxCollider>();
 
         this.rotYTransform = this.transform.Find("RotationY");
         this.rotZTransform = this.rotYTransform.Find("RotationZ");
 
         this.animator = this.rotZTransform.Find("QMon").GetComponent<Animator>();
+        this.playerTranform = GameObject.Find("Player").GetComponent<Transform>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,18 +57,8 @@ public class AIMonster2 : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update()
     {
-        //Timer tick
-        this.turnAroundTimer -= Time.deltaTime;
-
-        //Change the monster's direction when timer runs out. Reset timer.
-        if (this.turnAroundTimer < 0)
-        {
-            this.turnAroundTimer = this.flipInterval;
-            this.direction *= -1;
-        }
-
         // Get player input in raw states
-        Vector2 input = new Vector2(this.direction, 0);
+        Vector2 input = Behaviour();
 
         // Check horizontal and vertical movements
         MoveH(input);
@@ -163,9 +155,48 @@ public class AIMonster2 : MonoBehaviour
         this.transform.position = spawnPosition;
         this.gravityDirection = gravityDirection;
 
-        this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
-
         this.velocity = Vector3.zero;
         this.velocityXSmoothing = 0f;
+    }
+
+    Vector2 Behaviour()
+    {
+        switch (this.type)
+        {
+            case EnemyType.SlowMover:
+            case EnemyType.FastMover:
+                return Wander();
+            case EnemyType.Charger:
+                float distance = Mathf.Abs(playerTranform.position.x - this.transform.position.x);
+
+                if (distance <= 5 && distance > 1)
+                {
+                    int dir = playerTranform.position.x - this.transform.position.x > 0 ? 1 : -1;
+                    return new Vector2(2*dir, 0);
+                }
+                else if (distance > 5)
+                {
+                    return Wander();
+                }
+                else
+                {
+                    return new Vector2(0, 0);
+                }
+
+            default:
+                return new Vector2(1, 0);
+        }
+        
+    }
+
+    Vector2 Wander()
+    {
+        this.turnAroundTimer -= Time.deltaTime;
+        if (this.turnAroundTimer < 0)
+        {
+            this.turnAroundTimer = this.flipInterval;
+            this.direction *= -1;
+        }
+        return new Vector2(this.direction, 0);
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Destroy : MonoBehaviour {
     
     [SerializeField] private GameObject MonsterInstance;
+    [SerializeField] private GameObject PoofPrefab;
 
     // Use this for initialization
     void Start () {
@@ -16,10 +17,11 @@ public class Destroy : MonoBehaviour {
 		
 	}
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collider)
     {
-        if (collision.transform.tag == "Player")
+        if (collider.transform.tag == "Player")
         {
+            Instantiate(PoofPrefab, new Vector3(MonsterInstance.transform.position.x, MonsterInstance.transform.position.y + 0.5f, MonsterInstance.transform.position.z), Quaternion.identity);
             Destroy(MonsterInstance);
         }
     }

@@ -83,17 +83,18 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collider)
     {
-        if (collision.transform.tag == "KillTrigger")
+        if (collider.transform.tag == "KillTrigger")
         {
             this.velocity.y = this.bumpForce * this.gravityDirection;
             this.gravityChargeCount = (uint)Mathf.Min(this.gravityChargeCount + 1, this.gravityChargeMax);
         }
 
-        if (collision.transform.tag == "Enemy")
+        if (collider.transform.tag == "Enemy")
         {
-            Destroy(this);
+            //[TODO]
+            //Destroy(this);
         }
     }
 
