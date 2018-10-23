@@ -226,9 +226,9 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void RespawnPlayer(Vector3 spawnPosition, float gravityDirection)
+    public void SpawnPlayer(Vector3 position, float gravityDirection)
     {
-        this.transform.position = spawnPosition;
+        this.transform.position = position;
         this.gravityDirection = gravityDirection;
 
         this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;

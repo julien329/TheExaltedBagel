@@ -15,14 +15,12 @@ public class AIMonster2 : MonoBehaviour
 
     private float gravityDirection = 1f;
     private float rotationHTarget = 180f;
-    private float rotationVTarget = 0f;
-    private float jumpVelocity;
+    //private float jumpVelocity;
     private float velocityXSmoothing;
     private float turnAroundTimer;
     private int direction = 1;
     private Vector3 velocity;
     private Controller2D controller;
-    private BoxCollider boxCollider;
     private Animator animator;
     private Transform rotYTransform;
     private Transform rotZTransform;
@@ -30,14 +28,11 @@ public class AIMonster2 : MonoBehaviour
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
     private const float ROTATION_LEFT = 270f;
-    private const float ROTATION_UP = 180f;
-    private const float ROTATION_DOWN = 0f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
         this.controller = GetComponent<Controller2D>();
-        this.boxCollider = GetComponent<BoxCollider>();
 
         this.rotYTransform = this.transform.Find("RotationY");
         this.rotZTransform = this.rotYTransform.Find("RotationZ");
@@ -48,7 +43,6 @@ public class AIMonster2 : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
-        this.controller = GetComponent<Controller2D>();
         this.turnAroundTimer = this.flipInterval;
     }
 
@@ -162,8 +156,6 @@ public class AIMonster2 : MonoBehaviour
     {
         this.transform.position = spawnPosition;
         this.gravityDirection = gravityDirection;
-
-        this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
 
         this.velocity = Vector3.zero;
         this.velocityXSmoothing = 0f;
