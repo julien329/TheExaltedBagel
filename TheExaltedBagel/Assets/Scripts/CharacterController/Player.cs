@@ -5,19 +5,31 @@ using System;
 [RequireComponent (typeof(Collider))]
 public class Player : MonoBehaviour
 {
-    [NonSerialized] public uint gravityChargeCount = 3;
-    public uint gravityChargeMax = 3;
+    [Header("MoveX")]
+    [SerializeField] private float moveSpeedNormal = 7f;
+    [SerializeField] private float moveSpeedWater = 3.5f;
+    [SerializeField] private float accTimeAir = 0.2f;
+    [SerializeField] private float accTimeGround = 0.1f;
 
-    [SerializeField] private float rotationSpeed = 1000f;
-    [SerializeField] private float timeToIdle = 4f;
-    [SerializeField] private float moveSpeed = 7f;
+    [Header("MoveY")]
     [SerializeField] private float maxVelocityY = 17.5f;
     [SerializeField] private float timeToJumpApex = 0.35f;
-    [SerializeField] private float jumpHeight = 3f;
-    [SerializeField] private float accelerationTimeAirborne = 0.2f;
-    [SerializeField] private float accelerationTimeGrounded = 0.1f;
+    [SerializeField] private float timeToJumpApexWater = 0.75f;
+    [SerializeField] private float jumpHeight = 2.5f;
+    [SerializeField] private float jumpHeightWater = 3.5f;
     [SerializeField] private float bumpForce = 10f;
 
+    [Header("Anim")]
+    [SerializeField] private float rotationSpeed = 1000f;
+    [SerializeField] private float timeToIdle = 4f;
+    [SerializeField] private GameObject splashParticles;
+
+    [Header("Power")]
+    [SerializeField] private uint gravityChargeMax = 3;
+
+    private Collider waterCollider;
+    private uint gravityChargeCount = 3;
+    private float moveSpeed;
     private float gravityDirection = 1f; 
     private float rotationHTarget = 180f;
     private float rotationVTarget = 0f;
@@ -39,6 +51,18 @@ public class Player : MonoBehaviour
     private const float ROTATION_DOWN = 0f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public uint GravityChargeCount
+    {
+        get { return this.gravityChargeCount; }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public uint GravityChargeMax
+    {
+        get { return this.gravityChargeMax; }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
         this.controller = GetComponent<Controller2D>();
@@ -55,11 +79,9 @@ public class Player : MonoBehaviour
     {
         this.controller = GetComponent<Controller2D>();
 
-        // Formula : deltaMovement = velocityInitial * time + (acceleration * time^2) / 2  -->  where acceleration = gravity and velocityInitial is null
-        this.gravity = -(2 * this.jumpHeight) / Mathf.Pow(this.timeToJumpApex, 2);
-        // Formula : velocityFinal = velocityInitial + acceleration * time  -->  where velocityFinal = jumpVelocity and velocityInitial is null
-        this.jumpVelocity = Mathf.Abs(this.gravity) * this.timeToJumpApex;
-	}
+        ChangeEnvironment(false);
+
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update ()
@@ -80,7 +102,7 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
         if (collision.transform.tag == "KillTrigger")
         {
@@ -92,6 +114,38 @@ public class Player : MonoBehaviour
         {
             Destroy(this);
         }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
+        {
+            if (this.splashParticles != null && this.waterCollider == null)
+            {
+                Vector3 contactPos = new Vector3(this.transform.position.x, collision.collider.bounds.max.y, this.transform.position.z);
+                if (contactPos.x >= collision.collider.bounds.min.x && contactPos.x <= collision.collider.bounds.max.x)
+                {
+                    GameObject particles = Instantiate(this.splashParticles, collision.collider.transform);
+                    particles.transform.position = contactPos;
+
+                    ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
+                    particleSystem.Play();
+                }
+            }
+
+            this.waterCollider = collision.collider;
+            ChangeEnvironment(true);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
+        {
+            if (this.waterCollider == collision.collider)
+            {
+                this.waterCollider = null;
+                ChangeEnvironment(false);
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +155,7 @@ public class Player : MonoBehaviour
         float targetVelocityX = Input.GetAxis("Horizontal") * this.moveSpeed;
         // Smooth velocity (use acceleration). Change smoothing value if grounded or airborne
         this.velocity.x = Mathf.SmoothDamp(this.velocity.x, targetVelocityX, ref this.velocityXSmoothing, 
-            (this.controller.collisions.below) ? this.accelerationTimeGrounded : this.accelerationTimeAirborne);
+            (this.controller.collisions.below) ? this.accTimeGround : this.accTimeAir);
 
         // If speed too small, set to null
         if (Mathf.Abs(this.velocity.x) < 0.1f)
@@ -223,6 +277,20 @@ public class Player : MonoBehaviour
                 }
             }
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void ChangeEnvironment(bool isWater)
+    {
+        float jump = (isWater) ? this.jumpHeightWater : this.jumpHeight;
+        float time = (isWater) ? this.timeToJumpApexWater : this.timeToJumpApex;
+
+        // Formula : deltaMovement = velocityInitial * time + (acceleration * time^2) / 2  -->  where acceleration = gravity and velocityInitial is null
+        this.gravity = -(2f * jump) / Mathf.Pow(time, 2f);
+        // Formula : velocityFinal = velocityInitial + acceleration * time  -->  where velocityFinal = jumpVelocity and velocityInitial is null
+        this.jumpVelocity = Mathf.Abs(this.gravity) * time;
+
+        this.moveSpeed = (isWater) ? this.moveSpeedWater : this.moveSpeedNormal;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

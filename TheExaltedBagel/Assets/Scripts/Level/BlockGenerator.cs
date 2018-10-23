@@ -6,11 +6,13 @@ using UnityEngine;
 public class BlockGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject blockObject;
+    [SerializeField] private bool isWater;
     [SerializeField] private uint sizeX;
     [SerializeField] private uint sizeY;
     [SerializeField] private uint sizeZ;
 
     private GameObject blockObjectOld;
+    private bool isWaterOld;
     private uint sizeXOld;
     private uint sizeYOld;
     private uint sizeZOld;
@@ -20,12 +22,14 @@ public class BlockGenerator : MonoBehaviour
     {
         if (!Application.isPlaying && this.gameObject.activeInHierarchy)
         {
-            if (sizeX != sizeXOld || sizeY != sizeYOld || sizeZ != sizeZOld || blockObject != blockObjectOld)
+            if (this.sizeX != this.sizeXOld || this.sizeY != this.sizeYOld || this.sizeZ != this.sizeZOld 
+                || this.blockObject != this.blockObjectOld || this.isWater != this.isWaterOld)
             {
-                sizeXOld = sizeX;
-                sizeYOld = sizeX;
-                sizeZOld = sizeZ;
-                blockObjectOld = blockObject;
+                this.sizeXOld = this.sizeX;
+                this.sizeYOld = this.sizeX;
+                this.sizeZOld = this.sizeZ;
+                this.isWaterOld = this.isWater;
+                this.blockObjectOld = this.blockObject;
 
                 StartCoroutine(RegenerateBlocks());
             }
@@ -43,7 +47,10 @@ public class BlockGenerator : MonoBehaviour
         }
 
         BoxCollider boxCollider = this.gameObject.GetComponent<BoxCollider>();
+        Rigidbody rigidbody = this.gameObject.GetComponent<Rigidbody>();
+
         DestroyImmediate(boxCollider);
+        DestroyImmediate(rigidbody);
 
         if (blockObject != null)
         {
@@ -62,10 +69,19 @@ public class BlockGenerator : MonoBehaviour
 
             if (this.transform.childCount > 0)
             {
+                this.gameObject.layer = (this.isWater) ? LayerMask.NameToLayer("Water") : LayerMask.NameToLayer("Floor");
+
                 boxCollider = this.gameObject.AddComponent<BoxCollider>();
-                boxCollider.isTrigger = true;
+                boxCollider.isTrigger = !this.isWater;
                 boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
                 boxCollider.center = new Vector3((this.sizeX - 1f) / 2f , ((this.sizeY - 1f) / 2f) + 0.5f, (this.sizeZ - 1f) / 2f);
+
+                if (this.isWater)
+                {
+                    rigidbody = this.gameObject.AddComponent<Rigidbody>();
+                    rigidbody.useGravity = false;
+                    rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+                }
             }
         }
     }

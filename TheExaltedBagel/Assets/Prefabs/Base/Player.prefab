@@ -1046,16 +1046,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be08acdc68bacee409e864c7f6dff4aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityChargeMax: 3
-  rotationSpeed: 1000
-  timeToIdle: 3
-  moveSpeed: 7
+  moveSpeedNormal: 7
+  moveSpeedWater: 3.5
+  accTimeAir: 0.2
+  accTimeGround: 0.1
   maxVelocityY: 17.5
   timeToJumpApex: 0.35
+  timeToJumpApexWater: 0.75
   jumpHeight: 2.5
-  accelerationTimeAirborne: 0.2
-  accelerationTimeGrounded: 0.1
+  jumpHeightWater: 3.5
   bumpForce: 10
+  rotationSpeed: 1000
+  timeToIdle: 3
+  splashParticles: {fileID: 1687118924408352, guid: 77c69ec12208c4c4380d15e30b6f8f68,
+    type: 2}
+  gravityChargeMax: 3
 --- !u!137 &137769725481637566
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

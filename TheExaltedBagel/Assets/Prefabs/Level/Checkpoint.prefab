@@ -96,8 +96,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a91154a4dca2d444a8b9ffea88ecd89d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityDirection: 1
   index: 0
+  gravityDirection: 1
+  spawnParticles: {fileID: 100000, guid: ada5d62ffe762ce4fbccc70dcdbc9022, type: 2}
 --- !u!135 &135762040275661260
 SphereCollider:
   m_ObjectHideFlags: 1

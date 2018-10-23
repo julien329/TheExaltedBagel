@@ -4,9 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - CM
   - Enemy
   - KillTrigger
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX

@@ -5,9 +5,9 @@ using UnityEngine;
 public class KillZone : MonoBehaviour
 {
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void OnTriggerEnter(Collider collision)
+    private void OnTriggerEnter(Collider collider)
     {
-        if (collision.CompareTag("Player"))
+        if (collider.CompareTag("Player"))
         {
             LevelManager.instance.KillPlayer(false);
         }
