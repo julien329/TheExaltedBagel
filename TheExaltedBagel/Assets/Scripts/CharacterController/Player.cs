@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 [RequireComponent (typeof(Collider))]
 public class Player : MonoBehaviour
@@ -27,7 +28,7 @@ public class Player : MonoBehaviour
     [Header("Power")]
     [SerializeField] private uint gravityChargeMax = 3;
 
-    private Collider waterCollider;
+    private List<Collider> waterColliders = new List<Collider>();
     private uint gravityChargeCount = 3;
     private float moveSpeed;
     private float gravityDirection = 1f; 
@@ -117,7 +118,7 @@ public class Player : MonoBehaviour
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
-            if (this.splashParticles != null && this.waterCollider == null)
+            if (this.splashParticles != null && this.waterColliders.Count == 0)
             {
                 Vector3 contactPos = new Vector3(this.transform.position.x, collision.collider.bounds.max.y, this.transform.position.z);
                 if (contactPos.x >= collision.collider.bounds.min.x && contactPos.x <= collision.collider.bounds.max.x)
@@ -130,7 +131,7 @@ public class Player : MonoBehaviour
                 }
             }
 
-            this.waterCollider = collision.collider;
+            this.waterColliders.Add(collision.collider);
             ChangeEnvironment(true);
         }
     }
@@ -140,9 +141,9 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
-            if (this.waterCollider == collision.collider)
+            this.waterColliders.Remove(collision.collider);
+            if (this.waterColliders.Count == 0)
             {
-                this.waterCollider = null;
                 ChangeEnvironment(false);
             }
         }
