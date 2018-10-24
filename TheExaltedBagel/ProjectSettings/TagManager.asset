@@ -7,6 +7,8 @@ TagManager:
   - CM
   - Enemy
   - KillTrigger
+  - FxTemporaire
+  - CoinForGate
   layers:
   - Default
   - TransparentFX

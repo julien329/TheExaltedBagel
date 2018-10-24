@@ -339,7 +339,7 @@ GameObject:
   - component: {fileID: 4760750281979882}
   - component: {fileID: 137110833166777304}
   m_Layer: 0
-  m_Name: Q-Mon4_Objt
+  m_Name: TextureObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -549,7 +549,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1913874689772746}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.7761035, y: 7.0183024, z: -2.0023794}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4067566458336256}
@@ -1028,14 +1028,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
+  theme: 0
   rotationSpeed: 500
-  moveSpeed: 3.5
+  moveSpeed: 2.5
   animSpeedModifier: 2
-  flipInterval: 4
+  flipInterval: 5
   gravity: -50
-  surpriseDelay: 1
-  surpriseTimer: 1
-  chargeDirection: 1
+  detectionRadius: 5
+  chargerSurpriseDelay: 1
+  chargerMultiplier: 3
 --- !u!114 &114503077762189246
 MonoBehaviour:
   m_ObjectHideFlags: 1
