@@ -54,33 +54,52 @@ public class BlockGenerator : MonoBehaviour
 
         if (blockObject != null)
         {
-            for (uint i = 0; i < this.sizeX; ++i)
+            if (this.isWater)
             {
-                for (uint j = 0; j < this.sizeY; ++j)
+                GameObject newBlock = Instantiate(this.blockObject, this.transform);
+                newBlock.transform.localPosition = new Vector3((sizeX / 2f) - 0.5f, -0.25f, (sizeZ / 2f) - 0.5f);
+                newBlock.transform.localScale = new Vector3(sizeX + 0.5f, sizeY, sizeZ - 0.5f);
+                newBlock.name = "Block (" + this.sizeX + ", " + this.sizeY + ", " + this.sizeZ + ")";
+            }
+            else
+            {
+                for (uint i = 0; i < this.sizeX; ++i)
                 {
-                    for (uint k = 0; k < this.sizeZ; ++k)
+                    for (uint j = 0; j < this.sizeY; ++j)
                     {
-                        GameObject newBlock = Instantiate(this.blockObject, this.transform);
-                        newBlock.transform.localPosition = new Vector3(i, j, k);
-                        newBlock.name = "Block (" + i + ", " + j + ", " + k + ")";
+                        for (uint k = 0; k < this.sizeZ; ++k)
+                        {
+                            GameObject newBlock = Instantiate(this.blockObject, this.transform);
+                            newBlock.transform.localPosition = new Vector3(i, j, k);
+                            newBlock.name = "Block (" + i + ", " + j + ", " + k + ")";
+                        }
                     }
                 }
             }
 
             if (this.transform.childCount > 0)
             {
-                this.gameObject.layer = (this.isWater) ? LayerMask.NameToLayer("Water") : LayerMask.NameToLayer("Floor");
-
                 boxCollider = this.gameObject.AddComponent<BoxCollider>();
-                boxCollider.isTrigger = !this.isWater;
-                boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
-                boxCollider.center = new Vector3((this.sizeX - 1f) / 2f , ((this.sizeY - 1f) / 2f) + 0.5f, (this.sizeZ - 1f) / 2f);
 
                 if (this.isWater)
                 {
+                    this.gameObject.layer = LayerMask.NameToLayer("Water");
+
+                    boxCollider.isTrigger = false;
+                    boxCollider.size = new Vector3(this.sizeX + 0.5f, this.sizeY, this.sizeZ - 0.5f);
+                    boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f) - 0.25f, (this.sizeZ / 2f) - 0.5f);
+
                     rigidbody = this.gameObject.AddComponent<Rigidbody>();
                     rigidbody.useGravity = false;
                     rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+                }
+                else
+                {
+                    this.gameObject.layer = LayerMask.NameToLayer("Floor");
+
+                    boxCollider.isTrigger = true;
+                    boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
+                    boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
                 }
             }
         }
