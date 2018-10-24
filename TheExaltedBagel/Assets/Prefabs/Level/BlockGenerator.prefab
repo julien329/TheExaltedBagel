@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockObject: {fileID: 0}
+  isWater: 0
   sizeX: 1
   sizeY: 1
   sizeZ: 1

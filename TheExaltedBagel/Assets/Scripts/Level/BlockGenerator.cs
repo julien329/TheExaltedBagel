@@ -6,11 +6,15 @@ using UnityEngine;
 public class BlockGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject blockObject;
+    [SerializeField] private bool isWater;
+    [SerializeField] private bool useWaterTop;
     [SerializeField] private uint sizeX;
     [SerializeField] private uint sizeY;
     [SerializeField] private uint sizeZ;
 
     private GameObject blockObjectOld;
+    private bool isWaterOld;
+    private bool useWaterTopOld;
     private uint sizeXOld;
     private uint sizeYOld;
     private uint sizeZOld;
@@ -20,12 +24,15 @@ public class BlockGenerator : MonoBehaviour
     {
         if (!Application.isPlaying && this.gameObject.activeInHierarchy)
         {
-            if (sizeX != sizeXOld || sizeY != sizeYOld || sizeZ != sizeZOld || blockObject != blockObjectOld)
+            if (this.sizeX != this.sizeXOld || this.sizeY != this.sizeYOld || this.sizeZ != this.sizeZOld 
+                || this.blockObject != this.blockObjectOld || this.isWater != this.isWaterOld || this.useWaterTop != this.useWaterTopOld)
             {
-                sizeXOld = sizeX;
-                sizeYOld = sizeX;
-                sizeZOld = sizeZ;
-                blockObjectOld = blockObject;
+                this.sizeXOld = this.sizeX;
+                this.sizeYOld = this.sizeX;
+                this.sizeZOld = this.sizeZ;
+                this.isWaterOld = this.isWater;
+                this.useWaterTopOld = this.useWaterTop;
+                this.blockObjectOld = this.blockObject;
 
                 StartCoroutine(RegenerateBlocks());
             }
@@ -43,19 +50,47 @@ public class BlockGenerator : MonoBehaviour
         }
 
         BoxCollider boxCollider = this.gameObject.GetComponent<BoxCollider>();
+        Rigidbody rigidbody = this.gameObject.GetComponent<Rigidbody>();
+
         DestroyImmediate(boxCollider);
+        DestroyImmediate(rigidbody);
 
         if (blockObject != null)
         {
-            for (uint i = 0; i < this.sizeX; ++i)
+            if (this.isWater)
             {
-                for (uint j = 0; j < this.sizeY; ++j)
+                GameObject frontPlane = Instantiate(this.blockObject, this.transform);
+                frontPlane.transform.localPosition = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f) - 0.5f, -0.25f);
+                frontPlane.transform.localScale = new Vector3(this.sizeX + 1f, this.sizeY, 1f);
+                frontPlane.name = "FrontPlane (" + this.sizeX + ", " + this.sizeY + ", " + this.sizeZ + ")";
+
+                if (this.useWaterTop)
                 {
-                    for (uint k = 0; k < this.sizeZ; ++k)
+                    GameObject topPlaneUp = Instantiate(this.blockObject, this.transform);
+                    topPlaneUp.transform.localPosition = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY - 0.5f), (this.sizeZ / 2f) - 0.5f);
+                    topPlaneUp.transform.localScale = new Vector3(this.sizeX + 1f, this.sizeZ - 0.5f, 1f);
+                    topPlaneUp.transform.localEulerAngles = new Vector3(90f, 0f, 0f);
+                    topPlaneUp.name = "TopPlaneUp (" + this.sizeX + ", " + 0 + ", " + this.sizeZ + ")";
+
+                    GameObject topPlaneDown = Instantiate(this.blockObject, this.transform);
+                    topPlaneDown.transform.localPosition = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY - 0.5f), (this.sizeZ / 2f) - 0.5f);
+                    topPlaneDown.transform.localScale = new Vector3(this.sizeX + 1f, this.sizeZ - 0.5f, 1f);
+                    topPlaneDown.transform.localEulerAngles = new Vector3(270f, 0f, 0f);
+                    topPlaneDown.name = "TopPlaneDown (" + this.sizeX + ", " + 0 + ", " + this.sizeZ + ")";
+                }
+            }
+            else
+            {
+                for (uint i = 0; i < this.sizeX; ++i)
+                {
+                    for (uint j = 0; j < this.sizeY; ++j)
                     {
-                        GameObject newBlock = Instantiate(this.blockObject, this.transform);
-                        newBlock.transform.localPosition = new Vector3(i, j, k);
-                        newBlock.name = "Block (" + i + ", " + j + ", " + k + ")";
+                        for (uint k = 0; k < this.sizeZ; ++k)
+                        {
+                            GameObject newBlock = Instantiate(this.blockObject, this.transform);
+                            newBlock.transform.localPosition = new Vector3(i, j, k);
+                            newBlock.name = "Block (" + i + ", " + j + ", " + k + ")";
+                        }
                     }
                 }
             }
@@ -63,9 +98,27 @@ public class BlockGenerator : MonoBehaviour
             if (this.transform.childCount > 0)
             {
                 boxCollider = this.gameObject.AddComponent<BoxCollider>();
-                boxCollider.isTrigger = true;
-                boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
-                boxCollider.center = new Vector3((this.sizeX - 1f) / 2f , ((this.sizeY - 1f) / 2f) + 0.5f, (this.sizeZ - 1f) / 2f);
+
+                if (this.isWater)
+                {
+                    this.gameObject.layer = LayerMask.NameToLayer("Water");
+
+                    boxCollider.isTrigger = false;
+                    boxCollider.size = new Vector3(this.sizeX + 1f, this.sizeY, this.sizeZ);
+                    boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f) - 0.5f, (this.sizeZ / 2f) - 0.5f);
+
+                    rigidbody = this.gameObject.AddComponent<Rigidbody>();
+                    rigidbody.useGravity = false;
+                    rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+                }
+                else
+                {
+                    this.gameObject.layer = LayerMask.NameToLayer("Floor");
+
+                    boxCollider.isTrigger = true;
+                    boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
+                    boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
+                }
             }
         }
     }
