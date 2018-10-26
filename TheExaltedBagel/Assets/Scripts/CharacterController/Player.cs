@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float timeToJumpApexWater = 0.75f;
     [SerializeField] private float jumpHeight = 2.5f;
     [SerializeField] private float jumpHeightWater = 3.5f;
-    [SerializeField] private float bumpForce = 10f;
+    //[SerializeField] private float bumpForce = 10f;
 
     [Header("Anim")]
     [SerializeField] private float rotationSpeed = 1000f;

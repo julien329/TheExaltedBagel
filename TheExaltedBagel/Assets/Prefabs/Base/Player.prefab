@@ -1032,7 +1032,6 @@ MonoBehaviour:
   skinWidth: 0.015
   horizontalRayCount: 4
   verticalRayCount: 3
-  slipperyTag: Slippery
   collisionMask:
     serializedVersion: 2
     m_Bits: 256
@@ -1064,6 +1063,7 @@ MonoBehaviour:
   minAnimSpeedRatio: 0.5
   splashParticles: {fileID: 1687118924408352, guid: 77c69ec12208c4c4380d15e30b6f8f68,
     type: 2}
+  deathParticles: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 2}
   gravityChargeMax: 3
 --- !u!137 &137769725481637566
 SkinnedMeshRenderer:

@@ -8,14 +8,13 @@ public class Checkpoint : MonoBehaviour
     [SerializeField] private float gravityDirection = 1f;
     [SerializeField] private GameObject spawnParticles;
 
-    private GameObject currentParticles;
-    private Renderer rend;
+    private Animator animator;
     private bool triggered = false;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
-        this.rend = GetComponent<Renderer>();
+        this.animator = GetComponent<Animator>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +52,7 @@ public class Checkpoint : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void TriggerCheckpoint()
     {
-        this.rend.material.color = Color.red;
+        this.animator.SetTrigger("RaiseFlag");
 
         this.triggered = true;
         LevelManager.instance.CurrentCheckpoint = this;
@@ -69,15 +68,10 @@ public class Checkpoint : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void SpawnObject(bool isFirstSpawn)
     {
-        if (this.spawnParticles != null)
+        if (this.spawnParticles != null && (!isFirstSpawn || this.index == 0))
         {
-            if (this.currentParticles != null)
-            {
-                Destroy(this.currentParticles);
-            }
-
-            this.currentParticles = Instantiate(this.spawnParticles, this.transform);
-            ParticleSystem particleSystem = this.currentParticles.GetComponent<ParticleSystem>();
+            GameObject particles = Instantiate(this.spawnParticles, this.transform);
+            ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
             particleSystem.Play();
         }
     }
