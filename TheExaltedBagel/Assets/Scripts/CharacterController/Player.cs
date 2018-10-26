@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float timeToIdle = 4f;
     [SerializeField] private float minAnimSpeedRatio = 0.5f;
     [SerializeField] private GameObject splashParticles;
+    [SerializeField] private GameObject deathParticles;
 
     [Header("Other")]
     [SerializeField] private uint gravityChargeMax = 3;
@@ -350,8 +351,30 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void KillPlayer()
+    {
+        if (this.deathParticles != null)
+        {
+            // Add the spash object
+            GameObject particles = Instantiate(this.deathParticles);
+            particles.transform.position = this.boxCollider.bounds.center;
+
+            // Play the vfx
+            ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
+            particleSystem.Play();
+        }
+
+        this.gameObject.SetActive(false);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     public void SpawnPlayer(Vector3 position, float gravityDirection)
     {
+        if (!this.gameObject.activeSelf)
+        {
+            this.gameObject.SetActive(true);
+        }
+
         this.transform.position = position;
         this.gravityDirection = gravityDirection;
 
