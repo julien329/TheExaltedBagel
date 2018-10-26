@@ -4,13 +4,14 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: PlaneLava_Mat
   m_Shader: {fileID: 4800000, guid: 966c7ade17fddce4189c418ead239b5c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
@@ -63,11 +64,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _TextureSample6:
         m_Texture: {fileID: 2800000, guid: 073625e3e1e0fd648aca9a3406dd2d3d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Scale: {x: 100, y: 1}
+        m_Offset: {x: 1, y: 0}
     - _TopTexture0:
         m_Texture: {fileID: 2800000, guid: 5689a41ef078b624db78e8c206eb4c7a, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 100, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
         m_Texture: {fileID: 0}

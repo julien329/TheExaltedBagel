@@ -9,8 +9,10 @@ public class Player : MonoBehaviour
     [Header("MoveX")]
     [SerializeField] private float moveSpeedNormal = 7f;
     [SerializeField] private float moveSpeedWater = 3.5f;
+    [SerializeField] private float moveSpeedIce = 10.5f;
     [SerializeField] private float accTimeAir = 0.2f;
     [SerializeField] private float accTimeGround = 0.1f;
+    [SerializeField] private float accTimeIce = 0.4f;
 
     [Header("MoveY")]
     [SerializeField] private float maxVelocityY = 17.5f;
@@ -23,9 +25,10 @@ public class Player : MonoBehaviour
     [Header("Anim")]
     [SerializeField] private float rotationSpeed = 1000f;
     [SerializeField] private float timeToIdle = 4f;
+    [SerializeField] private float minAnimSpeedRatio = 0.5f;
     [SerializeField] private GameObject splashParticles;
 
-    [Header("Power")]
+    [Header("Other")]
     [SerializeField] private uint gravityChargeMax = 3;
 
     private List<Collider> waterColliders = new List<Collider>();
@@ -103,35 +106,49 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Death"))
+        {
+            LevelManager.instance.KillPlayer(false);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.tag == "KillTrigger")
-        {
-            this.velocity.y = this.bumpForce * this.gravityDirection;
-            this.gravityChargeCount = (uint)Mathf.Min(this.gravityChargeCount + 1, this.gravityChargeMax);
-        }
-
-        if (collision.transform.tag == "Enemy")
-        {
-            Destroy(this);
-        }
-
+        // On entering water
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
-            if (this.splashParticles != null && this.waterColliders.Count == 0)
+            // If not already in water
+            if (this.waterColliders.Count == 0)
             {
-                Vector3 contactPos = new Vector3(this.transform.position.x, collision.collider.bounds.max.y, this.transform.position.z);
-                if (contactPos.x >= collision.collider.bounds.min.x && contactPos.x <= collision.collider.bounds.max.x)
-                {
-                    GameObject particles = Instantiate(this.splashParticles);
-                    particles.transform.position = contactPos;
+                // Impact reduces current velocity according to difference in gravity
+                float newGravity = -(2f * this.jumpHeightWater) / Mathf.Pow(this.timeToJumpApexWater, 2f);
+                float impactForce = Mathf.Clamp(newGravity / this.gravity, 0f, 1f);
+                this.velocity = new Vector3(this.velocity.x * impactForce, this.velocity.y * impactForce, 0f);
 
-                    ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
-                    particleSystem.Play();
+                // If we have a splash vfx
+                if (this.splashParticles != null)
+                {
+                    Vector3 contactPos = new Vector3(this.transform.position.x, collision.collider.bounds.max.y, this.transform.position.z);
+                    // If contact pos is within the water bounds
+                    if (contactPos.x >= collision.collider.bounds.min.x && contactPos.x <= collision.collider.bounds.max.x)
+                    {
+                        // Add the spash object
+                        GameObject particles = Instantiate(this.splashParticles);
+                        particles.transform.position = contactPos;
+
+                        // Play the vfx
+                        ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
+                        particleSystem.Play();
+                    }
                 }
             }
 
+            // Memorize the water collider
             this.waterColliders.Add(collision.collider);
+            // Change environment to water settings
             ChangeEnvironment(true);
         }
     }
@@ -139,11 +156,15 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void OnCollisionExit(Collision collision)
     {
+        // On leaving water
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
+            // Remove saved collider
             this.waterColliders.Remove(collision.collider);
+            // If we are no in any water
             if (this.waterColliders.Count == 0)
             {
+                // Change environment to air settings
                 ChangeEnvironment(false);
             }
         }
@@ -152,11 +173,13 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void MoveH()
     {
+        // Get current movespeed
+        this.moveSpeed = GetMoveSpeedX();
+
         // Set target velocity according to user input
         float targetVelocityX = Input.GetAxis("Horizontal") * this.moveSpeed;
         // Smooth velocity (use acceleration). Change smoothing value if grounded or airborne
-        this.velocity.x = Mathf.SmoothDamp(this.velocity.x, targetVelocityX, ref this.velocityXSmoothing, 
-            (this.controller.collisions.below) ? this.accTimeGround : this.accTimeAir);
+        this.velocity.x = Mathf.SmoothDamp(this.velocity.x, targetVelocityX, ref this.velocityXSmoothing, GetAccelerationTime());
 
         // If speed too small, set to null
         if (Mathf.Abs(this.velocity.x) < 0.1f)
@@ -258,7 +281,7 @@ public class Player : MonoBehaviour
             this.idleTimer = this.timeToIdle;
 
             this.animator.SetBool("IsRunning", true);
-            this.animator.SetFloat("RunningSpeed", Mathf.Abs(this.velocity.x) / this.moveSpeed);
+            this.animator.SetFloat("RunningSpeed", Mathf.Lerp(this.minAnimSpeedRatio, 1f, Mathf.Abs(this.velocity.x) / this.moveSpeed));
 
             this.rotationHTarget = (Mathf.Sign(inputX) == 1) ? ROTATION_RIGHT : ROTATION_LEFT;
         }
@@ -292,6 +315,38 @@ public class Player : MonoBehaviour
         this.jumpVelocity = Mathf.Abs(this.gravity) * time;
 
         this.moveSpeed = (isWater) ? this.moveSpeedWater : this.moveSpeedNormal;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private float GetAccelerationTime()
+    {
+        float accelerationTime;
+        if (this.controller.collisions.below)
+        {
+            accelerationTime = (this.controller.collisions.isSlippery) ? this.accTimeIce : this.accTimeGround;
+        }
+        else
+        {
+            accelerationTime = this.accTimeAir;
+        }
+
+        return accelerationTime;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private float GetMoveSpeedX()
+    {
+        float moveSpeedX;
+        if (this.waterColliders.Count > 0)
+        {
+            moveSpeedX = this.moveSpeedWater;
+        }
+        else
+        {
+            moveSpeedX = (this.controller.collisions.isSlippery) ? this.moveSpeedIce : this.moveSpeedNormal;
+        }
+
+        return moveSpeedX;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
