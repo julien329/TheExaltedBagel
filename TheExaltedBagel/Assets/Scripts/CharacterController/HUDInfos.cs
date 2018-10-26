@@ -30,13 +30,16 @@ public class HUDInfos : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update()
     {
-        this.below.text = (this.playerCollisions.collisions.below) ? "Below: True" : "Below: False";
-        this.above.text = (this.playerCollisions.collisions.above) ? "Above: True" : "Above: False";
-        this.left.text = (this.playerCollisions.collisions.left) ? "Left: True" : "Left: False";
-        this.right.text = (this.playerCollisions.collisions.right) ? "Right: True" : "Right: False";
-        this.velocityX.text = "VelocityX: " + this.playerCollisions.collisions.velocity.x.ToString("F1");
-        this.velocityY.text = "VelocityY: " +  this.playerCollisions.collisions.velocity.y.ToString("F1");
-        this.charges.text = "Charges: " + this.player.GravityChargeCount + " / " + this.player.GravityChargeMax;
-        this.score.text = "Score: " + LevelManager.instance.Score;
+        if (this.playerCollisions.collisions != null)
+        {
+            this.below.text = (this.playerCollisions.collisions.below) ? "Below: True" : "Below: False";
+            this.above.text = (this.playerCollisions.collisions.above) ? "Above: True" : "Above: False";
+            this.left.text = (this.playerCollisions.collisions.left) ? "Left: True" : "Left: False";
+            this.right.text = (this.playerCollisions.collisions.right) ? "Right: True" : "Right: False";
+            this.velocityX.text = "VelocityX: " + this.playerCollisions.collisions.velocity.x.ToString("F1");
+            this.velocityY.text = "VelocityY: " + this.playerCollisions.collisions.velocity.y.ToString("F1");
+            this.charges.text = "Charges: " + this.player.GravityChargeCount + " / " + this.player.GravityChargeMax;
+            this.score.text = "Score: " + LevelManager.instance.Score;
+        }
     }
 }

@@ -8,6 +8,7 @@ public class LevelManager : MonoBehaviour
     public static LevelManager instance;
 
     [SerializeField] private float deathScorePenalty = 1000f;
+    [SerializeField] private float respawnTime = 1.5f;
 
     private float score = 0f;
     private Player player;
@@ -45,7 +46,7 @@ public class LevelManager : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.K) && this.player.gameObject.activeSelf)
         {
             KillPlayer(false);
         }
@@ -57,8 +58,19 @@ public class LevelManager : MonoBehaviour
         if (!isFirstSpawn)
         {
             this.score -= this.deathScorePenalty;
+            this.player.KillPlayer();
+            StartCoroutine(WaitingForRespawn());
         }
+        else
+        {
+            this.currentCheckpoint.ResetSection(this.player, isFirstSpawn);
+        }
+    }
 
-        this.currentCheckpoint.ResetSection(this.player, isFirstSpawn);
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    IEnumerator WaitingForRespawn()
+    {
+        yield return new WaitForSeconds(this.respawnTime);
+        this.currentCheckpoint.ResetSection(this.player, false);
     }
 }

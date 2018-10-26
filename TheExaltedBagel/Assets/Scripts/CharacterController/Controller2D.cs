@@ -7,9 +7,9 @@ public class Controller2D : MonoBehaviour
     [SerializeField] private float skinWidth = 0.015f;
     [SerializeField] private int horizontalRayCount = 4;
     [SerializeField] private int verticalRayCount = 4;
+    [SerializeField] private LayerMask collisionMask;
 
     public CollisionInfo collisions;
-    public LayerMask collisionMask;
 
     private float horizontalRaySpacing;
     private float verticalRaySpacing;
@@ -103,6 +103,8 @@ public class Controller2D : MonoBehaviour
             // Add distance offset beween each ray
             rayOrigin += Vector3.right * (this.verticalRaySpacing * i + velocity.x);
 
+            Debug.DrawRay(rayOrigin, Vector3.up * directionY * 1, Color.red);
+
             // Cast ray with collisonMask looking or specific layer
             RaycastHit hit;
             // If the Raycast hit something...
@@ -116,6 +118,12 @@ public class Controller2D : MonoBehaviour
                 // Set collisions bool for above and below
                 this.collisions.below = (directionY * this.collisions.gravityDirection == -1);
                 this.collisions.above = (directionY * this.collisions.gravityDirection == 1);
+
+                // Set surface type under the middle ray only
+                if ((i + 1) == Mathf.CeilToInt(this.verticalRayCount / 2f))
+                { 
+                    this.collisions.isSlippery = this.collisions.below && hit.collider.CompareTag("Ice");
+                }
             }
         }
     }

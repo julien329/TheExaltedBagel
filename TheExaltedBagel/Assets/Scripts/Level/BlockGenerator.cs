@@ -6,6 +6,7 @@ using UnityEngine;
 public class BlockGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject blockObject;
+    [SerializeField] private bool isDeathZone;
     [SerializeField] private bool isWater;
     [SerializeField] private bool useWaterTop;
     [SerializeField] private uint sizeX;
@@ -13,6 +14,7 @@ public class BlockGenerator : MonoBehaviour
     [SerializeField] private uint sizeZ;
 
     private GameObject blockObjectOld;
+    private bool isDeathZoneOld;
     private bool isWaterOld;
     private bool useWaterTopOld;
     private uint sizeXOld;
@@ -25,11 +27,13 @@ public class BlockGenerator : MonoBehaviour
         if (!Application.isPlaying && this.gameObject.activeInHierarchy)
         {
             if (this.sizeX != this.sizeXOld || this.sizeY != this.sizeYOld || this.sizeZ != this.sizeZOld 
-                || this.blockObject != this.blockObjectOld || this.isWater != this.isWaterOld || this.useWaterTop != this.useWaterTopOld)
+                || this.blockObject != this.blockObjectOld || this.isDeathZone != this.isDeathZoneOld
+                || this.isWater != this.isWaterOld || this.useWaterTop != this.useWaterTopOld)
             {
                 this.sizeXOld = this.sizeX;
                 this.sizeYOld = this.sizeX;
                 this.sizeZOld = this.sizeZ;
+                this.isDeathZoneOld = this.isDeathZone;
                 this.isWaterOld = this.isWater;
                 this.useWaterTopOld = this.useWaterTop;
                 this.blockObjectOld = this.blockObject;
@@ -94,31 +98,39 @@ public class BlockGenerator : MonoBehaviour
                     }
                 }
             }
+        }
 
-            if (this.transform.childCount > 0)
+        if (sizeX > 0 && sizeY > 0 && sizeZ > 0)
+        {
+            boxCollider = this.gameObject.AddComponent<BoxCollider>();
+
+            if (this.isWater)
             {
-                boxCollider = this.gameObject.AddComponent<BoxCollider>();
+                this.gameObject.layer = LayerMask.NameToLayer("Water");
 
-                if (this.isWater)
-                {
-                    this.gameObject.layer = LayerMask.NameToLayer("Water");
+                boxCollider.isTrigger = false;
+                boxCollider.size = new Vector3(this.sizeX + 1f, this.sizeY, this.sizeZ);
+                boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f) - 0.5f, (this.sizeZ / 2f) - 0.5f);
 
-                    boxCollider.isTrigger = false;
-                    boxCollider.size = new Vector3(this.sizeX + 1f, this.sizeY, this.sizeZ);
-                    boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f) - 0.5f, (this.sizeZ / 2f) - 0.5f);
+                rigidbody = this.gameObject.AddComponent<Rigidbody>();
+                rigidbody.useGravity = false;
+                rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+            }
+            else if (this.isDeathZone)
+            {
+                this.gameObject.layer = LayerMask.NameToLayer("Death");
 
-                    rigidbody = this.gameObject.AddComponent<Rigidbody>();
-                    rigidbody.useGravity = false;
-                    rigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                }
-                else
-                {
-                    this.gameObject.layer = LayerMask.NameToLayer("Floor");
+                boxCollider.isTrigger = true;
+                boxCollider.size = new Vector3(this.sizeX - 0.8f, this.sizeY - 0.8f, this.sizeZ);
+                boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
+            }
+            else
+            {
+                this.gameObject.layer = LayerMask.NameToLayer("Floor");
 
-                    boxCollider.isTrigger = true;
-                    boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
-                    boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
-                }
+                boxCollider.isTrigger = true;
+                boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
+                boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
             }
         }
     }

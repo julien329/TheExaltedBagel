@@ -4,11 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - CM
   - Enemy
   - KillTrigger
-  - FxTemporaire
   - CoinForGate
+  - Ice
   layers:
   - Default
   - TransparentFX
@@ -19,7 +18,7 @@ TagManager:
   - 
   - 
   - Floor
-  - 
+  - Death
   - 
   - 
   - 

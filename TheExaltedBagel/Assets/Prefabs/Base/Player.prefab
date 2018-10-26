@@ -1031,7 +1031,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skinWidth: 0.015
   horizontalRayCount: 4
-  verticalRayCount: 4
+  verticalRayCount: 3
   collisionMask:
     serializedVersion: 2
     m_Bits: 256
@@ -1048,8 +1048,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeedNormal: 7
   moveSpeedWater: 3.5
+  moveSpeedIce: 10.5
   accTimeAir: 0.2
   accTimeGround: 0.1
+  accTimeIce: 0.5
   maxVelocityY: 17.5
   timeToJumpApex: 0.35
   timeToJumpApexWater: 0.75
@@ -1058,8 +1060,10 @@ MonoBehaviour:
   bumpForce: 10
   rotationSpeed: 1000
   timeToIdle: 3
+  minAnimSpeedRatio: 0.5
   splashParticles: {fileID: 1687118924408352, guid: 77c69ec12208c4c4380d15e30b6f8f68,
     type: 2}
+  deathParticles: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 2}
   gravityChargeMax: 3
 --- !u!137 &137769725481637566
 SkinnedMeshRenderer:
