@@ -215,6 +215,7 @@ public class AIMonster2 : MonoBehaviour
                 
                 if (this.controller.collisions.left || this.controller.collisions.right)
                 {
+                    this.transform.Find("Exclamation").GetComponent<TextMesh>().text = "";
                     this.surpriseTimer = this.chargerSurpriseDelay;
                     this.turnAroundTimer = this.flipInterval;
 
@@ -233,6 +234,7 @@ public class AIMonster2 : MonoBehaviour
                 {
                     this.chargeDirection = dir;
                     this.surpriseTimer -= Time.deltaTime;
+                    this.transform.Find("Exclamation").GetComponent<TextMesh>().text = "!";
                     return new Vector2(this.chargeDirection, 0);
                 }
                 else if (this.surpriseTimer < this.chargerSurpriseDelay && this.surpriseTimer > 0)

@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 65923494653042374}
   - component: {fileID: 114243250963546180}
   m_Layer: 0
-  m_Name: ChargerSpawner
+  m_Name: EnemySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
