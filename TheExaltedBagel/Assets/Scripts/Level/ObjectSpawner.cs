@@ -16,7 +16,7 @@ public class ObjectSpawner : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void SpawnObject(bool isFirstSpawn)
+    public void SpawnReset(bool isFirstSpawn)
     {
         if (this.spawningObject != null)
         {

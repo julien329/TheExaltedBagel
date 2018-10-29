@@ -96,6 +96,11 @@ public class TimedGate : MonoBehaviour {
         this.tick.ResetTick();
     }
 
+    public void SpawnReset(bool isFirstSpawn)
+    {
+        ResetGate();
+    }
+
     void PlaySound()
     {
         if (!this.soundPlayed)

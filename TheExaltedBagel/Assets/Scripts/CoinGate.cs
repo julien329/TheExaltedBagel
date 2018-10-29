@@ -58,7 +58,7 @@ public class CoinGate : MonoBehaviour {
         }
     }
 
-    public void ResetGate()
+    public void SpawnReset(bool isFirstSpawn)
     {
         //Reset coins first
         BroadcastMessage("ResetCoin");

@@ -27,8 +27,7 @@ public class Checkpoint : MonoBehaviour
         }
         else
         {
-            BroadcastMessage("SpawnObject", true);
-            BroadcastMessage("ResetGate");
+            BroadcastMessage("SpawnReset", true);
         }
     }
 
@@ -63,12 +62,11 @@ public class Checkpoint : MonoBehaviour
     public void ResetSection(Player player, bool isFirstSpawn)
     {
         player.SpawnPlayer(this.transform.position, this.gravityDirection);
-        BroadcastMessage("SpawnObject", isFirstSpawn);
-        BroadcastMessage("ResetGate");
+        BroadcastMessage("SpawnReset", isFirstSpawn);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void SpawnObject(bool isFirstSpawn)
+    public void SpawnReset(bool isFirstSpawn)
     {
         if (this.spawnParticles != null && (!isFirstSpawn || this.index == 0))
         {
