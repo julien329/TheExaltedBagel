@@ -28,6 +28,7 @@ public class Checkpoint : MonoBehaviour
         else
         {
             BroadcastMessage("SpawnObject", true);
+            BroadcastMessage("ResetGate");
         }
     }
 
@@ -63,6 +64,7 @@ public class Checkpoint : MonoBehaviour
     {
         player.SpawnPlayer(this.transform.position, this.gravityDirection);
         BroadcastMessage("SpawnObject", isFirstSpawn);
+        BroadcastMessage("ResetGate");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

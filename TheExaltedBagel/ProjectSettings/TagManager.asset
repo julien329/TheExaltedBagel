@@ -8,6 +8,7 @@ TagManager:
   - KillTrigger
   - CoinForGate
   - Ice
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
