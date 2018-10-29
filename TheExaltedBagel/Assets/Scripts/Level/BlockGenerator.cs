@@ -64,6 +64,7 @@ public class BlockGenerator : MonoBehaviour
             if (this.isWater)
             {
                 GameObject frontPlane = Instantiate(this.blockObject, this.transform);
+                frontPlane.transform.gameObject.isStatic = true;
                 frontPlane.transform.localPosition = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f) - 0.5f, -0.25f);
                 frontPlane.transform.localScale = new Vector3(this.sizeX + 1f, this.sizeY, 1f);
                 frontPlane.name = "FrontPlane (" + this.sizeX + ", " + this.sizeY + ", " + this.sizeZ + ")";
@@ -71,12 +72,14 @@ public class BlockGenerator : MonoBehaviour
                 if (this.useWaterTop)
                 {
                     GameObject topPlaneUp = Instantiate(this.blockObject, this.transform);
+                    topPlaneUp.transform.gameObject.isStatic = true;
                     topPlaneUp.transform.localPosition = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY - 0.5f), (this.sizeZ / 2f) - 0.5f);
                     topPlaneUp.transform.localScale = new Vector3(this.sizeX + 1f, this.sizeZ - 0.5f, 1f);
                     topPlaneUp.transform.localEulerAngles = new Vector3(90f, 0f, 0f);
                     topPlaneUp.name = "TopPlaneUp (" + this.sizeX + ", " + 0 + ", " + this.sizeZ + ")";
 
                     GameObject topPlaneDown = Instantiate(this.blockObject, this.transform);
+                    topPlaneDown.transform.gameObject.isStatic = true;
                     topPlaneDown.transform.localPosition = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY - 0.5f), (this.sizeZ / 2f) - 0.5f);
                     topPlaneDown.transform.localScale = new Vector3(this.sizeX + 1f, this.sizeZ - 0.5f, 1f);
                     topPlaneDown.transform.localEulerAngles = new Vector3(270f, 0f, 0f);
@@ -92,6 +95,7 @@ public class BlockGenerator : MonoBehaviour
                         for (uint k = 0; k < this.sizeZ; ++k)
                         {
                             GameObject newBlock = Instantiate(this.blockObject, this.transform);
+                            newBlock.transform.gameObject.isStatic = true;
                             newBlock.transform.localPosition = new Vector3(i, j, k);
                             newBlock.name = "Block (" + i + ", " + j + ", " + k + ")";
                         }
@@ -102,25 +106,22 @@ public class BlockGenerator : MonoBehaviour
 
         if (sizeX > 0 && sizeY > 0 && sizeZ > 0)
         {
+            this.transform.gameObject.isStatic = true;
+
             boxCollider = this.gameObject.AddComponent<BoxCollider>();
+            boxCollider.isTrigger = true;
 
             if (this.isWater)
             {
                 this.gameObject.layer = LayerMask.NameToLayer("Water");
 
-                boxCollider.isTrigger = false;
                 boxCollider.size = new Vector3(this.sizeX + 1f, this.sizeY, this.sizeZ);
                 boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f) - 0.5f, (this.sizeZ / 2f) - 0.5f);
-
-                rigidbody = this.gameObject.AddComponent<Rigidbody>();
-                rigidbody.useGravity = false;
-                rigidbody.constraints = RigidbodyConstraints.FreezeAll;
             }
             else if (this.isDeathZone)
             {
                 this.gameObject.layer = LayerMask.NameToLayer("Death");
 
-                boxCollider.isTrigger = true;
                 boxCollider.size = new Vector3(this.sizeX, this.sizeY - 0.5f, this.sizeZ);
                 boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
             }
@@ -128,7 +129,6 @@ public class BlockGenerator : MonoBehaviour
             {
                 this.gameObject.layer = LayerMask.NameToLayer("Floor");
 
-                boxCollider.isTrigger = true;
                 boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
                 boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
             }

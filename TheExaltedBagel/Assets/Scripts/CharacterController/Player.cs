@@ -109,6 +109,11 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void OnTriggerEnter(Collider collider)
     {
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Water"))
+        {
+            OnEnterWater(collider);
+        }
+
         if (collider.gameObject.layer == LayerMask.NameToLayer("Death"))
         {
             LevelManager.instance.KillPlayer(false);
@@ -127,59 +132,12 @@ public class Player : MonoBehaviour
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    void OnCollisionEnter(Collision collision)
-    {
-        // On entering water
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
-        {
-            // If not already in water
-            if (this.waterColliders.Count == 0)
-            {
-                // Impact reduces current velocity according to difference in gravity
-                float newGravity = -(2f * this.jumpHeightWater) / Mathf.Pow(this.timeToJumpApexWater, 2f);
-                float impactForce = Mathf.Clamp(newGravity / this.gravity, 0f, 1f);
-                this.velocity = new Vector3(this.velocity.x * impactForce, this.velocity.y * impactForce, 0f);
-
-                // If we have a splash vfx
-                if (this.splashParticles != null)
-                {
-                    Vector3 contactPos = new Vector3(this.transform.position.x, collision.collider.bounds.max.y, this.transform.position.z);
-                    // If contact pos is within the water bounds
-                    if (contactPos.x >= collision.collider.bounds.min.x && contactPos.x <= collision.collider.bounds.max.x)
-                    {
-                        // Add the spash object
-                        GameObject particles = Instantiate(this.splashParticles);
-                        particles.transform.position = contactPos;
-
-                        // Play the vfx
-                        ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
-                        particleSystem.Play();
-                    }
-                }
-            }
-
-            // Memorize the water collider
-            this.waterColliders.Add(collision.collider);
-            // Change environment to water settings
-            ChangeEnvironment(true);
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider collider)
     {
         // On leaving water
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
-            // Remove saved collider
-            this.waterColliders.Remove(collision.collider);
-            // If we are no in any water
-            if (this.waterColliders.Count == 0)
-            {
-                // Change environment to air settings
-                ChangeEnvironment(false);
-            }
+            OnExitWater(collider);
         }
     }
 
@@ -360,6 +318,55 @@ public class Player : MonoBehaviour
         }
 
         return moveSpeedX;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void OnEnterWater(Collider collider)
+    {
+        // If not already in water
+        if (this.waterColliders.Count == 0)
+        {
+            // Impact reduces current velocity according to difference in gravity
+            float newGravity = -(2f * this.jumpHeightWater) / Mathf.Pow(this.timeToJumpApexWater, 2f);
+            float impactForce = Mathf.Clamp(newGravity / this.gravity, 0f, 1f);
+            this.velocity = new Vector3(this.velocity.x * impactForce, this.velocity.y * impactForce, 0f);
+
+            // If we have a splash vfx
+            if (this.splashParticles != null)
+            {
+                Vector3 contactPos = new Vector3(this.transform.position.x, collider.bounds.max.y, 0f);
+                // If contact pos is within the water bounds
+                if (contactPos.x >= collider.bounds.min.x && contactPos.x <= collider.bounds.max.x)
+                {
+                    // Add the spash object
+                    GameObject particles = Instantiate(this.splashParticles);
+                    particles.transform.position = contactPos;
+
+                    // Play the vfx
+                    ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
+                    particleSystem.Play();
+                }
+            }
+
+            // Change environment to water settings
+            ChangeEnvironment(true);
+        }
+
+        // Memorize the water collider
+        this.waterColliders.Add(collider);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void OnExitWater(Collider collider)
+    {
+        // Remove saved collider
+        this.waterColliders.Remove(collider);
+        // If we are no in any water
+        if (this.waterColliders.Count == 0)
+        {
+            // Change environment to air settings
+            ChangeEnvironment(false);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
