@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
 
     [Header("Other")]
     [SerializeField] private uint gravityChargeMax = 3;
-    [SerializeField] private float maxTimeInWater = 10.0f;
+    [SerializeField] private float oxygenDuration = 10.0f;
 
 
     private List<Collider> waterColliders = new List<Collider>();
@@ -56,9 +56,8 @@ public class Player : MonoBehaviour
     private Transform rotYTransform;
     private Transform rotZTransform;
 
-    private bool isPlayerInWater = false;
     private bool isPlayerOnBubbles = false;
-    private float timePlayerInWater;
+    private float timeLeftOxygen;
 
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
@@ -86,19 +85,14 @@ public class Player : MonoBehaviour
 
         this.rotYTransform = this.transform.Find("RotationY");
         this.rotZTransform = this.rotYTransform.Find("RotationZ");
-
+        
         this.animator = this.rotZTransform.Find("Q-Mon1").GetComponent<Animator>();
-
-        this.oxygenCanvas.enabled = false;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start ()
     {
-        this.controller = GetComponent<Controller2D>();
-
         ChangeEnvironment(false);
-
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,14 +112,8 @@ public class Player : MonoBehaviour
         // Call move to check collisions and translate the player
         this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
 
-        //Reset Oxygen Timer if on Bubbles
-        if (this.isPlayerOnBubbles)
-        {
-            this.timePlayerInWater = this.maxTimeInWater;
-        }
-
         // Continue Timer if player in water
-        if (this.isPlayerInWater)
+        if (this.waterColliders.Count > 0)
         {
             WaterTimerToDeath();
         }
@@ -388,8 +376,7 @@ public class Player : MonoBehaviour
             ChangeEnvironment(true);
 
             // Show UI Oxygen Bar and Reset Timer
-            this.isPlayerInWater = true;
-            this.timePlayerInWater = this.maxTimeInWater;
+            this.timeLeftOxygen = this.oxygenDuration;
             this.oxygenCanvas.enabled = true;
         }
 
@@ -409,7 +396,6 @@ public class Player : MonoBehaviour
             ChangeEnvironment(false);
 
             // Hide UI Oxygen Bar
-            this.isPlayerInWater = false;
             this.oxygenCanvas.enabled = false;
         }
     }
@@ -439,6 +425,11 @@ public class Player : MonoBehaviour
             this.gameObject.SetActive(true);
         }
 
+        ChangeEnvironment(false);
+
+        this.waterColliders.Clear();
+        this.oxygenCanvas.enabled = false;
+
         this.transform.position = position;
         this.gravityDirection = gravityDirection;
 
@@ -452,25 +443,15 @@ public class Player : MonoBehaviour
     private void WaterTimerToDeath()
     {
         // Update Timer
-        this.timePlayerInWater -= Time.deltaTime;
+        this.timeLeftOxygen = (this.isPlayerOnBubbles) ? this.oxygenDuration : this.timeLeftOxygen - Time.deltaTime;
 
         // Update UI
-        oxygenBar.fillAmount = this.timePlayerInWater / this.maxTimeInWater;
+        this.oxygenBar.fillAmount = this.timeLeftOxygen / this.oxygenDuration;
 
-        if (this.timePlayerInWater < 0)
+        if (this.timeLeftOxygen < 0f)
         {
             // Kill player !
             LevelManager.instance.KillPlayer(false);
-
-            // Reset gravity and Clear list of water colliders
-            this.waterColliders.Clear();
-            ChangeEnvironment(false);
-
-            // Hide Canvas
-            this.isPlayerInWater = false;
-            this.oxygenCanvas.enabled = false;
-
-
         }
     }
 }

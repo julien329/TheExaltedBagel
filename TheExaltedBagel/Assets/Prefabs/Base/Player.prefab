@@ -1211,7 +1211,7 @@ MonoBehaviour:
   oxygenBar: {fileID: 114114480457716150}
   oxygenCanvas: {fileID: 223016341736065852}
   gravityChargeMax: 3
-  maxTimeInWater: 10
+  oxygenDuration: 5
 --- !u!137 &137769725481637566
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -1296,7 +1296,7 @@ Canvas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1885144486999990}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
