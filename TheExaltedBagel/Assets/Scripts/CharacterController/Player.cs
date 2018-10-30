@@ -109,15 +109,10 @@ public class Player : MonoBehaviour
         // Send info to animator
         Animate();
 
+        WaterTimerToDeath();
+
         // Call move to check collisions and translate the player
         this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
-
-        // Continue Timer if player in water
-        if (this.waterColliders.Count > 0)
-        {
-            WaterTimerToDeath();
-        }
-
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,6 +189,7 @@ public class Player : MonoBehaviour
         if (this.controller.collisions.below)
         {
             this.gravityChargeCount = this.gravityChargeMax;
+            LevelManager.instance.UpdateGravityChargeUI();
         }
 
         // Invert gravity if key is pressed or when the player, we need to spawn the player upside down
@@ -202,6 +198,7 @@ public class Player : MonoBehaviour
             this.gravityChargeCount--;
             this.gravityDirection *= -1;
             this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
+            LevelManager.instance.UpdateGravityChargeUI();
         }
 
         // If the jump key is pressed
@@ -442,16 +439,20 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void WaterTimerToDeath()
     {
-        // Update Timer
-        this.timeLeftOxygen = (this.isPlayerOnBubbles) ? this.oxygenDuration : this.timeLeftOxygen - Time.deltaTime;
-
-        // Update UI
-        this.oxygenBar.fillAmount = this.timeLeftOxygen / this.oxygenDuration;
-
-        if (this.timeLeftOxygen < 0f)
+        // Continue Timer if player in water
+        if (this.waterColliders.Count > 0)
         {
-            // Kill player !
-            LevelManager.instance.KillPlayer(false);
+            // Update Timer
+            this.timeLeftOxygen = (this.isPlayerOnBubbles) ? this.oxygenDuration : this.timeLeftOxygen - Time.deltaTime;
+
+            // Update UI
+            this.oxygenBar.fillAmount = this.timeLeftOxygen / this.oxygenDuration;
+
+            if (this.timeLeftOxygen < 0f)
+            {
+                // Kill player !
+                LevelManager.instance.KillPlayer(false);
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
@@ -9,6 +8,7 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private float deathScorePenalty = 1000f;
     [SerializeField] private float respawnTime = 1.5f;
+    [SerializeField] private RawImage[] uiBagels = new RawImage[3];
 
     private float score = 0f;
     private Player player;
@@ -30,16 +30,7 @@ public class LevelManager : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(instance);
-        }
-        else
-        {
-            Destroy(this.gameObject);
-        }
-
+        instance = this;
         this.player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
 
@@ -64,6 +55,19 @@ public class LevelManager : MonoBehaviour
         else
         {
             this.currentCheckpoint.ResetSection(this.player, isFirstSpawn);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void UpdateGravityChargeUI()
+    {
+        uint chargeCount = this.player.GravityChargeCount;
+        for (uint i = 0; i < this.player.GravityChargeMax; ++i)
+        {
+            if (this.uiBagels[i] != null)
+            {
+                this.uiBagels[i].enabled = ((i + 1) > chargeCount);
+            }
         }
     }
 
