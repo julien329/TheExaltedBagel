@@ -66,18 +66,6 @@ public class Player : MonoBehaviour
     private const float ROTATION_DOWN = 0f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public uint GravityChargeCount
-    {
-        get { return this.gravityChargeCount; }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    public uint GravityChargeMax
-    {
-        get { return this.gravityChargeMax; }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
         this.controller = GetComponent<Controller2D>();
@@ -132,6 +120,7 @@ public class Player : MonoBehaviour
         {
             this.velocity.y = this.bumpForce * this.gravityDirection;
             this.gravityChargeCount = (uint)Mathf.Min(this.gravityChargeCount + 1, this.gravityChargeMax);
+            LevelManager.instance.EnemyKilled();
         }
 
         if (collider.transform.tag == "Enemy")
@@ -143,6 +132,12 @@ public class Player : MonoBehaviour
         if (collider.transform.tag == "Bubble")
         {
             this.isPlayerOnBubbles = true;
+        }
+
+        if (collider.transform.tag == "Crystal")
+        {
+            Destroy(collider.gameObject);
+            LevelManager.instance.CrystalPicked();
         }
     }
 
@@ -189,7 +184,7 @@ public class Player : MonoBehaviour
         if (this.controller.collisions.below)
         {
             this.gravityChargeCount = this.gravityChargeMax;
-            LevelManager.instance.UpdateGravityChargeUI();
+            LevelManager.instance.UpdateGravityChargeUI(this.gravityChargeCount, this.gravityChargeMax);
         }
 
         // Invert gravity if key is pressed or when the player, we need to spawn the player upside down
@@ -198,7 +193,7 @@ public class Player : MonoBehaviour
             this.gravityChargeCount--;
             this.gravityDirection *= -1;
             this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
-            LevelManager.instance.UpdateGravityChargeUI();
+            LevelManager.instance.UpdateGravityChargeUI(this.gravityChargeCount, this.gravityChargeMax);
         }
 
         // If the jump key is pressed

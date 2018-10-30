@@ -9,6 +9,8 @@ TagManager:
   - CoinForGate
   - Ice
   - FxTemporaire
+  - Bubble
+  - Crystal
   layers:
   - Default
   - TransparentFX

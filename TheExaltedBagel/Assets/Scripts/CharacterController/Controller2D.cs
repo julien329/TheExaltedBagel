@@ -47,9 +47,6 @@ public class Controller2D : MonoBehaviour
             VerticalCollisions(ref velocity);
         }
 
-        // Save resulting velocity
-        this.collisions.velocity = velocity / Time.deltaTime;
-
         // Translate player by the amount specified by the final velocity value
         this.transform.Translate(velocity);
     }
