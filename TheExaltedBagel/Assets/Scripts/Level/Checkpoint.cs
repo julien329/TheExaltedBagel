@@ -10,6 +10,7 @@ public class Checkpoint : MonoBehaviour
 
     private Animator animator;
     private bool triggered = false;
+    private float savedTimer;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
@@ -53,14 +54,16 @@ public class Checkpoint : MonoBehaviour
     private void TriggerCheckpoint()
     {
         this.animator.SetTrigger("RaiseFlag");
-
         this.triggered = true;
+        this.savedTimer = (index == 0) ? LevelManager.instance.LevelTotalTime : LevelManager.instance.LevelTimer;
+
         LevelManager.instance.CurrentCheckpoint = this;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void ResetSection(Player player, bool isFirstSpawn)
     {
+        LevelManager.instance.LevelTimer = savedTimer;
         player.SpawnPlayer(this.transform.position, this.gravityDirection);
         BroadcastMessage("SpawnReset", isFirstSpawn);
     }

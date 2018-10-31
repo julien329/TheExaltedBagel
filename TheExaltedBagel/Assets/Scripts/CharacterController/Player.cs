@@ -120,7 +120,7 @@ public class Player : MonoBehaviour
         {
             this.velocity.y = this.bumpForce * this.gravityDirection;
             this.gravityChargeCount = (uint)Mathf.Min(this.gravityChargeCount + 1, this.gravityChargeMax);
-            LevelManager.instance.EnemyKilled();
+            LevelManager.instance.KillCount++;
         }
 
         if (collider.transform.tag == "Enemy")
@@ -137,7 +137,7 @@ public class Player : MonoBehaviour
         if (collider.transform.tag == "Crystal")
         {
             Destroy(collider.gameObject);
-            LevelManager.instance.CrystalPicked();
+            LevelManager.instance.CrystalCount++;
         }
     }
 

@@ -8,7 +8,6 @@ public class LevelManager : MonoBehaviour
     public static LevelManager instance;
 
     [Header("Settings")]
-    [SerializeField] private float deathScorePenalty = 1000f;
     [SerializeField] private float respawnTime = 1.5f;
     [SerializeField] private float levelTotalTime = 300;
 
@@ -23,7 +22,6 @@ public class LevelManager : MonoBehaviour
     private uint crystalCount = 0;
     private uint deathCount = 0;
     private float levelTimer = 0;
-    private float score = 0f;
     private Player player;
     private Checkpoint currentCheckpoint;
 
@@ -34,10 +32,62 @@ public class LevelManager : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public float Score
+    public float LevelTotalTime
     {
-        get { return this.score; }
-        set { this.score = value; }
+        get { return this.levelTotalTime; }
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public float LevelTimer
+    {
+        get { return this.levelTimer; }
+        set
+        {
+            float oldTimer = this.levelTimer;
+            this.levelTimer = value;
+            if (this.levelTimer <= 0f)
+            {
+                this.levelTimer = 0f;
+                this.levelTimerText.SetText("0");
+            }
+            else if (Mathf.FloorToInt(this.levelTimer) != Mathf.FloorToInt(oldTimer))
+            {
+                this.levelTimerText.SetText(levelTimer.ToString("F0"));
+            }
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public uint DeathCount
+    {
+        get { return this.deathCount; }
+        set
+        {
+            this.deathCount = value;
+            this.deathCountText.SetText(this.deathCount.ToString());
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public uint KillCount
+    {
+        get { return this.killCount; }
+        set
+        {
+            this.killCount = value;
+            this.killCountText.SetText(this.killCount.ToString());
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public uint CrystalCount
+    {
+        get { return this.crystalCount; }
+        set
+        {
+            this.crystalCount = value;
+            this.crystalCountText.SetText(this.crystalCount.ToString());
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,13 +100,8 @@ public class LevelManager : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
-        this.levelTimer = this.levelTotalTime;
-        this.deathCount = this.killCount = this.crystalCount = 0;
-
-        this.deathCountText.SetText(this.deathCount.ToString());
-        this.killCountText.SetText(this.killCount.ToString());
-        this.crystalCountText.SetText(this.crystalCount.ToString());
-        this.levelTimerText.SetText(this.levelTimer.ToString("F0"));
+        this.LevelTimer = this.levelTotalTime;
+        this.DeathCount = this.KillCount = this.CrystalCount = 0;  
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,18 +112,9 @@ public class LevelManager : MonoBehaviour
             KillPlayer(false);
         }
 
-        if (this.levelTimer > 0f)
+        if (this.LevelTimer > 0f)
         {
-            this.levelTimer -= Time.deltaTime;
-            if (this.levelTimer <= 0f)
-            {
-                this.levelTimer = 0f;
-                this.levelTimerText.SetText("0");
-            }
-            else if (Mathf.FloorToInt(this.levelTimer) != Mathf.FloorToInt(this.levelTimer + Time.deltaTime))
-            {
-                this.levelTimerText.SetText(levelTimer.ToString("F0"));
-            }
+            this.LevelTimer -= Time.deltaTime;
         }
     }
 
@@ -90,7 +126,6 @@ public class LevelManager : MonoBehaviour
             this.deathCount++;
             this.deathCountText.SetText(this.deathCount.ToString());
 
-            this.score -= this.deathScorePenalty;
             this.player.KillPlayer();
             StartCoroutine(WaitingForRespawn());
         }
@@ -110,20 +145,6 @@ public class LevelManager : MonoBehaviour
                 this.uiBagels[i].enabled = ((i + 1) > chargeCount);
             }
         }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void CrystalPicked()
-    {
-        this.crystalCount++;
-        this.crystalCountText.SetText(this.crystalCount.ToString());
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void EnemyKilled()
-    {
-        this.killCount++;
-        this.killCountText.SetText(this.killCount.ToString());
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
