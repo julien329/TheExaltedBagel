@@ -86,21 +86,24 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update ()
     {
-        // Check horizontal and vertical movements
-        MoveH();
-        MoveV();
+        if (Time.deltaTime > Mathf.Epsilon)
+        {
+            // Check horizontal and vertical movements
+            MoveH();
+            MoveV();
 
-        // Rotate player according to movements and gravity
-        RotationH();
-        RotationV();
+            // Rotate player according to movements and gravity
+            RotationH();
+            RotationV();
 
-        // Send info to animator
-        Animate();
+            // Send info to animator
+            Animate();
 
-        WaterTimerToDeath();
+            WaterTimerToDeath();
 
-        // Call move to check collisions and translate the player
-        this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
+            // Call move to check collisions and translate the player
+            this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

@@ -17,11 +17,13 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI levelTimerText;
     [SerializeField] private TextMeshProUGUI killCountText;
     [SerializeField] private TextMeshProUGUI crystalCountText;
+    [SerializeField] private Canvas pauseCanvas;
 
-    private uint killCount = 0;
-    private uint crystalCount = 0;
-    private uint deathCount = 0;
-    private float levelTimer = 0;
+    private float gameTimeScale;
+    private uint killCount;
+    private uint crystalCount;
+    private uint deathCount;
+    private float levelTimer;
     private Player player;
     private Checkpoint currentCheckpoint;
 
@@ -101,20 +103,31 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         this.LevelTimer = this.levelTotalTime;
-        this.DeathCount = this.KillCount = this.CrystalCount = 0;  
+        this.DeathCount = this.KillCount = this.CrystalCount = 0;
+
+        this.gameTimeScale = Time.timeScale;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.K) && this.player.gameObject.activeSelf)
+        if (Input.GetButtonDown("Pause"))
         {
-            KillPlayer(false);
+            this.pauseCanvas.enabled = !this.pauseCanvas.enabled;
+            Time.timeScale = (this.pauseCanvas.enabled) ? 0f : this.gameTimeScale;
         }
 
-        if (this.LevelTimer > 0f)
+        if (!this.pauseCanvas.enabled)
         {
-            this.LevelTimer -= Time.deltaTime;
+            if (Input.GetKeyDown(KeyCode.K) && this.player.gameObject.activeSelf)
+            {
+                KillPlayer(false);
+            }
+
+            if (this.LevelTimer > 0f)
+            {
+                this.LevelTimer -= Time.deltaTime;
+            }
         }
     }
 
