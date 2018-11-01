@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    [SerializeField] private uint index = 0;
+    [SerializeField] private bool isStart;
+    [SerializeField] private bool isEnding;
     [SerializeField] private float gravityDirection = 1f;
     [SerializeField] private GameObject spawnParticles;
 
@@ -21,7 +22,7 @@ public class Checkpoint : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
-        if (this.index == 0)
+        if (this.isStart)
         {
             TriggerCheckpoint();
             LevelManager.instance.KillPlayer(true);
@@ -29,15 +30,6 @@ public class Checkpoint : MonoBehaviour
         else
         {
             BroadcastMessage("SpawnReset", true);
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    void OnValidate()
-    {
-        if (this.gameObject.activeInHierarchy)
-        {
-            this.gameObject.name = "Checkpoint " + this.index;
         }
     }
 
@@ -55,9 +47,14 @@ public class Checkpoint : MonoBehaviour
     {
         this.animator.SetTrigger("RaiseFlag");
         this.triggered = true;
-        this.savedTimer = (index == 0) ? LevelManager.instance.LevelTotalTime : LevelManager.instance.LevelTimer;
+        this.savedTimer = (this.isStart) ? LevelManager.instance.LevelTotalTime : LevelManager.instance.LevelTimer;
 
         LevelManager.instance.CurrentCheckpoint = this;
+
+        if (this.isEnding)
+        {
+            LevelManager.instance.EndLevel();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +68,7 @@ public class Checkpoint : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void SpawnReset(bool isFirstSpawn)
     {
-        if (this.spawnParticles != null && (!isFirstSpawn || this.index == 0))
+        if (this.spawnParticles != null && (!isFirstSpawn || this.isStart))
         {
             GameObject particles = Instantiate(this.spawnParticles, this.transform);
             ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
