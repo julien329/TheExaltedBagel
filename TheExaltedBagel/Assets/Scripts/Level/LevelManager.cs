@@ -48,6 +48,14 @@ public class LevelManager : MonoBehaviour
     private float levelTimer;
     private Player player;
     private Checkpoint currentCheckpoint;
+    private bool isPlayerAlreadyTeleport = false;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public bool IsPlayerAlreadyTeleport
+    {
+        get { return this.isPlayerAlreadyTeleport; }
+        set { this.isPlayerAlreadyTeleport = value; }
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public Checkpoint CurrentCheckpoint
@@ -221,9 +229,17 @@ public class LevelManager : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void TeleportPlayer(Vector2 newPosition)
+    {
+        this.player.OnEnterTeleport(newPosition);
+
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     IEnumerator WaitingForRespawn()
     {
         yield return new WaitForSeconds(this.respawnTime);
         this.currentCheckpoint.ResetSection(this.player, false);
     }
+    
 }
