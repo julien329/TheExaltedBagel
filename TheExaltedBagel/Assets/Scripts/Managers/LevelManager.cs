@@ -118,7 +118,7 @@ public class LevelManager : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
-        instance = this;
+        LevelManager.instance = this;
         this.player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
 
@@ -221,7 +221,7 @@ public class LevelManager : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    IEnumerator WaitingForRespawn()
+    private IEnumerator WaitingForRespawn()
     {
         yield return new WaitForSeconds(this.respawnTime);
         this.currentCheckpoint.ResetSection(this.player, false);
