@@ -66,21 +66,24 @@ public class AIMonster2 : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update()
     {
-        // Get player input in raw states
-        Vector2 input = Behaviour();
+        if (Time.deltaTime > Mathf.Epsilon)
+        {
+            // Get player input in raw states
+            Vector2 input = Behaviour();
 
-        // Check horizontal and vertical movements
-        MoveH(input);
-        MoveV(input);
+            // Check horizontal and vertical movements
+            MoveH(input);
+            MoveV(input);
 
-        // Rotate player according to movements and gravity
-        RotationH();
+            // Rotate player according to movements and gravity
+            RotationH();
 
-        // Send info to animator
-        Animate(input);
+            // Send info to animator
+            Animate(input);
 
-        // Call move to check collisions and translate the player
-        this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
+            // Call move to check collisions and translate the player
+            this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

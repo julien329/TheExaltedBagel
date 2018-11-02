@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    [SerializeField] private uint index = 0;
+    [SerializeField] private bool isStart;
+    [SerializeField] private bool isEnding;
     [SerializeField] private float gravityDirection = 1f;
     [SerializeField] private GameObject spawnParticles;
 
     private Animator animator;
     private bool triggered = false;
+    private float savedTimer;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
@@ -20,7 +22,7 @@ public class Checkpoint : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
-        if (this.index == 0)
+        if (this.isStart)
         {
             TriggerCheckpoint();
             LevelManager.instance.KillPlayer(true);
@@ -28,15 +30,6 @@ public class Checkpoint : MonoBehaviour
         else
         {
             BroadcastMessage("SpawnReset", true);
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    void OnValidate()
-    {
-        if (this.gameObject.activeInHierarchy)
-        {
-            this.gameObject.name = "Checkpoint " + this.index;
         }
     }
 
@@ -53,14 +46,21 @@ public class Checkpoint : MonoBehaviour
     private void TriggerCheckpoint()
     {
         this.animator.SetTrigger("RaiseFlag");
-
         this.triggered = true;
+        this.savedTimer = (this.isStart) ? LevelManager.instance.LevelTotalTime : LevelManager.instance.LevelTimer;
+
         LevelManager.instance.CurrentCheckpoint = this;
+
+        if (this.isEnding)
+        {
+            LevelManager.instance.EndLevel();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void ResetSection(Player player, bool isFirstSpawn)
     {
+        LevelManager.instance.LevelTimer = savedTimer;
         player.SpawnPlayer(this.transform.position, this.gravityDirection);
         BroadcastMessage("SpawnReset", isFirstSpawn);
     }
@@ -68,7 +68,7 @@ public class Checkpoint : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void SpawnReset(bool isFirstSpawn)
     {
-        if (this.spawnParticles != null && (!isFirstSpawn || this.index == 0))
+        if (this.spawnParticles != null && (!isFirstSpawn || this.isStart))
         {
             GameObject particles = Instantiate(this.spawnParticles, this.transform);
             ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();

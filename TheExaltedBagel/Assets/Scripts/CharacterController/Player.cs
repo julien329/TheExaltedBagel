@@ -86,21 +86,24 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update ()
     {
-        // Check horizontal and vertical movements
-        MoveH();
-        MoveV();
+        if (Time.deltaTime > Mathf.Epsilon)
+        {
+            // Check horizontal and vertical movements
+            MoveH();
+            MoveV();
 
-        // Rotate player according to movements and gravity
-        RotationH();
-        RotationV();
+            // Rotate player according to movements and gravity
+            RotationH();
+            RotationV();
 
-        // Send info to animator
-        Animate();
+            // Send info to animator
+            Animate();
 
-        WaterTimerToDeath();
+            WaterTimerToDeath();
 
-        // Call move to check collisions and translate the player
-        this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
+            // Call move to check collisions and translate the player
+            this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +123,7 @@ public class Player : MonoBehaviour
         {
             this.velocity.y = this.bumpForce * this.gravityDirection;
             this.gravityChargeCount = (uint)Mathf.Min(this.gravityChargeCount + 1, this.gravityChargeMax);
-            LevelManager.instance.EnemyKilled();
+            LevelManager.instance.KillCount++;
         }
 
         if (collider.transform.tag == "Enemy")
@@ -137,7 +140,7 @@ public class Player : MonoBehaviour
         if (collider.transform.tag == "Crystal")
         {
             Destroy(collider.gameObject);
-            LevelManager.instance.CrystalPicked();
+            LevelManager.instance.CrystalCount++;
         }
     }
 
@@ -449,5 +452,12 @@ public class Player : MonoBehaviour
                 LevelManager.instance.KillPlayer(false);
             }
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void OnEnterTeleport(Vector2 newPosition)
+    {
+        this.transform.position = new Vector3(newPosition.x, newPosition.y, this.transform.position.z);
+        this.velocity.y = 0.0f;
     }
 }
