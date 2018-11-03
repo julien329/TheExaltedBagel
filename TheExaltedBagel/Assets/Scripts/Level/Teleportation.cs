@@ -8,7 +8,9 @@ public class Teleportation : MonoBehaviour
     [SerializeField] private GameObject teleportParticles;
     [SerializeField] private GameObject poofParticles;
     [SerializeField] private GameObject portalParticles;
+    [SerializeField] private AudioClip portalSound;
 
+    private bool isUpsideDown;
     private bool portalDisabled;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,16 +27,23 @@ public class Teleportation : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    void Start()
+    {
+        this.isUpsideDown = this.transform.rotation.z > 0f;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     void OnTriggerEnter(Collider collider)
     {
         if (collider.CompareTag("Player"))
         {
             if (!this.portalDisabled)
             {
-                bool isExitUpsideDown = otherPortal.transform.rotation.z > 0f;
-                this.PlayParticles(isExitUpsideDown, collider);
+                this.PlayParticles(collider);
+                SoundManager.instance.PlaySound(this.portalSound);
 
-                float offsetY = (isExitUpsideDown) ? this.otherPortal.transform.localScale.y - ((BoxCollider)collider).size.y : -this.otherPortal.transform.localScale.y;
+                float offsetY = (this.otherPortal.GetComponentInParent<Teleportation>().isUpsideDown) ? 
+                    this.otherPortal.transform.localScale.y - ((BoxCollider)collider).size.y : -this.otherPortal.transform.localScale.y;
                 LevelManager.instance.TeleportPlayer(new Vector2(this.otherPortal.transform.position.x, this.otherPortal.transform.position.y + offsetY));
 
                 this.otherPortal.GetComponentInParent<Teleportation>().portalDisabled = true;
@@ -52,13 +61,13 @@ public class Teleportation : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void PlayParticles(bool isExitUpsideDown, Collider collider)
+    public void PlayParticles(Collider collider)
     {
         if (this.teleportParticles != null)
         {
             GameObject particles = Instantiate(this.teleportParticles);
             particles.transform.localPosition = this.otherPortal.transform.position;
-            particles.transform.localEulerAngles = (isExitUpsideDown) ? new Vector3(90f, 0f, 0f) : new Vector3(270f, 0f, 0f);
+            particles.transform.localEulerAngles = (this.otherPortal.GetComponentInParent<Teleportation>().isUpsideDown) ? new Vector3(270f, 0f, 0f) : new Vector3(90f, 0f, 0f);
 
             ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
             particleSystem.Play();
@@ -67,8 +76,8 @@ public class Teleportation : MonoBehaviour
         if (this.poofParticles != null)
         {
             GameObject particles = Instantiate(this.poofParticles);
-            particles.transform.localPosition = this.otherPortal.GetComponentInParent<Teleportation>().otherPortal.transform.position;
-            particles.transform.localEulerAngles = (isExitUpsideDown) ? new Vector3(90f, 0f, 0f) : new Vector3(270f, 0f, 0f);
+            particles.transform.localPosition = this.otherPortal.transform.parent.GetComponentInParent<Teleportation>().otherPortal.transform.position;
+            particles.transform.localEulerAngles = (this.isUpsideDown) ? new Vector3(270f, 0f, 0f) : new Vector3(90f, 0f, 0f);
 
             ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
             particleSystem.Play();

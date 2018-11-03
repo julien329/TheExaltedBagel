@@ -975,6 +975,7 @@ MonoBehaviour:
   poofParticles: {fileID: 1859814190304628, guid: b7a56a45afdc06e42b71bd8916463570,
     type: 2}
   portalParticles: {fileID: 100000, guid: 3d4907e6bd39f474b8fd8220920e65c4, type: 2}
+  portalSound: {fileID: 8300000, guid: ddbf88b64c4d8cb4faf465a62fe4cd47, type: 3}
 --- !u!114 &114891667464889622
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -991,6 +992,7 @@ MonoBehaviour:
   poofParticles: {fileID: 1859814190304628, guid: b7a56a45afdc06e42b71bd8916463570,
     type: 2}
   portalParticles: {fileID: 100000, guid: 3d4907e6bd39f474b8fd8220920e65c4, type: 2}
+  portalSound: {fileID: 8300000, guid: ddbf88b64c4d8cb4faf465a62fe4cd47, type: 3}
 --- !u!114 &114903209849129224
 MonoBehaviour:
   m_ObjectHideFlags: 1

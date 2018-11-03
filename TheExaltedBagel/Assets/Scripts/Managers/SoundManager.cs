@@ -30,15 +30,22 @@ public class SoundManager : MonoBehaviour
     {
         if (this.availableChannelIndexes.Count > 0)
         {
-            uint index = this.availableChannelIndexes.Dequeue();
+            if (audioClip != null)
+            {
+                uint index = this.availableChannelIndexes.Dequeue();
 
-            AudioSource audioSource = this.audioSources[index];
-            audioSource.PlayOneShot(audioClip);
-            StartCoroutine(WaitForEndOfClip(index, audioClip.length));
+                AudioSource audioSource = this.audioSources[index];
+                audioSource.PlayOneShot(audioClip);
+                StartCoroutine(WaitForEndOfClip(index, audioClip.length));
+            }
+            else
+            {
+                print("Warning: The requested AudioClip is missing.");
+            }
         }
         else
         {
-            print("Warning: All sound channels are used, cannot play the requested sound");
+            print("Warning: All sound channels are used, cannot play the requested sound.");
         }
     }
 

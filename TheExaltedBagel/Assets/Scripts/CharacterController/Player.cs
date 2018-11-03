@@ -29,6 +29,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float minAnimSpeedRatio = 0.5f;
     [SerializeField] private GameObject splashParticles;
     [SerializeField] private GameObject deathParticles;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip crystalSound;
+    [SerializeField] private AudioClip splashSound;
 
     [Header("UI")]
     [SerializeField] private Image oxygenBar;
@@ -141,6 +145,7 @@ public class Player : MonoBehaviour
         {
             Destroy(collider.gameObject);
             LevelManager.instance.CrystalCount++;
+            SoundManager.instance.PlaySound(this.crystalSound);
         }
     }
 
@@ -203,6 +208,7 @@ public class Player : MonoBehaviour
         if (Input.GetButtonDown("Jump") && this.controller.collisions.below)
         {
             this.velocity.y = this.jumpVelocity * this.gravityDirection;
+            SoundManager.instance.PlaySound(this.jumpSound);
         }
 
         // Add gravity force downward to Y velocity
@@ -367,6 +373,8 @@ public class Player : MonoBehaviour
                 }
             }
 
+            SoundManager.instance.PlaySound(this.splashSound);
+
             // Change environment to water settings
             ChangeEnvironment(true);
 
@@ -408,6 +416,8 @@ public class Player : MonoBehaviour
             ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
             particleSystem.Play();
         }
+
+        SoundManager.instance.PlaySound(this.deathSound);
 
         this.gameObject.SetActive(false);
     }

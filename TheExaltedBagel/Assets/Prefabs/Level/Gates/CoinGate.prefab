@@ -1088,6 +1088,7 @@ MonoBehaviour:
   - {fileID: 1906540195221740}
   - {fileID: 1255345358557792}
   openGateClip: {fileID: 8300000, guid: 35b8ebd018d7f5b43b506ae7f4fcdf5b, type: 3}
+  crystalSound: {fileID: 8300000, guid: e70142614a6c3804e9fb5ed52a8fd83d, type: 3}
   coinPickUpEffect: {fileID: 100018, guid: a40b64bf23366dc42a892af2c6ff6140, type: 2}
 --- !u!114 &114462114294413678
 MonoBehaviour:
