@@ -6,6 +6,7 @@ public class Teleportation : MonoBehaviour
 {
     [SerializeField] private GameObject otherPortal;
     [SerializeField] private GameObject teleportParticles;
+    [SerializeField] private GameObject poofParticles;
     [SerializeField] private GameObject portalParticles;
 
     private bool portalDisabled;
@@ -31,7 +32,7 @@ public class Teleportation : MonoBehaviour
             if (!this.portalDisabled)
             {
                 bool isExitUpsideDown = otherPortal.transform.rotation.z > 0f;
-                this.PlayParticles(isExitUpsideDown);
+                this.PlayParticles(isExitUpsideDown, collider);
 
                 float offsetY = (isExitUpsideDown) ? this.otherPortal.transform.localScale.y - ((BoxCollider)collider).size.y : -this.otherPortal.transform.localScale.y;
                 LevelManager.instance.TeleportPlayer(new Vector2(this.otherPortal.transform.position.x, this.otherPortal.transform.position.y + offsetY));
@@ -51,17 +52,24 @@ public class Teleportation : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void PlayParticles(bool isExitUpsideDown)
+    public void PlayParticles(bool isExitUpsideDown, Collider collider)
     {
-        // If we have a teleport vfx
         if (this.teleportParticles != null)
         {
-            // Add the spash object
             GameObject particles = Instantiate(this.teleportParticles);
-            particles.transform.localPosition = otherPortal.transform.position;
+            particles.transform.localPosition = this.otherPortal.transform.position;
             particles.transform.localEulerAngles = (isExitUpsideDown) ? new Vector3(90f, 0f, 0f) : new Vector3(270f, 0f, 0f);
 
-            // Play the vfx
+            ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
+            particleSystem.Play();
+        }
+
+        if (this.poofParticles != null)
+        {
+            GameObject particles = Instantiate(this.poofParticles);
+            particles.transform.localPosition = this.otherPortal.GetComponentInParent<Teleportation>().otherPortal.transform.position;
+            particles.transform.localEulerAngles = (isExitUpsideDown) ? new Vector3(90f, 0f, 0f) : new Vector3(270f, 0f, 0f);
+
             ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
             particleSystem.Play();
         }
