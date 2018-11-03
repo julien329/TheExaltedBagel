@@ -457,7 +457,8 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void OnEnterTeleport(Vector2 newPosition)
     {
-        this.transform.position = new Vector3(newPosition.x, newPosition.y, this.transform.position.z);
-        this.velocity.y = 0.0f;
+        this.transform.position = new Vector3(newPosition.x, newPosition.y, 0f);
+        this.velocity = Vector3.zero;
+        this.velocityXSmoothing = 0f;
     }
 }
