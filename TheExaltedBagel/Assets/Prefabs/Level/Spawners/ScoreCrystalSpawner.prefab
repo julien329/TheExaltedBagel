@@ -9,46 +9,46 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1553484062004176}
+  m_RootGameObject: {fileID: 1801973917798342}
   m_IsPrefabAsset: 1
---- !u!1 &1553484062004176
+--- !u!1 &1801973917798342
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4317442346715874}
-  - component: {fileID: 33480399229890110}
-  - component: {fileID: 23834060749698394}
-  - component: {fileID: 65923494653042374}
-  - component: {fileID: 114243250963546180}
+  - component: {fileID: 4423735866458160}
+  - component: {fileID: 33925754057400794}
+  - component: {fileID: 23438500549366722}
+  - component: {fileID: 114340541816926872}
+  - component: {fileID: 114338675179020870}
   m_Layer: 0
-  m_Name: SlowWalkerSpawner
-  m_TagString: Untagged
+  m_Name: ScoreCrystalSpawner
+  m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4317442346715874
+--- !u!4 &4423735866458160
 Transform:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1553484062004176}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.7064652, y: 4.1085324, z: -0.13381004}
+  m_GameObject: {fileID: 1801973917798342}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23834060749698394
+--- !u!23 &23438500549366722
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1553484062004176}
+  m_GameObject: {fileID: 1801973917798342}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -78,36 +78,38 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33480399229890110
+--- !u!33 &33925754057400794
 MeshFilter:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1553484062004176}
+  m_GameObject: {fileID: 1801973917798342}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!65 &65923494653042374
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1553484062004176}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114243250963546180
+--- !u!114 &114338675179020870
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1553484062004176}
+  m_GameObject: {fileID: 1801973917798342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95c6401359982284aa5da24362ab2319, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedX: 0
+  speedY: 100
+  speedZ: 0
+--- !u!114 &114340541816926872
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1801973917798342}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f7180b7abca48d14f9634e4527730db5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawningObject: {fileID: 1888907668494642, guid: 57da7d1f4538a494c90809b32b7dd264,
+  spawningObject: {fileID: 1030771871873050, guid: 71be474639a9ce149916fc57469759d3,
     type: 2}
-  spawnerType: 2
+  spawnerType: 1

@@ -52,7 +52,7 @@ public class ObjectSpawner : MonoBehaviour
                     LevelManager.instance.KillCount--;
                     break;
                 case SpawnerType.NONE:
-                    print("Spawner type is not set!");
+                    print("Warning: Spawner type is not set!");
                     break;
             }
         }

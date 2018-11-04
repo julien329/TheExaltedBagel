@@ -110,4 +110,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawningObject: {fileID: 1913874689772746, guid: 780c58d901230bb4cbbe4d76440f4e3b,
     type: 2}
-  bonusScore: 300
+  spawnerType: 2
