@@ -193,6 +193,9 @@ public class MonsterAI : MonoBehaviour
                 return Charge(distance, dir);
 
             case EnemyType.Jumper:
+
+                return Jumper();
+
             default:
 
                 return Wander();
@@ -297,6 +300,22 @@ public class MonsterAI : MonoBehaviour
         }
 
         return Wander();
+    }
+
+    Vector2 Jumper()
+    {
+        if ((this.controller.collisions.left || this.controller.collisions.right) && (this.flipInterval - this.turnAroundTimer > 0.5f))
+        {
+            this.turnAroundTimer = this.flipInterval;
+            this.direction *= -1;
+        }
+        this.turnAroundTimer -= Time.deltaTime;
+        if (this.turnAroundTimer < 0)
+        {
+            this.turnAroundTimer = this.flipInterval;
+            this.direction *= -1;
+        }
+        return new Vector2(this.direction, 0);
     }
 
     float DistanceBetween(Vector2 p1, Vector2 p2)
