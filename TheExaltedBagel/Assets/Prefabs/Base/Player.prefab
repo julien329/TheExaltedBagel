@@ -1191,10 +1191,10 @@ MonoBehaviour:
   splashParticles: {fileID: 1687118924408352, guid: 77c69ec12208c4c4380d15e30b6f8f68,
     type: 2}
   deathParticles: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 2}
-  jumpSound: {fileID: 8300000, guid: 14fcbd2c67d97424aa264932a5cd097b, type: 3}
   deathSound: {fileID: 8300000, guid: 67d3174fc361ce84ea04167b9849a3d2, type: 3}
   crystalSound: {fileID: 8300000, guid: e70142614a6c3804e9fb5ed52a8fd83d, type: 3}
   splashSound: {fileID: 8300000, guid: 707ada58a9b861a4fa96b579b5799fe3, type: 3}
+  gravitySound: {fileID: 8300000, guid: b9c66e627f5cafa488600b99c5150922, type: 3}
   oxygenBar: {fileID: 114114480457716150}
   oxygenCanvas: {fileID: 223016341736065852}
   gravityChargeMax: 3

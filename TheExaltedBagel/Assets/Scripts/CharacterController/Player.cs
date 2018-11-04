@@ -29,10 +29,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float minAnimSpeedRatio = 0.5f;
     [SerializeField] private GameObject splashParticles;
     [SerializeField] private GameObject deathParticles;
-    [SerializeField] private AudioClip jumpSound;
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private AudioClip crystalSound;
     [SerializeField] private AudioClip splashSound;
+    [SerializeField] private AudioClip gravitySound;
 
     [Header("UI")]
     [SerializeField] private Image oxygenBar;
@@ -202,13 +202,13 @@ public class Player : MonoBehaviour
             this.gravityDirection *= -1;
             this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
             LevelManager.instance.UpdateGravityChargeUI(this.gravityChargeCount, this.gravityChargeMax);
+            SoundManager.instance.PlaySound(this.gravitySound);
         }
 
         // If the jump key is pressed
         if (Input.GetButtonDown("Jump") && this.controller.collisions.below)
         {
             this.velocity.y = this.jumpVelocity * this.gravityDirection;
-            SoundManager.instance.PlaySound(this.jumpSound);
         }
 
         // Add gravity force downward to Y velocity
