@@ -6,49 +6,79 @@ public class Teleportation : MonoBehaviour
 {
     [SerializeField] private GameObject otherPortal;
     [SerializeField] private GameObject teleportParticles;
+    [SerializeField] private GameObject poofParticles;
+    [SerializeField] private GameObject portalParticles;
+    [SerializeField] private AudioClip portalSound;
 
+    private bool isUpsideDown;
+    private bool portalDisabled;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void OnTriggerEnter(Collider collision)
+    void Awake()
     {
-        if (collision.CompareTag("Player"))
+        if (this.portalParticles != null)
         {
-            if(!LevelManager.instance.IsPlayerAlreadyTeleport)
+            GameObject particles = Instantiate(this.portalParticles, this.transform);
+            particles.transform.localPosition = new Vector3(0.5f, 1.1025f, 0.5f);
+
+            ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
+            particleSystem.Play();
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void Start()
+    {
+        this.isUpsideDown = this.transform.rotation.z > 0f;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void OnTriggerEnter(Collider collider)
+    {
+        if (collider.CompareTag("Player"))
+        {
+            if (!this.portalDisabled)
             {
-                bool isNextPortalUpsideDown = false;
-                float offsetY = 0.0f;
-                if (otherPortal.transform.rotation.z > 0f)
-                {
-                    isNextPortalUpsideDown = true;
-                    offsetY = -1.13f;
-                }
-                LevelManager.instance.TeleportPlayer(new Vector2(otherPortal.transform.position.x, otherPortal.transform.position.y + offsetY));
-                this.playAnimation(isNextPortalUpsideDown);
-                LevelManager.instance.IsPlayerAlreadyTeleport = true;
-            }
-            else
-            {
-                // To not make a infinite teleport loop
-                LevelManager.instance.IsPlayerAlreadyTeleport = false;
+                this.PlayParticles(collider);
+                SoundManager.instance.PlaySound(this.portalSound);
+
+                float offsetY = (this.otherPortal.GetComponentInParent<Teleportation>().isUpsideDown) ? 
+                    this.otherPortal.transform.localScale.y - ((BoxCollider)collider).size.y : -this.otherPortal.transform.localScale.y;
+                LevelManager.instance.TeleportPlayer(new Vector2(this.otherPortal.transform.position.x, this.otherPortal.transform.position.y + offsetY));
+
+                this.otherPortal.GetComponentInParent<Teleportation>().portalDisabled = true;
             }
         }
     }
 
-    public void playAnimation(bool isNextPortalUpsideDown)
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void OnTriggerExit(Collider collider)
     {
-        // If we have a teleport vfx
+        if (collider.CompareTag("Player"))
+        {
+            this.portalDisabled = false;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void PlayParticles(Collider collider)
+    {
         if (this.teleportParticles != null)
         {
-            // Add the spash object
             GameObject particles = Instantiate(this.teleportParticles);
-            particles.transform.position = otherPortal.transform.position;
-            // Reverse the animation if the other portal is upside down
-            if (isNextPortalUpsideDown)
-            {
-                particles.transform.Rotate(180f, 0f, 0f);
-            }
+            particles.transform.localPosition = this.otherPortal.transform.position;
+            particles.transform.localEulerAngles = (this.otherPortal.GetComponentInParent<Teleportation>().isUpsideDown) ? new Vector3(270f, 0f, 0f) : new Vector3(90f, 0f, 0f);
 
-            // Play the vfx
+            ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
+            particleSystem.Play();
+        }
+
+        if (this.poofParticles != null)
+        {
+            GameObject particles = Instantiate(this.poofParticles);
+            particles.transform.localPosition = this.otherPortal.transform.parent.GetComponentInParent<Teleportation>().otherPortal.transform.position;
+            particles.transform.localEulerAngles = (this.isUpsideDown) ? new Vector3(270f, 0f, 0f) : new Vector3(90f, 0f, 0f);
+
             ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
             particleSystem.Play();
         }

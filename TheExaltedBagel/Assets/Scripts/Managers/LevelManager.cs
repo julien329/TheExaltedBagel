@@ -48,14 +48,6 @@ public class LevelManager : MonoBehaviour
     private float levelTimer;
     private Player player;
     private Checkpoint currentCheckpoint;
-    private bool isPlayerAlreadyTeleport = false;
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    public bool IsPlayerAlreadyTeleport
-    {
-        get { return this.isPlayerAlreadyTeleport; }
-        set { this.isPlayerAlreadyTeleport = value; }
-    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public Checkpoint CurrentCheckpoint

@@ -7,6 +7,7 @@ public class GateCoin : MonoBehaviour
     [SerializeField] private GameObject gate;
     [SerializeField] private List<GameObject> coins;
     [SerializeField] private AudioClip openGateClip;
+    [SerializeField] private AudioClip crystalSound;
     [SerializeField] private GameObject coinPickUpEffect;
 
     private uint collectedCoinsCount;
@@ -46,7 +47,9 @@ public class GateCoin : MonoBehaviour
     {
         this.collectedCoinsCount++;
         coin.SetActive(false);
+
         Instantiate(this.coinPickUpEffect, coin.GetComponent<BoxCollider>().bounds.center, Quaternion.identity);
+        SoundManager.instance.PlaySound(this.crystalSound);
 
         if (this.collectedCoinsCount == this.coins.Count)
         {

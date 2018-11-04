@@ -8,6 +8,7 @@ public class Checkpoint : MonoBehaviour
     [SerializeField] private bool isEnding;
     [SerializeField] private float gravityDirection = 1f;
     [SerializeField] private GameObject spawnParticles;
+    [SerializeField] private AudioClip saveSound;
 
     private Animator animator;
     private bool triggered = false;
@@ -39,6 +40,7 @@ public class Checkpoint : MonoBehaviour
         if (!this.triggered && collision.CompareTag("Player"))
         {
             TriggerCheckpoint();
+            SoundManager.instance.PlaySound(this.saveSound);
         }
     }
 
