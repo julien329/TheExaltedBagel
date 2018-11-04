@@ -8,6 +8,7 @@ public class Rotation : MonoBehaviour
     [SerializeField] float speedY = 0f;
     [SerializeField] float speedZ = 0f;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     void Update()
     {
         // Rotate the object around local X axis

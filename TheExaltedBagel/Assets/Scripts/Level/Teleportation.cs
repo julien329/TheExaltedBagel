@@ -67,7 +67,7 @@ public class Teleportation : MonoBehaviour
         {
             GameObject particles = Instantiate(this.teleportParticles);
             particles.transform.localPosition = this.otherPortal.transform.position;
-            particles.transform.localEulerAngles = (this.otherPortal.GetComponentInParent<Teleportation>().isUpsideDown) ? new Vector3(270f, 0f, 0f) : new Vector3(90f, 0f, 0f);
+            particles.transform.localEulerAngles = (this.otherPortal.GetComponentInParent<Teleportation>().isUpsideDown) ? new Vector3(90f, 0f, 0f) : new Vector3(270f, 0f, 0f);
 
             ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
             particleSystem.Play();
