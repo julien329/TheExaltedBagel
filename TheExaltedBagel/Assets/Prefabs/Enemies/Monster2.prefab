@@ -308,8 +308,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4936991243318250}
-  - component: {fileID: 114686658481329204}
   - component: {fileID: 65197366666909092}
+  - component: {fileID: 114686658481329204}
   - component: {fileID: 114563882154284194}
   m_Layer: 0
   m_Name: Monster2

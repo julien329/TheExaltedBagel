@@ -1119,7 +1119,7 @@ MonoBehaviour:
   rotationSpeed: 500
   moveSpeed: 2.5
   animSpeedModifier: 2
-  flipInterval: 5
+  flipInterval: 3.5
   gravity: -50
   detectionRadius: 5
   chargerSurpriseDelay: 1
