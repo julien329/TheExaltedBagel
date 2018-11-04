@@ -26,7 +26,7 @@ public class SoundManager : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void PlaySound(AudioClip audioClip)
+    public void PlaySound(AudioClip audioClip, float volumeScale = 1.0f)
     {
         if (this.availableChannelIndexes.Count > 0)
         {
@@ -35,7 +35,7 @@ public class SoundManager : MonoBehaviour
                 uint index = this.availableChannelIndexes.Dequeue();
 
                 AudioSource audioSource = this.audioSources[index];
-                audioSource.PlayOneShot(audioClip);
+                audioSource.PlayOneShot(audioClip, volumeScale);
                 StartCoroutine(WaitForEndOfClip(index, audioClip.length));
             }
             else

@@ -38,9 +38,13 @@ public class Player : MonoBehaviour
     [SerializeField] private Image oxygenBar;
     [SerializeField] private Canvas oxygenCanvas;
 
+    [Header("Sound")]
+    [SerializeField] private AudioClip bubblesSound;
+
     [Header("Other")]
     [SerializeField] private uint gravityChargeMax = 3;
     [SerializeField] private float oxygenDuration = 10.0f;
+
 
 
     private List<Collider> waterColliders = new List<Collider>();
@@ -138,6 +142,7 @@ public class Player : MonoBehaviour
         if (collider.transform.tag == "Bubble")
         {
             this.isPlayerOnBubbles = true;
+            SoundManager.instance.PlaySound(this.bubblesSound, 0.5f);
         }
 
         if (collider.transform.tag == "Crystal")
