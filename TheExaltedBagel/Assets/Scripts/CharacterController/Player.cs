@@ -132,8 +132,7 @@ public class Player : MonoBehaviour
 
         if (collider.transform.tag == "Enemy")
         {
-            //[TODO]
-            //Destroy(this);
+            LevelManager.instance.KillPlayer();
         }
 
         if (collider.transform.tag == "Bubble")

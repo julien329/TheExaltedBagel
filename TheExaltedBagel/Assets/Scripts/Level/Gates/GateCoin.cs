@@ -5,7 +5,7 @@ using UnityEngine;
 public class GateCoin : MonoBehaviour
 {
     [SerializeField] private GameObject gate;
-    [SerializeField] private GameObject[] coins;
+    [SerializeField] private List<GameObject> coins;
     [SerializeField] private AudioClip openGateClip;
     [SerializeField] private AudioClip crystalSound;
     [SerializeField] private GameObject coinPickUpEffect;
@@ -15,6 +15,14 @@ public class GateCoin : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
+        foreach (Transform t in this.transform)
+        {
+            if (t.name == "Coin")
+            {
+                this.coins.Add(t.gameObject);
+            }
+        }
+
         foreach (GameObject coin in this.coins)
         {
             OnTriggerEnterListener listener = coin.AddComponent<OnTriggerEnterListener>();
@@ -43,7 +51,7 @@ public class GateCoin : MonoBehaviour
         Instantiate(this.coinPickUpEffect, coin.GetComponent<BoxCollider>().bounds.center, Quaternion.identity);
         SoundManager.instance.PlaySound(this.crystalSound);
 
-        if (this.collectedCoinsCount == this.coins.Length)
+        if (this.collectedCoinsCount == this.coins.Count)
         {
             this.gate.SetActive(false);
             SoundManager.instance.PlaySound(openGateClip);

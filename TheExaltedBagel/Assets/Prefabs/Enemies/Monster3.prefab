@@ -79,9 +79,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4417729511160460}
+  - component: {fileID: 65960714287474106}
   - component: {fileID: 114628624986338080}
   - component: {fileID: 114627556403805126}
-  - component: {fileID: 65960714287474106}
   m_Layer: 0
   m_Name: Monster3
   m_TagString: Enemy
@@ -522,7 +522,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1156885140303122}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.949878, y: 8.3039055, z: -1.5976706}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4732202803313726}
@@ -584,7 +584,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1698155052858214}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.088, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4496459883658120}
@@ -752,8 +752,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.6847563, y: 0.08643484, z: 0.6812079}
-  m_Center: {x: -0.0068974495, y: 1.124737, z: 0.009717524}
+  m_Size: {x: 0.5, y: 0.3, z: 0.75}
+  m_Center: {x: 0, y: 1.15, z: 0}
 --- !u!65 &65960714287474106
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -761,7 +761,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1156885140303122}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.7355366, y: 1.069119, z: 0.737487}
