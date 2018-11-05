@@ -29,10 +29,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float minAnimSpeedRatio = 0.5f;
     [SerializeField] private GameObject splashParticles;
     [SerializeField] private GameObject deathParticles;
-    [SerializeField] private AudioClip deathSound;
-    [SerializeField] private AudioClip crystalSound;
-    [SerializeField] private AudioClip splashSound;
-    [SerializeField] private AudioClip gravitySound;
 
     [Header("UI")]
     [SerializeField] private Image oxygenBar;
@@ -40,12 +36,14 @@ public class Player : MonoBehaviour
 
     [Header("Sound")]
     [SerializeField] private AudioClip bubblesSound;
+    [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip crystalSound;
+    [SerializeField] private AudioClip splashSound;
+    [SerializeField] private AudioClip gravitySound;
 
     [Header("Other")]
     [SerializeField] private uint gravityChargeMax = 3;
     [SerializeField] private float oxygenDuration = 10.0f;
-
-
 
     private List<Collider> waterColliders = new List<Collider>();
     private uint gravityChargeCount = 3;
