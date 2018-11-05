@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip crystalSound;
     [SerializeField] private AudioClip splashSound;
     [SerializeField] private AudioClip gravitySound;
+    [SerializeField] private AudioClip killSound;
 
     [Header("Other")]
     [SerializeField] private uint gravityChargeMax = 3;
@@ -130,6 +131,7 @@ public class Player : MonoBehaviour
             this.velocity.y = this.bumpForce * this.gravityDirection;
             this.gravityChargeCount = (uint)Mathf.Min(this.gravityChargeCount + 1, this.gravityChargeMax);
             LevelManager.instance.KillCount++;
+            SoundManager.instance.PlaySound(this.killSound);
         }
 
         if (collider.transform.tag == "Enemy")
