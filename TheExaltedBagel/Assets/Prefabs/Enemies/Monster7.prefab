@@ -213,7 +213,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1581933281304088
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
@@ -389,7 +389,7 @@ Transform:
   m_Children:
   - {fileID: 4503474456174852}
   m_Father: {fileID: 4552937336752040}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!4 &4199709887011824
 Transform:
@@ -544,7 +544,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4433231174438916}
-  - {fileID: 4595049251068856}
   m_Father: {fileID: 4159501011511484}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -597,9 +596,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1281840576145936}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.577621, y: 2.921691, z: 1.8802814}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 4595049251068856}
   - {fileID: 4159501011511484}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -623,12 +623,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1581933281304088}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.17, z: 0.083}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: 0.16999996, z: -0.082999945}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4503474456174852}
-  m_RootOrder: 1
+  m_Father: {fileID: 4552937336752040}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4747132259555138
 Transform:
@@ -781,6 +781,7 @@ MonoBehaviour:
   gravity: -50
   detectionRadius: 5
   gravityDirection: 1
+  killTriggerObject: {fileID: 1581933281304088}
   chargerSurpriseDelay: 1
   chargerMultiplier: 3
   layerMask:

@@ -19,7 +19,8 @@ public class MonsterAI : MonoBehaviour
     [SerializeField] private float flipInterval = 2.0f;
     [SerializeField] private float gravity = -50f;
     [SerializeField] private float detectionRadius = 5f;
-    [SerializeField] public float gravityDirection = 1f;
+    [SerializeField] private float gravityDirection = 1f;
+    [SerializeField] private GameObject killTriggerObject;
     private float maxVelocityY = 17.5f;
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
@@ -368,4 +369,12 @@ public class MonsterAI : MonoBehaviour
     {
         return Mathf.Sqrt(Mathf.Pow(Mathf.Abs(p2.x - p1.x), 2) + Mathf.Pow(Mathf.Abs(p2.y - p1.y), 2));
     }
+
+    public void ReverseGravity()
+    {
+        this.gravityDirection *= -1;
+        this.killTriggerObject.transform.localEulerAngles = new Vector3(180f, 0f, 0f);
+        this.killTriggerObject.transform.localPosition = new Vector3(0, this.GetComponent<BoxCollider>().size.y);
+    }
+
 }

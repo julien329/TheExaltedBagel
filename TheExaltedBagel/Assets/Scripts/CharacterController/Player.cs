@@ -446,7 +446,7 @@ public class Player : MonoBehaviour
         LevelManager.instance.KillCount++;
         SoundManager.instance.PlaySound(this.killSound, 0.5f);
 
-        GameObject monster = collider.transform.parent.parent.parent.gameObject;
+        GameObject monster = collider.transform.parent.gameObject;
         Vector3 position = new Vector3(monster.transform.position.x, monster.transform.position.y + 0.5f, monster.transform.position.z);
         ParticleManager.instance.PlayParticleSystem(this.killParticles, position);
 

@@ -33,7 +33,10 @@ public class ObjectSpawner : MonoBehaviour
             if (this.spawnerType == SpawnerType.ENEMY)
             {
                 MonsterAI ai = this.objectInstance.GetComponent<MonsterAI>();
-                ai.gravityDirection = (this.gravDirection == Gravity.FLOOR) ? 1 : -1;
+                if (this.gravDirection == Gravity.CEILING)
+                {
+                    ai.ReverseGravity();
+                }
             }
 
             this.objectInstance.transform.localScale = Vector3.Scale(
