@@ -812,6 +812,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   theme: 0
+  deathParticles: {fileID: 1352220786351666, guid: ac51f313eb9d6a445b45ff831e4890c5,
+    type: 2}
+  deathSound: {fileID: 8300000, guid: 67d3174fc361ce84ea04167b9849a3d2, type: 3}
   rotationSpeed: 750
   moveSpeed: 3
   animSpeedModifier: 1.6
@@ -821,6 +824,9 @@ MonoBehaviour:
   gravityDirection: 1
   chargerSurpriseDelay: 1
   chargerMultiplier: 3
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &114686658481329204
 MonoBehaviour:
   m_ObjectHideFlags: 1

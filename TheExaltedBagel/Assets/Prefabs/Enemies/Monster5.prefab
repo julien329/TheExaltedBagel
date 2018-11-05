@@ -37,6 +37,7 @@ GameObject:
   - component: {fileID: 65696802978729522}
   - component: {fileID: 114398453485653650}
   - component: {fileID: 114857932578019936}
+  - component: {fileID: 54172699971697672}
   m_Layer: 0
   m_Name: Monster5
   m_TagString: Enemy
@@ -453,6 +454,21 @@ Transform:
   m_Father: {fileID: 4605272424151668}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &54172699971697672
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1132259989775148}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!65 &65696802978729522
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -543,14 +559,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   theme: 0
+  deathParticles: {fileID: 1352220786351666, guid: ac51f313eb9d6a445b45ff831e4890c5,
+    type: 2}
+  deathSound: {fileID: 8300000, guid: 67d3174fc361ce84ea04167b9849a3d2, type: 3}
   rotationSpeed: 750
   moveSpeed: 3
   animSpeedModifier: 1.6
   flipInterval: 1.5
   gravity: -50
   detectionRadius: 5
+  gravityDirection: 1
   chargerSurpriseDelay: 1
   chargerMultiplier: 3
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!137 &137672471235492858
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

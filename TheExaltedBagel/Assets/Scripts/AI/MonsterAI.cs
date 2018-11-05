@@ -11,18 +11,21 @@ public class MonsterAI : MonoBehaviour
     [Header("Common Settings")]
     [SerializeField] public EnemyType type = EnemyType.SlowMover;
     [SerializeField] public EnemyTheme theme = EnemyTheme.Normal;
+    [SerializeField] private GameObject deathParticles;
+    [SerializeField] private AudioClip deathSound;
     [SerializeField] private float rotationSpeed = 500f;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float animSpeedModifier = 1f;
     [SerializeField] private float flipInterval = 2.0f;
     [SerializeField] private float gravity = -50f;
     [SerializeField] private float detectionRadius = 5f;
+    [SerializeField] public float gravityDirection = 1f;
     private float maxVelocityY = 17.5f;
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
 
-    [SerializeField] private float gravityDirection = 1f;
     private float rotationHTarget = 180f;
+    private float rotationVTarget = 0f;
     private float jumpVelocity;
     private float velocityXSmoothing;
     private float turnAroundTimer;
@@ -37,6 +40,8 @@ public class MonsterAI : MonoBehaviour
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
     private const float ROTATION_LEFT = 270f;
+    private const float ROTATION_UP = 180f;
+    private const float ROTATION_DOWN = 0f;
 
     [Header("Charger Settings")]
     [SerializeField] private float chargerSurpriseDelay = 1f;
@@ -78,6 +83,7 @@ public class MonsterAI : MonoBehaviour
 
             // Rotate player according to movements and gravity
             RotationH();
+            RotationV();
 
             // Send info to animator
             Animate(input);
@@ -92,8 +98,9 @@ public class MonsterAI : MonoBehaviour
         if (col.gameObject.layer == LayerMask.NameToLayer("Death"))
         {
             this.gameObject.SetActive(false);
+            ParticleManager.instance.PlayParticleSystem(this.deathParticles, this.transform.position);
+            SoundManager.instance.PlaySound(this.deathSound, 0.5f);
             Destroy(this.gameObject);
-            Debug.Log("DEATH");
         }
     }
 
@@ -114,13 +121,21 @@ public class MonsterAI : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void MoveV(Vector2 input)
+    private void MoveV(Vector2 input, bool jump = false)
     {
         // If there is a collision in Y axis, reset velocity
         if (this.controller.collisions.above || this.controller.collisions.below)
         {
             this.velocity.y = 0;
         }
+        
+        this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
+
+        // If the jump key is pressed
+        //if (Input.GetButtonDown("Jump") && this.controller.collisions.below)
+        //{
+        //    this.velocity.y = this.jumpVelocity * this.gravityDirection;
+        //}
 
         // Add gravity force downward to Y velocity
         this.velocity.y += this.gravity * this.gravityDirection * Time.deltaTime;
@@ -150,6 +165,29 @@ public class MonsterAI : MonoBehaviour
             else
             {
                 this.rotYTransform.Rotate(this.rotYTransform.up, rotateAngle, Space.World);
+            }
+        }
+    }
+
+    private void RotationV()
+    {
+        // Rotate the player according to the gravity (up / down / idle)
+        if ((this.rotationVTarget == ROTATION_DOWN && this.rotZTransform.localEulerAngles.z > ROTATION_DOWN)
+            || (this.rotationVTarget == ROTATION_UP && this.rotZTransform.localEulerAngles.z < ROTATION_UP))
+        {
+            float direction = (this.rotationVTarget == ROTATION_DOWN) ? -1f : 1f;
+            float rotateAngle = direction * Time.deltaTime * rotationSpeed;
+
+            float newRot = this.rotZTransform.localEulerAngles.z + rotateAngle;
+            if (newRot < ROTATION_DOWN || newRot > ROTATION_UP)
+            {
+                float offset = (this.rotationVTarget == ROTATION_DOWN) ? 0f : this.GetComponent<BoxCollider>().size.y;
+                this.rotZTransform.localPosition = new Vector3(0f, offset, 0f);
+                this.rotZTransform.localEulerAngles = new Vector3(this.rotZTransform.localEulerAngles.x, this.rotZTransform.localEulerAngles.y, this.rotationVTarget);
+            }
+            else
+            {
+                this.rotZTransform.RotateAround(this.GetComponent<BoxCollider>().bounds.center, this.rotZTransform.forward, rotateAngle);
             }
         }
     }
@@ -280,7 +318,7 @@ public class MonsterAI : MonoBehaviour
 
             return Wander();
         }
-        else if (distance <= detectionRadius && distance > 1 && this.surpriseTimer == 1f)
+        else if (distance <= this.detectionRadius && distance > 1 && this.surpriseTimer == 1f)
         {
             RaycastHit hit;
             if (Physics.Linecast(this.gameObject.GetComponent<BoxCollider>().bounds.center, playerTranform.gameObject.GetComponent<BoxCollider>().bounds.center, out hit, this.layerMask))

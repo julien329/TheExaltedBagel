@@ -5,9 +5,11 @@ using UnityEngine;
 public class ObjectSpawner : MonoBehaviour
 { 
     enum SpawnerType { NONE, CRYSTAL, ENEMY }
+    enum Gravity { FLOOR, CEILING }
 
     [SerializeField] private GameObject spawningObject;
     [SerializeField] private SpawnerType spawnerType = SpawnerType.NONE;
+    [SerializeField] private Gravity gravDirection = Gravity.FLOOR;
 
     private GameObject objectInstance;
 
@@ -27,6 +29,12 @@ public class ObjectSpawner : MonoBehaviour
             this.objectInstance = Instantiate(this.spawningObject, this.transform);
             this.objectInstance.transform.localPosition = Vector3.zero;
             this.objectInstance.transform.localEulerAngles = Vector3.zero;
+
+            if (this.spawnerType == SpawnerType.ENEMY)
+            {
+                MonsterAI ai = this.objectInstance.GetComponent<MonsterAI>();
+                ai.gravityDirection = (this.gravDirection == Gravity.FLOOR) ? 1 : -1;
+            }
 
             this.objectInstance.transform.localScale = Vector3.Scale(
                 this.objectInstance.transform.localScale, 
