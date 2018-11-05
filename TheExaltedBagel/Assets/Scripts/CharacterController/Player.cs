@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip splashSound;
     [SerializeField] private AudioClip gravitySound;
     [SerializeField] private AudioClip killSound;
+    [SerializeField] private AudioClip eatSound;
 
     [Header("Other")]
     [SerializeField][Range(0, GRAVITY_CHARGES_MAX)] private uint gravityChargeMax = GRAVITY_CHARGES_MAX;
@@ -395,7 +396,7 @@ public class Player : MonoBehaviour
             if (contactPos.x >= collider.bounds.min.x && contactPos.x <= collider.bounds.max.x)
             {
                 // Add the spash object
-                ParticleManager.instance.PlayParticleSystem(this.splashParticles, contactPos, this.splashParticles.transform.localEulerAngles);
+                ParticleManager.instance.PlayParticleSystem(this.splashParticles, contactPos);
             }
 
             SoundManager.instance.PlaySound(this.splashSound);
@@ -443,11 +444,11 @@ public class Player : MonoBehaviour
         this.GravityChargeCount++;
 
         LevelManager.instance.KillCount++;
-        SoundManager.instance.PlaySound(this.killSound, 0.75f);
+        SoundManager.instance.PlaySound(this.killSound, 0.5f);
 
         GameObject monster = collider.transform.parent.parent.parent.gameObject;
         Vector3 position = new Vector3(monster.transform.position.x, monster.transform.position.y + 0.5f, monster.transform.position.z);
-        ParticleManager.instance.PlayParticleSystem(this.killParticles, position, this.killParticles.transform.localEulerAngles);
+        ParticleManager.instance.PlayParticleSystem(this.killParticles, position);
 
         Destroy(monster);
     }
@@ -457,7 +458,7 @@ public class Player : MonoBehaviour
     {
         LevelManager.instance.CrystalCount++;
 
-        ParticleManager.instance.PlayParticleSystem(this.scoreCrytalParticles, collider.bounds.center, this.scoreCrytalParticles.transform.localEulerAngles);
+        ParticleManager.instance.PlayParticleSystem(this.scoreCrytalParticles, collider.bounds.center);
         SoundManager.instance.PlaySound(this.crystalSound);
 
         Destroy(collider.gameObject);
@@ -468,7 +469,8 @@ public class Player : MonoBehaviour
     {
         this.GravityChargeMax++;
 
-        ParticleManager.instance.PlayParticleSystem(this.bagelParticles, collider.bounds.center, this.bagelParticles.transform.localEulerAngles);
+        ParticleManager.instance.PlayParticleSystem(this.bagelParticles, collider.bounds.center);
+        SoundManager.instance.PlaySound(this.eatSound);
 
         Destroy(collider.gameObject);
     }
@@ -476,7 +478,7 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void KillPlayer()
     {
-        ParticleManager.instance.PlayParticleSystem(this.deathParticles, this.boxCollider.bounds.center, this.deathParticles.transform.localEulerAngles);
+        ParticleManager.instance.PlayParticleSystem(this.deathParticles, this.boxCollider.bounds.center);
         SoundManager.instance.PlaySound(this.deathSound);
 
         this.gameObject.SetActive(false);

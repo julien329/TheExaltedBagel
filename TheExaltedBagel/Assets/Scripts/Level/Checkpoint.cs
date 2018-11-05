@@ -72,7 +72,7 @@ public class Checkpoint : MonoBehaviour
     {
         if (!isFirstSpawn || this.isStart)
         {
-            ParticleManager.instance.PlayParticleSystem(this.spawnParticles, this.transform.position, this.spawnParticles.transform.localEulerAngles);
+            ParticleManager.instance.PlayParticleSystem(this.spawnParticles, this.transform.position);
         }
     }
 }

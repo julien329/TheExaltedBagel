@@ -18,6 +18,19 @@ public class ParticleManager : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void PlayParticleSystem(GameObject particleObject, Vector3 position)
+    {
+        if (particleObject != null)
+        {
+            PlayParticleSystem(particleObject, position, particleObject.transform.localEulerAngles);
+        }
+        else
+        {
+            print("Warning: Missing particle system.");
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     public void PlayParticleSystem(GameObject particleObject, Vector3 position, Vector3 eulerAngles)
     {
         if (particleObject != null)
