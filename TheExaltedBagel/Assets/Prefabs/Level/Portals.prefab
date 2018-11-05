@@ -971,10 +971,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   otherPortal: {fileID: 1727569985179466}
-  teleportParticles: {fileID: 100006, guid: 60bc526f4be1e044ab9e46340b82ffb3, type: 2}
-  poofParticles: {fileID: 1859814190304628, guid: b7a56a45afdc06e42b71bd8916463570,
+  teleportParticles: {fileID: 1677128838358660, guid: eb80c2a72164c934cabc90f2d9547c58,
     type: 2}
-  portalParticles: {fileID: 100000, guid: 3d4907e6bd39f474b8fd8220920e65c4, type: 2}
+  poofParticles: {fileID: 1603696834085396, guid: 66346e144f28d304db19cd00e42adac7,
+    type: 2}
+  portalParticles: {fileID: 1616405392260930, guid: 6e3c6c7f046d39147b067ef37d0ec4d6,
+    type: 2}
   portalSound: {fileID: 8300000, guid: ddbf88b64c4d8cb4faf465a62fe4cd47, type: 3}
 --- !u!114 &114891667464889622
 MonoBehaviour:
@@ -988,10 +990,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   otherPortal: {fileID: 1592859999653798}
-  teleportParticles: {fileID: 100006, guid: 60bc526f4be1e044ab9e46340b82ffb3, type: 2}
-  poofParticles: {fileID: 1859814190304628, guid: b7a56a45afdc06e42b71bd8916463570,
+  teleportParticles: {fileID: 1677128838358660, guid: eb80c2a72164c934cabc90f2d9547c58,
     type: 2}
-  portalParticles: {fileID: 100000, guid: 3d4907e6bd39f474b8fd8220920e65c4, type: 2}
+  poofParticles: {fileID: 1603696834085396, guid: 66346e144f28d304db19cd00e42adac7,
+    type: 2}
+  portalParticles: {fileID: 1616405392260930, guid: 6e3c6c7f046d39147b067ef37d0ec4d6,
+    type: 2}
   portalSound: {fileID: 8300000, guid: ddbf88b64c4d8cb4faf465a62fe4cd47, type: 3}
 --- !u!114 &114903209849129224
 MonoBehaviour:

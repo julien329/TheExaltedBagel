@@ -40,6 +40,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Canvas hudCanvas;
     [SerializeField] private Canvas pauseCanvas;
     [SerializeField] private Canvas endingCanvas;
+    [SerializeField] private Animator bagelsAnimator;
 
     private bool levelEnded;
     private uint killCount;
@@ -175,13 +176,20 @@ public class LevelManager : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void UpdateGravityChargeUI(uint chargeCount, uint chargeMax)
+    public void InitGravityChargeUI()
     {
-        for (uint i = 0; i < chargeMax; ++i)
+        this.bagelsAnimator.SetTrigger("Bagel" + this.player.GravityChargeMax);
+        UpdateGravityChargeUI();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void UpdateGravityChargeUI()
+    {
+        for (uint i = 0; i < this.player.GravityChargeMax; ++i)
         {
             if (this.uiBagels[i] != null)
             {
-                this.uiBagels[i].enabled = ((i + 1) > chargeCount);
+                this.uiBagels[i].enabled = ((i + 1) > this.player.GravityChargeCount);
             }
         }
     }

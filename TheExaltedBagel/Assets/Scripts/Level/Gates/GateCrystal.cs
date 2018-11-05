@@ -10,7 +10,6 @@ public class GateCrystal : MonoBehaviour
     [SerializeField] private AudioClip crystalSound;
     [SerializeField] private GameObject crystalPickUpEffect;
 
-
     private uint collectedCrystalsCount;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +40,7 @@ public class GateCrystal : MonoBehaviour
         this.collectedCrystalsCount++;
         crystal.SetActive(false);
 
-        Instantiate(this.crystalPickUpEffect, crystal.GetComponent<MeshRenderer>().bounds.center, Quaternion.identity);
+        ParticleManager.instance.PlayParticleSystem(this.crystalPickUpEffect, crystal.GetComponent<MeshRenderer>().bounds.center, this.crystalPickUpEffect.transform.localEulerAngles);
         SoundManager.instance.PlaySound(this.crystalSound);
 
         if (this.collectedCrystalsCount == this.crystals.Length)

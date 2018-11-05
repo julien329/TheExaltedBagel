@@ -8,10 +8,10 @@ TagManager:
   - KillTrigger
   - CoinForGate
   - Ice
-  - FxTemporaire
   - Bubble
   - Crystal
   - Button
+  - Bagel
   layers:
   - Default
   - TransparentFX

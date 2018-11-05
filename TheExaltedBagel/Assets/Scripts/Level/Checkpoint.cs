@@ -70,11 +70,9 @@ public class Checkpoint : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void SpawnReset(bool isFirstSpawn)
     {
-        if (this.spawnParticles != null && (!isFirstSpawn || this.isStart))
+        if (!isFirstSpawn || this.isStart)
         {
-            GameObject particles = Instantiate(this.spawnParticles, this.transform);
-            ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
-            particleSystem.Play();
+            ParticleManager.instance.PlayParticleSystem(this.spawnParticles, this.transform.position, this.spawnParticles.transform.localEulerAngles);
         }
     }
 }

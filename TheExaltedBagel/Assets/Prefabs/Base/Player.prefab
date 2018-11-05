@@ -1188,9 +1188,16 @@ MonoBehaviour:
   rotationSpeed: 1000
   timeToIdle: 3
   minAnimSpeedRatio: 0.5
-  splashParticles: {fileID: 1687118924408352, guid: 77c69ec12208c4c4380d15e30b6f8f68,
+  splashParticles: {fileID: 1038643403438116, guid: 28cb1bf38ed1faa4cb127640013ce01f,
     type: 2}
-  deathParticles: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 2}
+  deathParticles: {fileID: 1073129407134206, guid: fc4249a5c90adc349972242782f09b6b,
+    type: 2}
+  scoreCrytalParticles: {fileID: 1430251014822220, guid: 1113c930bbdce4b44bb3ee6e6a504354,
+    type: 2}
+  bagelParticles: {fileID: 1314503597793028, guid: 70159685bb4e5b043bcaed633eba4166,
+    type: 2}
+  killParticles: {fileID: 1352220786351666, guid: ac51f313eb9d6a445b45ff831e4890c5,
+    type: 2}
   oxygenBar: {fileID: 114114480457716150}
   oxygenCanvas: {fileID: 223016341736065852}
   bubblesSound: {fileID: 8300000, guid: 9004c61fc6f371d4babcff85e277a1bd, type: 3}

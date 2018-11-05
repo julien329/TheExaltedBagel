@@ -422,7 +422,8 @@ MonoBehaviour:
   isStart: 0
   isEnding: 0
   gravityDirection: 1
-  spawnParticles: {fileID: 100000, guid: ada5d62ffe762ce4fbccc70dcdbc9022, type: 2}
+  spawnParticles: {fileID: 1017537473324370, guid: 5c899e6aed99ec348a38756724f488f3,
+    type: 2}
   saveSound: {fileID: 8300000, guid: 85ffa4afc062c154382365f7f9106d7b, type: 3}
 --- !u!135 &135181400085903532
 SphereCollider:

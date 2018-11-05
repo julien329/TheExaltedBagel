@@ -20,9 +20,6 @@ public class Teleportation : MonoBehaviour
         {
             GameObject particles = Instantiate(this.portalParticles, this.transform);
             particles.transform.localPosition = new Vector3(0.5f, 1.1025f, 0.5f);
-
-            ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
-            particleSystem.Play();
         }
     }
 
@@ -63,24 +60,14 @@ public class Teleportation : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void PlayParticles(Collider collider)
     {
-        if (this.teleportParticles != null)
-        {
-            GameObject particles = Instantiate(this.teleportParticles);
-            particles.transform.localPosition = this.otherPortal.transform.position;
-            particles.transform.localEulerAngles = (this.otherPortal.GetComponentInParent<Teleportation>().isUpsideDown) ? new Vector3(90f, 0f, 0f) : new Vector3(270f, 0f, 0f);
+        Vector3 position, eulerAngles;
 
-            ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
-            particleSystem.Play();
-        }
+        position = this.otherPortal.transform.position;
+        eulerAngles = (this.otherPortal.GetComponentInParent<Teleportation>().isUpsideDown) ? new Vector3(90f, 0f, 0f) : new Vector3(270f, 0f, 0f);
+        ParticleManager.instance.PlayParticleSystem(this.teleportParticles, position, eulerAngles);
 
-        if (this.poofParticles != null)
-        {
-            GameObject particles = Instantiate(this.poofParticles);
-            particles.transform.localPosition = this.otherPortal.transform.parent.GetComponentInParent<Teleportation>().otherPortal.transform.position;
-            particles.transform.localEulerAngles = (this.isUpsideDown) ? new Vector3(270f, 0f, 0f) : new Vector3(90f, 0f, 0f);
-
-            ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
-            particleSystem.Play();
-        }
+        position = this.otherPortal.transform.parent.GetComponentInParent<Teleportation>().otherPortal.transform.position;
+        eulerAngles = (this.isUpsideDown) ? new Vector3(270f, 0f, 0f) : new Vector3(90f, 0f, 0f);
+        ParticleManager.instance.PlayParticleSystem(this.poofParticles, position, eulerAngles);
     }
 }

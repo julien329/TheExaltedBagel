@@ -29,6 +29,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float minAnimSpeedRatio = 0.5f;
     [SerializeField] private GameObject splashParticles;
     [SerializeField] private GameObject deathParticles;
+    [SerializeField] private GameObject scoreCrytalParticles;
+    [SerializeField] private GameObject bagelParticles;
+    [SerializeField] private GameObject killParticles;
 
     [Header("UI")]
     [SerializeField] private Image oxygenBar;
@@ -43,7 +46,7 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip killSound;
 
     [Header("Other")]
-    [SerializeField] private uint gravityChargeMax = 3;
+    [SerializeField][Range(0, GRAVITY_CHARGES_MAX)] private uint gravityChargeMax = GRAVITY_CHARGES_MAX;
     [SerializeField] private float oxygenDuration = 10.0f;
 
     private List<Collider> waterColliders = new List<Collider>();
@@ -71,6 +74,31 @@ public class Player : MonoBehaviour
     private const float ROTATION_LEFT = 270f;
     private const float ROTATION_UP = 180f;
     private const float ROTATION_DOWN = 0f;
+    private const uint GRAVITY_CHARGES_MAX = 3;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public uint GravityChargeCount
+    {
+        get { return this.gravityChargeCount; }
+        set
+        {
+            this.gravityChargeCount = Math.Min(value, this.gravityChargeMax);
+            LevelManager.instance.UpdateGravityChargeUI();
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public uint GravityChargeMax
+    {
+        get { return this.gravityChargeMax; }
+        set
+        {
+            uint newValue = Math.Min(value, Player.GRAVITY_CHARGES_MAX);
+            this.gravityChargeCount = newValue;
+            this.gravityChargeMax = newValue;
+            LevelManager.instance.InitGravityChargeUI();
+        }
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
@@ -88,6 +116,7 @@ public class Player : MonoBehaviour
     void Start ()
     {
         ChangeEnvironment(false);
+        LevelManager.instance.InitGravityChargeUI();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,52 +145,54 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void OnTriggerEnter(Collider collider)
     {
+        // WaterLayer
         if (collider.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
             OnEnterWater(collider);
         }
-
-        if (collider.gameObject.layer == LayerMask.NameToLayer("Death"))
+        // DeathLayer
+        else if (collider.gameObject.layer == LayerMask.NameToLayer("Death"))
         {
             LevelManager.instance.KillPlayer(false);
         }
-
-        if (collider.transform.tag == "KillTrigger")
+        // KillMonster
+        else if (collider.transform.tag == "KillTrigger")
         {
-            this.velocity.y = this.bumpForce * this.gravityDirection;
-            this.gravityChargeCount = (uint)Mathf.Min(this.gravityChargeCount + 1, this.gravityChargeMax);
-            LevelManager.instance.KillCount++;
-            SoundManager.instance.PlaySound(this.killSound);
+            OnKillMonster(collider);
         }
-
-        if (collider.transform.tag == "Enemy")
+        // KilledByMonster
+        else if (collider.transform.tag == "Enemy")
         {
             LevelManager.instance.KillPlayer();
         }
-
-        if (collider.transform.tag == "Bubble")
+        // TouchBubble
+        else if (collider.transform.tag == "Bubble")
         {
             this.isPlayerOnBubbles = true;
-            SoundManager.instance.PlaySound(this.bubblesSound, 0.5f);
+            SoundManager.instance.PlaySound(this.bubblesSound, 0.75f);
         }
-
-        if (collider.transform.tag == "Crystal")
+        // TouchCrystal
+        else if (collider.transform.tag == "Crystal")
         {
-            Destroy(collider.gameObject);
-            LevelManager.instance.CrystalCount++;
-            SoundManager.instance.PlaySound(this.crystalSound);
+            OnTakeCrystal(collider);
+        }
+        // TouchBagel
+        else if (collider.transform.tag == "Bagel")
+        {
+            OnTakeBagel(collider);
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void OnTriggerExit(Collider collider)
     {
+        // LeaveBubble
         if (collider.transform.tag == "Bubble")
         {
             this.isPlayerOnBubbles = false;
         }
-
-        // On leaving water
-        if (collider.gameObject.layer == LayerMask.NameToLayer("Water"))
+        // LeaveWater
+        else if (collider.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
             OnExitWater(collider);
         }
@@ -195,17 +226,15 @@ public class Player : MonoBehaviour
 
         if (this.controller.collisions.below)
         {
-            this.gravityChargeCount = this.gravityChargeMax;
-            LevelManager.instance.UpdateGravityChargeUI(this.gravityChargeCount, this.gravityChargeMax);
+            this.GravityChargeCount = this.GravityChargeMax;
         }
 
         // Invert gravity if key is pressed or when the player, we need to spawn the player upside down
-        if (Input.GetButtonDown("Gravity") && this.gravityChargeCount > 0)
+        if (Input.GetButtonDown("Gravity") && this.GravityChargeCount > 0)
         {
-            this.gravityChargeCount--;
+            this.GravityChargeCount--;
             this.gravityDirection *= -1;
             this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
-            LevelManager.instance.UpdateGravityChargeUI(this.gravityChargeCount, this.gravityChargeMax);
             SoundManager.instance.PlaySound(this.gravitySound);
         }
 
@@ -361,20 +390,12 @@ public class Player : MonoBehaviour
             this.velocity = new Vector3(this.velocity.x * impactForce, this.velocity.y * impactForce, 0f);
 
             // If we have a splash vfx
-            if (this.splashParticles != null)
+            Vector3 contactPos = new Vector3(this.transform.position.x, collider.bounds.max.y, 0f);
+            // If contact pos is within the water bounds
+            if (contactPos.x >= collider.bounds.min.x && contactPos.x <= collider.bounds.max.x)
             {
-                Vector3 contactPos = new Vector3(this.transform.position.x, collider.bounds.max.y, 0f);
-                // If contact pos is within the water bounds
-                if (contactPos.x >= collider.bounds.min.x && contactPos.x <= collider.bounds.max.x)
-                {
-                    // Add the spash object
-                    GameObject particles = Instantiate(this.splashParticles);
-                    particles.transform.position = contactPos;
-
-                    // Play the vfx
-                    ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
-                    particleSystem.Play();
-                }
+                // Add the spash object
+                ParticleManager.instance.PlayParticleSystem(this.splashParticles, contactPos, this.splashParticles.transform.localEulerAngles);
             }
 
             SoundManager.instance.PlaySound(this.splashSound);
@@ -408,19 +429,54 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void OnEnterTeleport(Vector2 newPosition)
+    {
+        this.transform.position = new Vector3(newPosition.x, newPosition.y, 0f);
+        this.velocity = Vector3.zero;
+        this.velocityXSmoothing = 0f;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void OnKillMonster(Collider collider)
+    {
+        this.velocity.y = this.bumpForce * this.gravityDirection;
+        this.GravityChargeCount++;
+
+        LevelManager.instance.KillCount++;
+        SoundManager.instance.PlaySound(this.killSound, 0.75f);
+
+        GameObject monster = collider.transform.parent.parent.parent.gameObject;
+        Vector3 position = new Vector3(monster.transform.position.x, monster.transform.position.y + 0.5f, monster.transform.position.z);
+        ParticleManager.instance.PlayParticleSystem(this.killParticles, position, this.killParticles.transform.localEulerAngles);
+
+        Destroy(monster);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void OnTakeCrystal(Collider collider)
+    {
+        LevelManager.instance.CrystalCount++;
+
+        ParticleManager.instance.PlayParticleSystem(this.scoreCrytalParticles, collider.bounds.center, this.scoreCrytalParticles.transform.localEulerAngles);
+        SoundManager.instance.PlaySound(this.crystalSound);
+
+        Destroy(collider.gameObject);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void OnTakeBagel(Collider collider)
+    {
+        this.GravityChargeMax++;
+
+        ParticleManager.instance.PlayParticleSystem(this.bagelParticles, collider.bounds.center, this.bagelParticles.transform.localEulerAngles);
+
+        Destroy(collider.gameObject);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     public void KillPlayer()
     {
-        if (this.deathParticles != null)
-        {
-            // Add the spash object
-            GameObject particles = Instantiate(this.deathParticles);
-            particles.transform.position = this.boxCollider.bounds.center;
-
-            // Play the vfx
-            ParticleSystem particleSystem = particles.GetComponent<ParticleSystem>();
-            particleSystem.Play();
-        }
-
+        ParticleManager.instance.PlayParticleSystem(this.deathParticles, this.boxCollider.bounds.center, this.deathParticles.transform.localEulerAngles);
         SoundManager.instance.PlaySound(this.deathSound);
 
         this.gameObject.SetActive(false);
@@ -439,11 +495,10 @@ public class Player : MonoBehaviour
         this.waterColliders.Clear();
         this.oxygenCanvas.enabled = false;
 
+        this.GravityChargeCount = this.GravityChargeMax;
         this.transform.position = position;
         this.gravityDirection = gravityDirection;
-
         this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
-
         this.velocity = Vector3.zero;
         this.velocityXSmoothing = 0f;  
     }
@@ -466,13 +521,5 @@ public class Player : MonoBehaviour
                 LevelManager.instance.KillPlayer(false);
             }
         }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void OnEnterTeleport(Vector2 newPosition)
-    {
-        this.transform.position = new Vector3(newPosition.x, newPosition.y, 0f);
-        this.velocity = Vector3.zero;
-        this.velocityXSmoothing = 0f;
     }
 }
