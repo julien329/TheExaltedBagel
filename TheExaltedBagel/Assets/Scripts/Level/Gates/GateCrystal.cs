@@ -40,7 +40,7 @@ public class GateCrystal : MonoBehaviour
         this.collectedCrystalsCount++;
         crystal.SetActive(false);
 
-        ParticleManager.instance.PlayParticleSystem(this.crystalPickUpEffect, crystal.GetComponent<MeshRenderer>().bounds.center, this.crystalPickUpEffect.transform.localEulerAngles);
+        ParticleManager.instance.PlayParticleSystem(this.crystalPickUpEffect, crystal.GetComponent<MeshRenderer>().bounds.center);
         SoundManager.instance.PlaySound(this.crystalSound);
 
         if (this.collectedCrystalsCount == this.crystals.Length)
