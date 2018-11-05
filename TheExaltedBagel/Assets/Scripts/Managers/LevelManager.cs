@@ -161,6 +161,7 @@ public class LevelManager : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void KillPlayer(bool isFirstSpawn = false)
     {
+        
         if (!isFirstSpawn)
         {
             this.deathCount++;

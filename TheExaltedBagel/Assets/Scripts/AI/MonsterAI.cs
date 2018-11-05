@@ -21,7 +21,7 @@ public class MonsterAI : MonoBehaviour
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
 
-    private float gravityDirection = 1f;
+    [SerializeField] private float gravityDirection = 1f;
     private float rotationHTarget = 180f;
     private float jumpVelocity;
     private float velocityXSmoothing;
@@ -41,6 +41,7 @@ public class MonsterAI : MonoBehaviour
     [Header("Charger Settings")]
     [SerializeField] private float chargerSurpriseDelay = 1f;
     [SerializeField] private float chargerMultiplier = 3f;
+    [SerializeField] private LayerMask layerMask;
     private float surpriseTimer;
     private int chargeDirection = 1;
 
@@ -83,6 +84,16 @@ public class MonsterAI : MonoBehaviour
 
             // Call move to check collisions and translate the player
             this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
+        }
+    }
+
+    private void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.layer == LayerMask.NameToLayer("Death"))
+        {
+            this.gameObject.SetActive(false);
+            Destroy(this.gameObject);
+            Debug.Log("DEATH");
         }
     }
 
@@ -272,12 +283,9 @@ public class MonsterAI : MonoBehaviour
         else if (distance <= detectionRadius && distance > 1 && this.surpriseTimer == 1f)
         {
             RaycastHit hit;
-            if (Physics.Linecast(this.transform.position, playerTranform.position, out hit))
+            if (Physics.Linecast(this.gameObject.GetComponent<BoxCollider>().bounds.center, playerTranform.gameObject.GetComponent<BoxCollider>().bounds.center, out hit, this.layerMask))
             {
-                if (hit.transform.gameObject.layer == 8)
-                {
-                    return Wander();
-                }
+                return Wander();
             }
 
             this.chargeDirection = direction;

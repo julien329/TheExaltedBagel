@@ -449,6 +449,7 @@ public class Player : MonoBehaviour
         Vector3 position = new Vector3(monster.transform.position.x, monster.transform.position.y + 0.5f, monster.transform.position.z);
         ParticleManager.instance.PlayParticleSystem(this.killParticles, position, this.killParticles.transform.localEulerAngles);
 
+        monster.SetActive(false);
         Destroy(monster);
     }
 

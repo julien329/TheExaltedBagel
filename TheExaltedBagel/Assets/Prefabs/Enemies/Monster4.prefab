@@ -1121,8 +1121,12 @@ MonoBehaviour:
   flipInterval: 3.5
   gravity: -50
   detectionRadius: 5
+  gravityDirection: 1
   chargerSurpriseDelay: 1
   chargerMultiplier: 4
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &114729532185427160
 MonoBehaviour:
   m_ObjectHideFlags: 1
