@@ -293,7 +293,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4356920555889214}
   - component: {fileID: 65991482404056182}
-  - component: {fileID: 114503077762189246}
   m_Layer: 0
   m_Name: KillCollider
   m_TagString: KillTrigger
@@ -1124,19 +1123,6 @@ MonoBehaviour:
   detectionRadius: 5
   chargerSurpriseDelay: 1
   chargerMultiplier: 4
---- !u!114 &114503077762189246
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1420107635818220}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7d84df5ffd69d146a59bb44c4ec154a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MonsterInstance: {fileID: 0}
-  PoofPrefab: {fileID: 100018, guid: a40b64bf23366dc42a892af2c6ff6140, type: 2}
 --- !u!114 &114729532185427160
 MonoBehaviour:
   m_ObjectHideFlags: 1

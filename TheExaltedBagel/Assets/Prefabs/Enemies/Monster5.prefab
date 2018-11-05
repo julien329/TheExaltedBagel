@@ -144,7 +144,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4840905129617198}
   - component: {fileID: 65985469511095888}
-  - component: {fileID: 114579618431781352}
   m_Layer: 0
   m_Name: KillCollider
   m_TagString: KillTrigger
@@ -252,7 +251,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1132259989775148}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.08, y: 17.45, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4729512387180702}
@@ -531,19 +530,6 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 256
---- !u!114 &114579618431781352
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1661387789166946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7d84df5ffd69d146a59bb44c4ec154a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MonsterInstance: {fileID: 0}
-  PoofPrefab: {fileID: 100018, guid: a40b64bf23366dc42a892af2c6ff6140, type: 2}
 --- !u!114 &114857932578019936
 MonoBehaviour:
   m_ObjectHideFlags: 1
