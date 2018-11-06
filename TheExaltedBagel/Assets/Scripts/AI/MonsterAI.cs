@@ -20,20 +20,19 @@ public class MonsterAI : MonoBehaviour
     [SerializeField] private float gravity = -50f;
     [SerializeField] private float detectionRadius = 5f;
     [SerializeField] private float gravityDirection = 1f;
-    [SerializeField] private GameObject killTriggerObject;
+
     private float maxVelocityY = 17.5f;
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
 
     private float rotationHTarget = 180f;
-    private float rotationVTarget = 0f;
-    private float jumpVelocity;
     private float velocityXSmoothing;
     private float turnAroundTimer;
     private int direction = 1;
     private Vector3 velocity;
     private Controller2D controller;
     private Animator animator;
+    private Transform killTriggerObject;
     private Transform rotYTransform;
     private Transform rotZTransform;
     private Transform playerTranform;
@@ -41,8 +40,6 @@ public class MonsterAI : MonoBehaviour
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
     private const float ROTATION_LEFT = 270f;
-    private const float ROTATION_UP = 180f;
-    private const float ROTATION_DOWN = 0f;
 
     [Header("Charger Settings")]
     [SerializeField] private float chargerSurpriseDelay = 1f;
@@ -56,11 +53,12 @@ public class MonsterAI : MonoBehaviour
     {
         this.controller = GetComponent<Controller2D>();
 
+        this.killTriggerObject = this.transform.Find("KillCollider");
         this.rotYTransform = this.transform.Find("RotationY");
         this.rotZTransform = this.rotYTransform.Find("RotationZ");
-
         this.animator = this.rotZTransform.Find("QMon").GetComponent<Animator>();
-        this.playerTranform = GameObject.Find("Player").GetComponent<Transform>();
+
+        this.playerTranform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,25 +73,19 @@ public class MonsterAI : MonoBehaviour
     {
         if (Time.deltaTime > Mathf.Epsilon)
         {
-            // Get player input in raw states
             Vector2 input = Behaviour();
 
-            // Check horizontal and vertical movements
             MoveH(input);
-            MoveV(input);
+            MoveV();
 
-            // Rotate player according to movements and gravity
             RotationH();
-            RotationV();
-
-            // Send info to animator
             Animate(input);
 
-            // Call move to check collisions and translate the player
             this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.layer == LayerMask.NameToLayer("Death"))
@@ -122,7 +114,7 @@ public class MonsterAI : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void MoveV(Vector2 input, bool jump = false)
+    private void MoveV()
     {
         // If there is a collision in Y axis, reset velocity
         if (this.controller.collisions.above || this.controller.collisions.below)
@@ -130,14 +122,6 @@ public class MonsterAI : MonoBehaviour
             this.velocity.y = 0;
         }
         
-        this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
-
-        // If the jump key is pressed
-        //if (Input.GetButtonDown("Jump") && this.controller.collisions.below)
-        //{
-        //    this.velocity.y = this.jumpVelocity * this.gravityDirection;
-        //}
-
         // Add gravity force downward to Y velocity
         this.velocity.y += this.gravity * this.gravityDirection * Time.deltaTime;
 
@@ -170,29 +154,6 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
-    private void RotationV()
-    {
-        // Rotate the player according to the gravity (up / down / idle)
-        if ((this.rotationVTarget == ROTATION_DOWN && this.rotZTransform.localEulerAngles.z > ROTATION_DOWN)
-            || (this.rotationVTarget == ROTATION_UP && this.rotZTransform.localEulerAngles.z < ROTATION_UP))
-        {
-            float direction = (this.rotationVTarget == ROTATION_DOWN) ? -1f : 1f;
-            float rotateAngle = direction * Time.deltaTime * rotationSpeed;
-
-            float newRot = this.rotZTransform.localEulerAngles.z + rotateAngle;
-            if (newRot < ROTATION_DOWN || newRot > ROTATION_UP)
-            {
-                float offset = (this.rotationVTarget == ROTATION_DOWN) ? 0f : this.GetComponent<BoxCollider>().size.y;
-                this.rotZTransform.localPosition = new Vector3(0f, offset, 0f);
-                this.rotZTransform.localEulerAngles = new Vector3(this.rotZTransform.localEulerAngles.x, this.rotZTransform.localEulerAngles.y, this.rotationVTarget);
-            }
-            else
-            {
-                this.rotZTransform.RotateAround(this.GetComponent<BoxCollider>().bounds.center, this.rotZTransform.forward, rotateAngle);
-            }
-        }
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void Animate(Vector2 input)
     {
@@ -212,19 +173,10 @@ public class MonsterAI : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void RespawnPlayer(Vector3 spawnPosition, float gravityDirection)
-    {
-        this.transform.position = spawnPosition;
-        this.gravityDirection = gravityDirection;
-
-        this.velocity = Vector3.zero;
-        this.velocityXSmoothing = 0f;
-    }
-
     Vector2 Behaviour()
     {
-        int dir = playerTranform.position.x - this.transform.position.x > 0 ? 1 : -1;
-        float distance = DistanceBetween(this.transform.position, playerTranform.position);
+        int dir = this.playerTranform.position.x - this.transform.position.x > 0 ? 1 : -1;
+        float distance = DistanceBetween(this.transform.position, this.playerTranform.position);
 
         switch (this.type)
         {
@@ -249,10 +201,10 @@ public class MonsterAI : MonoBehaviour
             default:
 
                 return Wander();
-        }
-        
+        }    
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     Vector2 Wander()
     {
         if ((this.controller.collisions.left || this.controller.collisions.right) && (this.flipInterval - this.turnAroundTimer > 0.5f))
@@ -269,9 +221,10 @@ public class MonsterAI : MonoBehaviour
         return new Vector2(this.direction, 0);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     Vector2 Follow(float distance, int direction)
     {
-        if (distance <= detectionRadius)
+        if (distance <= this.detectionRadius)
         {
             return new Vector2(direction * 3, 0);
         }
@@ -290,7 +243,7 @@ public class MonsterAI : MonoBehaviour
 
             return Wander();
         }
-        else if (distance > detectionRadius)
+        else if (distance > this.detectionRadius)
         {
             return Wander();
         }
@@ -300,6 +253,7 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     Vector2 Charge(float distance, int direction)
     {
         if (this.controller.collisions.left || this.controller.collisions.right)
@@ -322,7 +276,7 @@ public class MonsterAI : MonoBehaviour
         else if (distance <= this.detectionRadius && distance > 1 && this.surpriseTimer == 1f)
         {
             RaycastHit hit;
-            if (Physics.Linecast(this.gameObject.GetComponent<BoxCollider>().bounds.center, playerTranform.gameObject.GetComponent<BoxCollider>().bounds.center, out hit, this.layerMask))
+            if (Physics.Linecast(this.gameObject.GetComponent<BoxCollider>().bounds.center, this.playerTranform.gameObject.GetComponent<BoxCollider>().bounds.center, out hit, this.layerMask))
             {
                 return Wander();
             }
@@ -349,6 +303,7 @@ public class MonsterAI : MonoBehaviour
         return Wander();
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     Vector2 Jumper()
     {
         if ((this.controller.collisions.left || this.controller.collisions.right) && (this.flipInterval - this.turnAroundTimer > 0.5f))
@@ -365,16 +320,22 @@ public class MonsterAI : MonoBehaviour
         return new Vector2(this.direction, 0);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     float DistanceBetween(Vector2 p1, Vector2 p2)
     {
         return Mathf.Sqrt(Mathf.Pow(Mathf.Abs(p2.x - p1.x), 2) + Mathf.Pow(Mathf.Abs(p2.y - p1.y), 2));
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     public void ReverseGravity()
     {
         this.gravityDirection *= -1;
-        this.killTriggerObject.transform.localEulerAngles = new Vector3(180f, 0f, 0f);
-        this.killTriggerObject.transform.localPosition = new Vector3(0, this.GetComponent<BoxCollider>().size.y);
-    }
+        this.transform.localPosition -= new Vector3(0f, this.GetComponent<BoxCollider>().size.y, 0f);
 
+        this.rotZTransform.localEulerAngles = new Vector3(0f, 0f, 180f);
+        this.rotZTransform.transform.localPosition = new Vector3(0f, this.GetComponent<BoxCollider>().size.y, 0f);
+
+        this.killTriggerObject.transform.localEulerAngles = new Vector3(180f, 0f, 0f);
+        this.killTriggerObject.transform.localPosition = new Vector3(0f, this.GetComponent<BoxCollider>().size.y, 0f);
+    }
 }
