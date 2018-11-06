@@ -1050,8 +1050,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.8, y: 1.13, z: 0.625}
-  m_Center: {x: 0, y: 0.565, z: -0.0425}
+  m_Size: {x: 0.6, y: 1.13, z: 0}
+  m_Center: {x: 0, y: 0.565, z: 0}
 --- !u!95 &95591644914515832
 Animator:
   serializedVersion: 3
@@ -1206,6 +1206,7 @@ MonoBehaviour:
   splashSound: {fileID: 8300000, guid: 707ada58a9b861a4fa96b579b5799fe3, type: 3}
   gravitySound: {fileID: 8300000, guid: b9c66e627f5cafa488600b99c5150922, type: 3}
   killSound: {fileID: 8300000, guid: eaf705cbdbadb5443a3f5b509e2de505, type: 3}
+  eatSound: {fileID: 8300000, guid: ede37dfd83fadb041b99a255a63c9419, type: 3}
   gravityChargeMax: 3
   oxygenDuration: 5
 --- !u!137 &137769725481637566

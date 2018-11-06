@@ -1,30 +1,35 @@
 fileFormatVersion: 2
-guid: 1178f5866e28fd24d85f9045919d9075
+guid: 378ea2e311f9373449765719829c5af3
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: Body
     100002: Body_end
-    100004: Pivot
-    100006: Position
-    100008: //RootNode
+    100004: Body_end_end
+    100006: Pivot
+    100008: Position
     100010: Q-Mon5
-    100012: Q-Mon5_Objt
-    100014: Squash
-    100016: Squash_end
+    100012: //RootNode
+    100014: Q-Mon5_Objt
+    100016: Squash
+    100018: Squash_end
+    100020: Squash_end_end
     400000: Body
     400002: Body_end
-    400004: Pivot
-    400006: Position
-    400008: //RootNode
+    400004: Body_end_end
+    400006: Pivot
+    400008: Position
     400010: Q-Mon5
-    400012: Q-Mon5_Objt
-    400014: Squash
-    400016: Squash_end
+    400012: //RootNode
+    400014: Q-Mon5_Objt
+    400016: Squash
+    400018: Squash_end
+    400020: Squash_end_end
+    2100000: Q-Mon5_Mat
     4300000: Q-Mon5_Objt
-    7400000: Q-Mon5|Q-Mon_5 Idle
-    7400002: Q-Mon5|Q-Mon_5 Run
-    7400004: Q-Mon5|Q-Mon_5 Stand
+    7400000: Q-Mon5|Q-Mon5|Q-Mon5|Q-Mon_5 Idle|Q-Mon5|Q-Mon_5 Idle
+    7400002: Q-Mon5|Q-Mon5|Q-Mon5|Q-Mon_5 Run|Q-Mon5|Q-Mon_5 Run
+    7400004: Q-Mon5|Q-Mon5|Q-Mon5|Q-Mon_5 Stand|Q-Mon5|Q-Mon_5 Stand
     9500000: //RootNode
     13700000: Q-Mon5_Objt
   externalObjects:
@@ -61,8 +66,8 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Q-Mon5|Q-Mon_5 Idle
-      takeName: Q-Mon5|Q-Mon_5 Idle
+      name: Q-Mon5|Q-Mon5|Q-Mon5|Q-Mon_5 Idle|Q-Mon5|Q-Mon_5 Idle
+      takeName: Q-Mon5|Q-Mon5|Q-Mon5|Q-Mon_5 Idle|Q-Mon5|Q-Mon_5 Idle
       firstFrame: 0
       lastFrame: 20
       wrapMode: 0
@@ -89,8 +94,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Q-Mon5|Q-Mon_5 Run
-      takeName: Q-Mon5|Q-Mon_5 Run
+      name: Q-Mon5|Q-Mon5|Q-Mon5|Q-Mon_5 Run|Q-Mon5|Q-Mon_5 Run
+      takeName: Q-Mon5|Q-Mon5|Q-Mon5|Q-Mon_5 Run|Q-Mon5|Q-Mon_5 Run
       firstFrame: 0
       lastFrame: 18
       wrapMode: 0
@@ -117,8 +122,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Q-Mon5|Q-Mon_5 Stand
-      takeName: Q-Mon5|Q-Mon_5 Stand
+      name: Q-Mon5|Q-Mon5|Q-Mon5|Q-Mon_5 Stand|Q-Mon5|Q-Mon_5 Stand
+      takeName: Q-Mon5|Q-Mon5|Q-Mon5|Q-Mon_5 Stand|Q-Mon5|Q-Mon_5 Stand
       firstFrame: 0
       lastFrame: 1
       wrapMode: 0
@@ -127,7 +132,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -166,14 +171,14 @@ ModelImporter:
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
-    useFileScale: 0
-    previousCalculatedGlobalScale: 1
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
     hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 4
-    normalCalculationMode: 0
+    normalCalculationMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
@@ -191,7 +196,7 @@ ModelImporter:
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
-    skeletonHasParents: 0
+    skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
   humanoidOversampling: 1

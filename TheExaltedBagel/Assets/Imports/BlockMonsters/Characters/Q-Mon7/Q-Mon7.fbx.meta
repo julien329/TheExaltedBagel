@@ -1,50 +1,63 @@
 fileFormatVersion: 2
-guid: 58c03ed6e8eee1442a2719ce133e7a2f
+guid: cb508b1bc46691b448eda46c2d560488
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: Body
     100002: Body_end
-    100004: Control_Leg_L
-    100006: Control_Leg_L_end
-    100008: Control_Leg_R
-    100010: Control_Leg_R_end
-    100012: Control_SS
-    100014: Control_SS_end
-    100016: Hip_L
-    100018: Hip_R
-    100020: Leg_L
-    100022: Leg_L_end
-    100024: Leg_R
-    100026: Leg_R_end
-    100028: Pivot
-    100030: Position
-    100032: Q-Mon7
-    100034: //RootNode
-    100036: Q-Mon7_Objt
+    100004: Body_end_end
+    100006: Control_Leg_L
+    100008: Control_Leg_L_end
+    100010: Control_Leg_L_end_end
+    100012: Control_Leg_R
+    100014: Control_Leg_R_end
+    100016: Control_Leg_R_end_end
+    100018: Control_SS
+    100020: Control_SS_end
+    100022: Control_SS_end_end
+    100024: Hip_L
+    100026: Hip_R
+    100028: Leg_L
+    100030: Leg_L_end
+    100032: Leg_L_end_end
+    100034: Leg_R
+    100036: Leg_R_end
+    100038: Leg_R_end_end
+    100040: Pivot
+    100042: Position
+    100044: Q-Mon7
+    100046: //RootNode
+    100048: Q-Mon7_Objt
     400000: Body
     400002: Body_end
-    400004: Control_Leg_L
-    400006: Control_Leg_L_end
-    400008: Control_Leg_R
-    400010: Control_Leg_R_end
-    400012: Control_SS
-    400014: Control_SS_end
-    400016: Hip_L
-    400018: Hip_R
-    400020: Leg_L
-    400022: Leg_L_end
-    400024: Leg_R
-    400026: Leg_R_end
-    400028: Pivot
-    400030: Position
-    400032: //RootNode
-    400034: Q-Mon7
-    400036: Q-Mon7_Objt
+    400004: Body_end_end
+    400006: Control_Leg_L
+    400008: Control_Leg_L_end
+    400010: Control_Leg_L_end_end
+    400012: Control_Leg_R
+    400014: Control_Leg_R_end
+    400016: Control_Leg_R_end_end
+    400018: Control_SS
+    400020: Control_SS_end
+    400022: Control_SS_end_end
+    400024: Hip_L
+    400026: Hip_R
+    400028: Leg_L
+    400030: Leg_L_end
+    400032: Leg_L_end_end
+    400034: Leg_R
+    400036: Leg_R_end
+    400038: Leg_R_end_end
+    400040: Pivot
+    400042: Position
+    400044: Q-Mon7
+    400046: //RootNode
+    400048: Q-Mon7_Objt
+    2100000: Q-Mon 7_Mat
     4300000: Q-Mon7_Objt
-    7400000: Q-Mon7|Q-Mon_7 Idle
-    7400002: Q-Mon7|Q-Mon_7 Run
-    7400004: Q-Mon7|Q-Mon_7 Stand
+    7400000: Q-Mon7|Q-Mon7|Q-Mon7|Q-Mon_7 Idle|Q-Mon7|Q-Mon_7 Idle
+    7400002: Q-Mon7|Q-Mon7|Q-Mon7|Q-Mon_7 Run|Q-Mon7|Q-Mon_7 Run
+    7400004: Q-Mon7|Q-Mon7|Q-Mon7|Q-Mon_7 Stand|Q-Mon7|Q-Mon_7 Stand
     9500000: //RootNode
     13700000: Q-Mon7_Objt
   externalObjects:
@@ -81,8 +94,8 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Q-Mon7|Q-Mon_7 Idle
-      takeName: Q-Mon7|Q-Mon_7 Idle
+      name: Q-Mon7|Q-Mon7|Q-Mon7|Q-Mon_7 Idle|Q-Mon7|Q-Mon_7 Idle
+      takeName: Q-Mon7|Q-Mon7|Q-Mon7|Q-Mon_7 Idle|Q-Mon7|Q-Mon_7 Idle
       firstFrame: 0
       lastFrame: 20
       wrapMode: 0
@@ -109,8 +122,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Q-Mon7|Q-Mon_7 Run
-      takeName: Q-Mon7|Q-Mon_7 Run
+      name: Q-Mon7|Q-Mon7|Q-Mon7|Q-Mon_7 Run|Q-Mon7|Q-Mon_7 Run
+      takeName: Q-Mon7|Q-Mon7|Q-Mon7|Q-Mon_7 Run|Q-Mon7|Q-Mon_7 Run
       firstFrame: 0
       lastFrame: 18
       wrapMode: 0
@@ -137,8 +150,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Q-Mon7|Q-Mon_7 Stand
-      takeName: Q-Mon7|Q-Mon_7 Stand
+      name: Q-Mon7|Q-Mon7|Q-Mon7|Q-Mon_7 Stand|Q-Mon7|Q-Mon_7 Stand
+      takeName: Q-Mon7|Q-Mon7|Q-Mon7|Q-Mon_7 Stand|Q-Mon7|Q-Mon_7 Stand
       firstFrame: 0
       lastFrame: 1
       wrapMode: 0
@@ -147,7 +160,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -186,14 +199,14 @@ ModelImporter:
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
-    useFileScale: 0
-    previousCalculatedGlobalScale: 1
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
     hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 4
-    normalCalculationMode: 0
+    normalCalculationMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
@@ -211,7 +224,7 @@ ModelImporter:
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
-    skeletonHasParents: 0
+    skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
   humanoidOversampling: 1

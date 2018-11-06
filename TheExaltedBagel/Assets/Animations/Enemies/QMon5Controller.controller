@@ -13,13 +13,13 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: IsMoving
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -101,7 +101,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 1178f5866e28fd24d85f9045919d9075, type: 3}
+  m_Motion: {fileID: 7400000, guid: 378ea2e311f9373449765719829c5af3, type: 3}
   m_Tag: 
   m_SpeedParameter: MonsterSpeed
   m_MirrorParameter: 
@@ -127,7 +127,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400002, guid: 1178f5866e28fd24d85f9045919d9075, type: 3}
+  m_Motion: {fileID: 7400002, guid: 378ea2e311f9373449765719829c5af3, type: 3}
   m_Tag: 
   m_SpeedParameter: MonsterSpeed
   m_MirrorParameter: 
