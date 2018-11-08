@@ -4,13 +4,14 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Cloud_Mat
   m_Shader: {fileID: 4800000, guid: 36b3cd32ccf658445a39a541bb6a1e6a, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
@@ -136,9 +137,9 @@ Material:
     - _CarPaintColor: {r: 0.088324, g: 0.074934505, b: 0.46323526, a: 0}
     - _Color1: {r: 0.021626277, g: 0.056079105, b: 0.7352942, a: 0.953}
     - _Color3: {r: 0.035034638, g: 0.08247225, b: 0.39705884, a: 0}
-    - _ColorIn: {r: 0.75, g: 0.9172412, b: 1, a: 0}
+    - _ColorIn: {r: 1, g: 1, b: 1, a: 0}
     - _ColorO: {r: 0.5, g: 0.56551623, b: 1, a: 0}
-    - _ColorOut: {r: 0.5, g: 0.56551623, b: 1, a: 0}
+    - _ColorOut: {r: 0.9622642, g: 0.9622642, b: 0.9622642, a: 0}
     - _FlakesColor: {r: 0.73529416, g: 0.021626318, b: 0.36123332, a: 0.953}
     - _FlakesColor1: {r: 0.7794118, g: 0.9361055, b: 1, a: 0}
     - _FlakesColor2: {r: 0.74264705, g: 0.89350915, b: 1, a: 0}

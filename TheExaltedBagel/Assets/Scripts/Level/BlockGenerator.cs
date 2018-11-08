@@ -94,10 +94,13 @@ public class BlockGenerator : MonoBehaviour
                     {
                         for (uint k = 0; k < this.sizeZ; ++k)
                         {
-                            GameObject newBlock = Instantiate(this.blockObject, this.transform);
-                            newBlock.transform.gameObject.isStatic = true;
-                            newBlock.transform.localPosition = new Vector3(i, j, k);
-                            newBlock.name = "Block (" + i + ", " + j + ", " + k + ")";
+                            if (i == 0 | j == 0 | k == 0 | i == this.sizeX - 1 | j == this.sizeY - 1)
+                            {
+                                GameObject newBlock = Instantiate(this.blockObject, this.transform);
+                                newBlock.transform.gameObject.isStatic = true;
+                                newBlock.transform.localPosition = new Vector3(i, j, k);
+                                newBlock.name = "Block (" + i + ", " + j + ", " + k + ")";
+                            }
                         }
                     }
                 }
