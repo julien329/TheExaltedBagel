@@ -250,7 +250,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1132259989775148}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 8.96, y: 1.56, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4840905129617198}
@@ -498,7 +498,7 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1111491903294168}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 9000000, guid: 378ea2e311f9373449765719829c5af3, type: 3}
   m_Controller: {fileID: 9100000, guid: 45459a55aa8f2244aa02b4ebe14a8922, type: 2}
   m_CullingMode: 1
@@ -537,7 +537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2368bc39a16b1284d9be88643b3007d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  type: 4
   theme: 0
   deathParticles: {fileID: 1352220786351666, guid: ac51f313eb9d6a445b45ff831e4890c5,
     type: 2}
@@ -549,12 +549,13 @@ MonoBehaviour:
   gravity: -50
   detectionRadius: 5
   gravityDirection: 1
-  killTriggerObject: {fileID: 1661387789166946}
   chargerSurpriseDelay: 1
   chargerMultiplier: 3
   layerMask:
     serializedVersion: 2
     m_Bits: 0
+  timeToBounceApex: 0.35
+  bounceHeight: 2.5
 --- !u!137 &137907635257633702
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

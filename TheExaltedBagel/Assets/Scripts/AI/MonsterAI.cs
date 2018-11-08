@@ -48,6 +48,11 @@ public class MonsterAI : MonoBehaviour
     private float surpriseTimer;
     private int chargeDirection = 1;
 
+    [Header("Charger Settings")]
+    [SerializeField] private float timeToBounceApex = 0.35f;
+    [SerializeField] private float bounceHeight = 2.5f;
+    private float bounceVelocity;
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
@@ -76,7 +81,10 @@ public class MonsterAI : MonoBehaviour
             Vector2 input = Behaviour();
 
             MoveH(input);
-            MoveV();
+            if (this.type == EnemyType.Jumper)
+            {
+                MoveV(input);
+            }
 
             RotationH();
             Animate(input);
@@ -114,14 +122,21 @@ public class MonsterAI : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void MoveV()
+    private void MoveV(Vector2 input)
     {
         // If there is a collision in Y axis, reset velocity
         if (this.controller.collisions.above || this.controller.collisions.below)
         {
             this.velocity.y = 0;
         }
-        
+
+        if (input.y != 0)
+        {
+            this.gravity = -(2f * this.bounceHeight) / Mathf.Pow(this.timeToBounceApex, 2f);
+            this.bounceVelocity = Mathf.Abs(this.gravity) * 0.35f;
+            this.velocity.y = this.bounceVelocity * this.gravityDirection;
+        }
+
         // Add gravity force downward to Y velocity
         this.velocity.y += this.gravity * this.gravityDirection * Time.deltaTime;
 
@@ -306,6 +321,7 @@ public class MonsterAI : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     Vector2 Jumper()
     {
+
         if ((this.controller.collisions.left || this.controller.collisions.right) && (this.flipInterval - this.turnAroundTimer > 0.5f))
         {
             this.turnAroundTimer = this.flipInterval;
@@ -317,6 +333,12 @@ public class MonsterAI : MonoBehaviour
             this.turnAroundTimer = this.flipInterval;
             this.direction *= -1;
         }
+        
+        if (this.controller.collisions.below)
+        {
+            return new Vector2(this.direction, this.gravityDirection);
+        }
+
         return new Vector2(this.direction, 0);
     }
 
