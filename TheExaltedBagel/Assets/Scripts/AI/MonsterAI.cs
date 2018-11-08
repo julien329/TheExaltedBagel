@@ -16,18 +16,19 @@ public class MonsterAI : MonoBehaviour
     [SerializeField] private float rotationSpeed = 500f;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float animSpeedModifier = 1f;
-    [SerializeField] private float flipInterval = 2.0f;
-    [SerializeField] private float gravity = -50f;
     [SerializeField] private float detectionRadius = 5f;
-    [SerializeField] private float gravityDirection = 1f;
+    [SerializeField] private float travelDisctance = 5f;
+    [SerializeField] private LayerMask layerMask;
+    private Vector3 startPosition;
 
+    private float gravity = -50f;
+    private float gravityDirection = 1f;
     private float maxVelocityY = 17.5f;
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
 
     private float rotationHTarget = 180f;
     private float velocityXSmoothing;
-    private float turnAroundTimer;
     private int direction = 1;
     private Vector3 velocity;
     private Controller2D controller;
@@ -44,7 +45,6 @@ public class MonsterAI : MonoBehaviour
     [Header("Charger Settings")]
     [SerializeField] private float chargerSurpriseDelay = 1f;
     [SerializeField] private float chargerMultiplier = 3f;
-    [SerializeField] private LayerMask layerMask;
     private float surpriseTimer;
     private int chargeDirection = 1;
 
@@ -69,8 +69,9 @@ public class MonsterAI : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
-        this.turnAroundTimer = this.flipInterval;
         this.surpriseTimer = this.chargerSurpriseDelay;
+        this.startPosition = new Vector3(this.transform.position.x - travelDisctance / 2f, this.transform.position.y, this.transform.position.z);
+        
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,15 +223,19 @@ public class MonsterAI : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     Vector2 Wander()
     {
-        if ((this.controller.collisions.left || this.controller.collisions.right) && (this.flipInterval - this.turnAroundTimer > 0.5f))
+        if (this.controller.collisions.left && this.direction == -1)
         {
-            this.turnAroundTimer = this.flipInterval;
-            this.direction *= -1;
+            this.startPosition = this.transform.position;
+            this.direction = 1;
         }
-        this.turnAroundTimer -= Time.deltaTime;
-        if (this.turnAroundTimer < 0)
+        else if (this.controller.collisions.right && this.direction == 1)
         {
-            this.turnAroundTimer = this.flipInterval;
+            this.startPosition = this.transform.position;
+            this.direction = -1;
+        }
+        else if (Mathf.Abs(this.startPosition.x - this.transform.position.x) > this.travelDisctance)
+        {
+            this.startPosition = this.transform.position;
             this.direction *= -1;
         }
         return new Vector2(this.direction, 0);
@@ -241,31 +246,14 @@ public class MonsterAI : MonoBehaviour
     {
         if (distance <= this.detectionRadius)
         {
+            RaycastHit hit;
+            if (Physics.Linecast(this.gameObject.GetComponent<BoxCollider>().bounds.center, this.playerTranform.gameObject.GetComponent<BoxCollider>().bounds.center, out hit, this.layerMask))
+            {
+                return Wander();
+            }
             return new Vector2(direction * 3, 0);
         }
-        else if (this.controller.collisions.left || this.controller.collisions.right)
-        {
-            this.turnAroundTimer = this.flipInterval;
-
-            if (this.controller.collisions.left && this.direction == -1)
-            {
-                this.direction = 1;
-            }
-            if (this.controller.collisions.right && this.direction == 1)
-            {
-                this.direction = -1;
-            }
-
-            return Wander();
-        }
-        else if (distance > this.detectionRadius)
-        {
-            return Wander();
-        }
-        else
-        {
-            return Wander();
-        }
+        return Wander();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,20 +263,9 @@ public class MonsterAI : MonoBehaviour
         {
             this.transform.Find("Exclamation").GetComponent<TextMesh>().text = "";
             this.surpriseTimer = this.chargerSurpriseDelay;
-            this.turnAroundTimer = this.flipInterval;
-
-            if (this.controller.collisions.left && this.direction == -1)
-            {
-                this.direction = 1;
-            }
-            if (this.controller.collisions.right && this.direction == 1)
-            {
-                this.direction = -1;
-            }
-
             return Wander();
         }
-        else if (distance <= this.detectionRadius && distance > 1 && this.surpriseTimer == 1f)
+        else if (distance <= this.detectionRadius && distance > 1 && this.surpriseTimer == this.chargerSurpriseDelay)
         {
             RaycastHit hit;
             if (Physics.Linecast(this.gameObject.GetComponent<BoxCollider>().bounds.center, this.playerTranform.gameObject.GetComponent<BoxCollider>().bounds.center, out hit, this.layerMask))
@@ -304,13 +281,13 @@ public class MonsterAI : MonoBehaviour
         else if (this.surpriseTimer < this.chargerSurpriseDelay && this.surpriseTimer > 0)
         {
             this.surpriseTimer -= Time.deltaTime;
-            if (surpriseTimer <= 0)
+            if (this.surpriseTimer <= 0)
             {
                 return new Vector2(this.chargeDirection * chargerMultiplier, 0);
             }
             return new Vector2(0, 0);
         }
-        else if (surpriseTimer <= 0)
+        else if (this.surpriseTimer <= 0)
         {
             return new Vector2(this.chargeDirection * chargerMultiplier, 0);
         }
@@ -321,19 +298,24 @@ public class MonsterAI : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     Vector2 Jumper()
     {
+        //Horizontal direction
+        if (this.controller.collisions.left && this.direction == -1)
+        {
+            this.startPosition = this.transform.position;
+            this.direction = 1;
+        }
+        else if (this.controller.collisions.right && this.direction == 1)
+        {
+            this.startPosition = this.transform.position;
+            this.direction = -1;
+        }
+        else if (Mathf.Abs(this.startPosition.x - this.transform.position.x) > this.travelDisctance)
+        {
+            this.startPosition = this.transform.position;
+            this.direction *= -1;
+        }
 
-        if ((this.controller.collisions.left || this.controller.collisions.right) && (this.flipInterval - this.turnAroundTimer > 0.5f))
-        {
-            this.turnAroundTimer = this.flipInterval;
-            this.direction *= -1;
-        }
-        this.turnAroundTimer -= Time.deltaTime;
-        if (this.turnAroundTimer < 0)
-        {
-            this.turnAroundTimer = this.flipInterval;
-            this.direction *= -1;
-        }
-        
+        //Vertical direction
         if (this.controller.collisions.below)
         {
             return new Vector2(this.direction, this.gravityDirection);

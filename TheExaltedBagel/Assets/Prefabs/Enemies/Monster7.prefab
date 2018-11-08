@@ -951,18 +951,17 @@ MonoBehaviour:
     type: 2}
   deathSound: {fileID: 8300000, guid: 67d3174fc361ce84ea04167b9849a3d2, type: 3}
   rotationSpeed: 750
-  moveSpeed: 2
+  moveSpeed: 2.5
   animSpeedModifier: 1.4
-  flipInterval: 4
-  gravity: -50
   detectionRadius: 5
-  gravityDirection: 1
-  killTriggerObject: {fileID: 1581933281304088}
-  chargerSurpriseDelay: 1
-  chargerMultiplier: 3
+  travelDisctance: 8
   layerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
+  chargerSurpriseDelay: 1
+  chargerMultiplier: 3
+  timeToBounceApex: 0.35
+  bounceHeight: 2.5
 --- !u!137 &137916693181732466
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

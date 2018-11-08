@@ -1137,16 +1137,15 @@ MonoBehaviour:
   rotationSpeed: 500
   moveSpeed: 2.5
   animSpeedModifier: 2
-  flipInterval: 3.5
-  gravity: -50
   detectionRadius: 5
-  gravityDirection: 1
-  killTriggerObject: {fileID: 1420107635818220}
-  chargerSurpriseDelay: 1
-  chargerMultiplier: 4
+  travelDisctance: 6
   layerMask:
     serializedVersion: 2
     m_Bits: 256
+  chargerSurpriseDelay: 1
+  chargerMultiplier: 4
+  timeToBounceApex: 0.35
+  bounceHeight: 2.5
 --- !u!114 &114729532185427160
 MonoBehaviour:
   m_ObjectHideFlags: 1
