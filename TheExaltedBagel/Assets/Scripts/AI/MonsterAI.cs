@@ -91,10 +91,7 @@ public class MonsterAI : MonoBehaviour
             Vector2 input = Behaviour();
 
             MoveH(input);
-            if (this.type == EnemyType.Jumper)
-            {
-                MoveV(input);
-            }
+            MoveV(input, this.type == EnemyType.Jumper);
 
             RotationH();
             Animate(input);
@@ -132,7 +129,7 @@ public class MonsterAI : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private void MoveV(Vector2 input)
+    private void MoveV(Vector2 input, bool isJumper)
     {
         // If there is a collision in Y axis, reset velocity
         if (this.controller.collisions.above || this.controller.collisions.below)
@@ -140,7 +137,8 @@ public class MonsterAI : MonoBehaviour
             this.velocity.y = 0;
         }
 
-        if (input.y != 0)
+
+        if (input.y != 0 && isJumper)
         {
             this.gravity = -(2f * this.bounceHeight) / Mathf.Pow(this.timeToBounceApex, 2f);
             this.bounceVelocity = Mathf.Abs(this.gravity) * 0.35f;
