@@ -18,8 +18,8 @@ public class FadePlatform : MonoBehaviour
 
         BoxCollider trigger = this.gameObject.AddComponent<BoxCollider>();
         trigger.isTrigger = true;
-        trigger.center = this.platform.transform.localPosition + boxCollider.center + new Vector3(0f, 0.1f, 0f);
-        trigger.size = boxCollider.size;
+        trigger.center = this.platform.transform.localPosition + boxCollider.center;
+        trigger.size = boxCollider.size + new Vector3(0f, 0.1f, 0f);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
