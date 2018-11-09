@@ -21,12 +21,14 @@ public class BlockGenerator : MonoBehaviour
     private uint sizeYOld;
     private uint sizeZOld;
 
+    private const int MAX_VERTICES_COUNT = 65536;
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void OnValidate()
     {
         if (!Application.isPlaying && this.gameObject.activeInHierarchy)
         {
-            if (this.sizeX != this.sizeXOld || this.sizeY != this.sizeYOld || this.sizeZ != this.sizeZOld 
+            if (this.sizeX != this.sizeXOld || this.sizeY != this.sizeYOld || this.sizeZ != this.sizeZOld
                 || this.blockObject != this.blockObjectOld || this.isDeathZone != this.isDeathZoneOld
                 || this.isWater != this.isWaterOld || this.useWaterTop != this.useWaterTopOld)
             {
@@ -48,18 +50,20 @@ public class BlockGenerator : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
 
-        while (this.transform.childCount > 0)
+        DestroyPrevious();
+        GenerateBlocks();
+
+        if (this.sizeX > 0 && this.sizeY > 0 && this.sizeZ > 0)
         {
-            DestroyImmediate(this.transform.GetChild(0).gameObject);
+            ConfigureObject();
+            CombineMeshes();
         }
+    }
 
-        BoxCollider boxCollider = this.gameObject.GetComponent<BoxCollider>();
-        Rigidbody rigidbody = this.gameObject.GetComponent<Rigidbody>();
-
-        DestroyImmediate(boxCollider);
-        DestroyImmediate(rigidbody);
-
-        if (blockObject != null)
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void GenerateBlocks()
+    {
+        if (this.blockObject != null)
         {
             if (this.isWater)
             {
@@ -106,35 +110,106 @@ public class BlockGenerator : MonoBehaviour
                 }
             }
         }
+    }
 
-        if (sizeX > 0 && sizeY > 0 && sizeZ > 0)
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void DestroyPrevious()
+    {
+        while (this.transform.childCount > 0)
         {
-            this.transform.gameObject.isStatic = true;
+            DestroyImmediate(this.transform.GetChild(0).gameObject);
+        }
 
-            boxCollider = this.gameObject.AddComponent<BoxCollider>();
-            boxCollider.isTrigger = true;
+        BoxCollider boxCollider = this.gameObject.GetComponent<BoxCollider>();
+        Rigidbody rigidbody = this.gameObject.GetComponent<Rigidbody>();
 
-            if (this.isWater)
+        DestroyImmediate(boxCollider);
+        DestroyImmediate(rigidbody);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void ConfigureObject()
+    {
+        this.transform.gameObject.isStatic = true;
+
+        BoxCollider boxCollider = this.gameObject.AddComponent<BoxCollider>();
+        boxCollider.isTrigger = true;
+
+        if (this.isWater)
+        {
+            this.gameObject.layer = LayerMask.NameToLayer("Water");
+
+            boxCollider.size = new Vector3(this.sizeX + 1f, this.sizeY, this.sizeZ);
+            boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f) - 0.5f, (this.sizeZ / 2f) - 0.5f);
+        }
+        else if (this.isDeathZone)
+        {
+            this.gameObject.layer = LayerMask.NameToLayer("Death");
+
+            boxCollider.size = new Vector3(this.sizeX - 0.5f, this.sizeY - 0.5f, this.sizeZ);
+            boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
+        }
+        else
+        {
+            this.gameObject.layer = LayerMask.NameToLayer("Floor");
+
+            boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
+            boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void CombineMeshes()
+    {
+        Vector3 oldPos = this.transform.position;
+        Quaternion oldRot = this.transform.rotation;
+
+        this.transform.position = Vector3.zero;
+        this.transform.rotation = Quaternion.identity;
+
+        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+
+        int maxMeshCount = MAX_VERTICES_COUNT / meshFilters[0].sharedMesh.vertexCount;
+
+        int combinedCount = 0;
+        while (combinedCount < meshFilters.Length)
+        {
+            int currentMeshCount = Mathf.Min(maxMeshCount, meshFilters.Length - combinedCount);
+            CombineInstance[] combineInstances = new CombineInstance[currentMeshCount];
+
+            for (int i = 0; i < combineInstances.Length; ++i)
             {
-                this.gameObject.layer = LayerMask.NameToLayer("Water");
-
-                boxCollider.size = new Vector3(this.sizeX + 1f, this.sizeY, this.sizeZ);
-                boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f) - 0.5f, (this.sizeZ / 2f) - 0.5f);
+                if (meshFilters[i].transform != this.transform)
+                {
+                    combineInstances[i].subMeshIndex = 0;
+                    combineInstances[i].mesh = meshFilters[combinedCount + i].sharedMesh;
+                    combineInstances[i].transform = meshFilters[combinedCount + i].transform.localToWorldMatrix;
+                }
             }
-            else if (this.isDeathZone)
-            {
-                this.gameObject.layer = LayerMask.NameToLayer("Death");
 
-                boxCollider.size = new Vector3(this.sizeX - 0.5f, this.sizeY - 0.5f, this.sizeZ);
-                boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
-            }
-            else
-            {
-                this.gameObject.layer = LayerMask.NameToLayer("Floor");
+            Mesh finalMesh = new Mesh();
+            finalMesh.name = "MergedMesh";
+            finalMesh.CombineMeshes(combineInstances);
 
-                boxCollider.size = new Vector3(this.sizeX, this.sizeY, this.sizeZ);
-                boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
-            }
+            GameObject newObject = new GameObject("MergedMesh");
+            newObject.transform.parent = this.gameObject.transform;
+            newObject.transform.gameObject.isStatic = true;
+
+            MeshFilter meshFilter = newObject.AddComponent<MeshFilter>();
+            meshFilter.sharedMesh = finalMesh;
+
+            MeshRenderer meshRenderer = newObject.AddComponent<MeshRenderer>();
+            meshRenderer.material = meshFilters[0].GetComponent<MeshRenderer>().sharedMaterial;
+
+            combinedCount += currentMeshCount;
+        }
+
+        this.transform.position = oldPos;
+        this.transform.rotation = oldRot;
+
+        for (int i = meshFilters.Length - 1; i >= 0; --i)
+        {
+            DestroyImmediate(meshFilters[i].gameObject);
         }
     }
 }
