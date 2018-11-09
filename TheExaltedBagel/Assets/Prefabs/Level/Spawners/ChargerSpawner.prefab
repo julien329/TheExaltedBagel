@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4770353836172028}
   - component: {fileID: 33131373586236558}
   - component: {fileID: 23834911030552484}
-  - component: {fileID: 114061110025127922}
+  - component: {fileID: 114022259722223020}
   m_Layer: 0
   m_Name: ChargerSpawner
   m_TagString: Untagged
@@ -84,7 +84,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1516967449137832}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114061110025127922
+--- !u!114 &114022259722223020
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,9 +92,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1516967449137832}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7180b7abca48d14f9634e4527730db5, type: 3}
+  m_Script: {fileID: 11500000, guid: 09099246d4d486946ad16bbd019d1da1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spawningObject: {fileID: 1913874689772746, guid: 780c58d901230bb4cbbe4d76440f4e3b,
     type: 2}
-  spawnerType: 2
+  gravDirection: 0
+  travelDistance: 3

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4801296918712250}
   - component: {fileID: 33551674643304288}
   - component: {fileID: 23520383666765132}
-  - component: {fileID: 114320036540439540}
+  - component: {fileID: 114021691985491540}
   m_Layer: 0
   m_Name: FastWalkerSpawner
   m_TagString: Untagged
@@ -84,7 +84,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1888015485366964}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114320036540439540
+--- !u!114 &114021691985491540
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,9 +92,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1888015485366964}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7180b7abca48d14f9634e4527730db5, type: 3}
+  m_Script: {fileID: 11500000, guid: 09099246d4d486946ad16bbd019d1da1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spawningObject: {fileID: 1156885140303122, guid: 4a2b08628b708a44c8d661396b85f230,
     type: 2}
-  spawnerType: 2
+  gravDirection: 0
+  travelDistance: 3

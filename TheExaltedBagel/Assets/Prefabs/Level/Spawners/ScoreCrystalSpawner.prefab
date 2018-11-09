@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 33925754057400794}
   - component: {fileID: 23438500549366722}
   - component: {fileID: 114340541816926872}
-  - component: {fileID: 114338675179020870}
   m_Layer: 0
   m_Name: ScoreCrystalSpawner
   m_TagString: EditorOnly
@@ -85,20 +84,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1801973917798342}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114338675179020870
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1801973917798342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95c6401359982284aa5da24362ab2319, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speedX: 0
-  speedY: 100
-  speedZ: 0
 --- !u!114 &114340541816926872
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -112,4 +97,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawningObject: {fileID: 1030771871873050, guid: 71be474639a9ce149916fc57469759d3,
     type: 2}
-  spawnerType: 1

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4317442346715874}
   - component: {fileID: 33480399229890110}
   - component: {fileID: 23834060749698394}
-  - component: {fileID: 114243250963546180}
+  - component: {fileID: 114794227472018598}
   m_Layer: 0
   m_Name: SlowWalkerSpawner
   m_TagString: Untagged
@@ -84,7 +84,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1553484062004176}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114243250963546180
+--- !u!114 &114794227472018598
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,9 +92,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1553484062004176}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7180b7abca48d14f9634e4527730db5, type: 3}
+  m_Script: {fileID: 11500000, guid: 09099246d4d486946ad16bbd019d1da1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spawningObject: {fileID: 1888907668494642, guid: 57da7d1f4538a494c90809b32b7dd264,
     type: 2}
-  spawnerType: 2
+  gravDirection: 0
+  travelDistance: 3
