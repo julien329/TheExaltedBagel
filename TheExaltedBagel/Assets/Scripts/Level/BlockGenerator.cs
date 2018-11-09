@@ -9,7 +9,6 @@ public class BlockGenerator : MonoBehaviour
     [SerializeField] private bool isDeathZone;
     [SerializeField] private bool isWater;
     [SerializeField] private bool useWaterTop;
-    [SerializeField] private bool isMoving;
     [SerializeField] private uint sizeX;
     [SerializeField] private uint sizeY;
     [SerializeField] private uint sizeZ;
@@ -18,7 +17,6 @@ public class BlockGenerator : MonoBehaviour
     private bool isDeathZoneOld;
     private bool isWaterOld;
     private bool useWaterTopOld;
-    private bool isMovingOld;
     private uint sizeXOld;
     private uint sizeYOld;
     private uint sizeZOld;
@@ -32,8 +30,7 @@ public class BlockGenerator : MonoBehaviour
         {
             if (this.sizeX != this.sizeXOld || this.sizeY != this.sizeYOld || this.sizeZ != this.sizeZOld
                 || this.blockObject != this.blockObjectOld || this.isDeathZone != this.isDeathZoneOld
-                || this.isWater != this.isWaterOld || this.useWaterTop != this.useWaterTopOld
-                || this.isMoving != this.isMovingOld)
+                || this.isWater != this.isWaterOld || this.useWaterTop != this.useWaterTopOld)
             {
                 this.sizeXOld = this.sizeX;
                 this.sizeYOld = this.sizeX;
@@ -42,7 +39,6 @@ public class BlockGenerator : MonoBehaviour
                 this.isWaterOld = this.isWater;
                 this.useWaterTopOld = this.useWaterTop;
                 this.blockObjectOld = this.blockObject;
-                this.isMovingOld = this.isMoving;
 
                 StartCoroutine(RegenerateBlocks());
             }
@@ -72,7 +68,7 @@ public class BlockGenerator : MonoBehaviour
             if (this.isWater)
             {
                 GameObject frontPlane = Instantiate(this.blockObject, this.transform);
-                frontPlane.transform.gameObject.isStatic = !this.isMoving;
+                frontPlane.transform.gameObject.isStatic = true;
                 frontPlane.transform.localPosition = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f) - 0.5f, -0.25f);
                 frontPlane.transform.localScale = new Vector3(this.sizeX + 1f, this.sizeY, 1f);
                 frontPlane.name = "FrontPlane (" + this.sizeX + ", " + this.sizeY + ", " + this.sizeZ + ")";
@@ -80,14 +76,14 @@ public class BlockGenerator : MonoBehaviour
                 if (this.useWaterTop)
                 {
                     GameObject topPlaneUp = Instantiate(this.blockObject, this.transform);
-                    topPlaneUp.transform.gameObject.isStatic = !this.isMoving;
+                    topPlaneUp.transform.gameObject.isStatic = true;
                     topPlaneUp.transform.localPosition = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY - 0.5f), (this.sizeZ / 2f) - 0.5f);
                     topPlaneUp.transform.localScale = new Vector3(this.sizeX + 1f, this.sizeZ - 0.5f, 1f);
                     topPlaneUp.transform.localEulerAngles = new Vector3(90f, 0f, 0f);
                     topPlaneUp.name = "TopPlaneUp (" + this.sizeX + ", " + 0 + ", " + this.sizeZ + ")";
 
                     GameObject topPlaneDown = Instantiate(this.blockObject, this.transform);
-                    topPlaneDown.transform.gameObject.isStatic = !this.isMoving;
+                    topPlaneDown.transform.gameObject.isStatic = true;
                     topPlaneDown.transform.localPosition = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY - 0.5f), (this.sizeZ / 2f) - 0.5f);
                     topPlaneDown.transform.localScale = new Vector3(this.sizeX + 1f, this.sizeZ - 0.5f, 1f);
                     topPlaneDown.transform.localEulerAngles = new Vector3(270f, 0f, 0f);
@@ -105,7 +101,7 @@ public class BlockGenerator : MonoBehaviour
                             if (i == 0 | j == 0 | k == 0 | i == this.sizeX - 1 | j == this.sizeY - 1)
                             {
                                 GameObject newBlock = Instantiate(this.blockObject, this.transform);
-                                newBlock.transform.gameObject.isStatic = !this.isMoving;
+                                newBlock.transform.gameObject.isStatic = true;
                                 newBlock.transform.localPosition = new Vector3(i, j, k);
                                 newBlock.name = "Block (" + i + ", " + j + ", " + k + ")";
                             }
@@ -134,7 +130,7 @@ public class BlockGenerator : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void ConfigureObject()
     {
-        this.transform.gameObject.isStatic = !this.isMoving;
+        this.transform.gameObject.isStatic = true;
 
         BoxCollider boxCollider = this.gameObject.AddComponent<BoxCollider>();
         boxCollider.isTrigger = true;
@@ -197,7 +193,7 @@ public class BlockGenerator : MonoBehaviour
 
             GameObject newObject = new GameObject("MergedMesh");
             newObject.transform.parent = this.gameObject.transform;
-            newObject.transform.gameObject.isStatic = !this.isMoving;
+            newObject.transform.gameObject.isStatic = true;
 
             MeshFilter meshFilter = newObject.AddComponent<MeshFilter>();
             meshFilter.sharedMesh = finalMesh;
