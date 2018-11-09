@@ -349,10 +349,4 @@ public class MonsterAI : MonoBehaviour
         this.killTriggerObject.transform.localEulerAngles = new Vector3(180f, 0f, 0f);
         this.killTriggerObject.transform.localPosition = new Vector3(0f, this.GetComponent<BoxCollider>().size.y, 0f);
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void SetTravelDistance(float distance)
-    {
-        this.travelDisctance = distance;
-    }
 }

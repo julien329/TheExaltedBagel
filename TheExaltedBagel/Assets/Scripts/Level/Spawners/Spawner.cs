@@ -5,7 +5,6 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private GameObject spawningObject;
-    [SerializeField] private float travelDistance = 8;
 
     protected GameObject objectInstance;
 
