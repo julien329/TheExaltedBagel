@@ -54,6 +54,16 @@ public class MonsterAI : MonoBehaviour
     private float bounceVelocity;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public float TravelDistance
+    {
+        set
+        {
+            this.travelDisctance = value;
+            this.startPosition = new Vector3(this.transform.position.x - (this.travelDisctance / 2f), this.transform.position.y, this.transform.position.z);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
         this.controller = GetComponent<Controller2D>();
@@ -70,8 +80,7 @@ public class MonsterAI : MonoBehaviour
     void Start()
     {
         this.surpriseTimer = this.chargerSurpriseDelay;
-        this.startPosition = new Vector3(this.transform.position.x - travelDisctance / 2f, this.transform.position.y, this.transform.position.z);
-        
+        this.startPosition = new Vector3(this.transform.position.x - (this.travelDisctance / 2f), this.transform.position.y, this.transform.position.z);     
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
