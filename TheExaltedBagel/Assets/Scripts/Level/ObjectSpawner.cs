@@ -10,6 +10,7 @@ public class ObjectSpawner : MonoBehaviour
     [SerializeField] private GameObject spawningObject;
     [SerializeField] private SpawnerType spawnerType = SpawnerType.NONE;
     [SerializeField] private Gravity gravDirection = Gravity.FLOOR;
+    [SerializeField] private float travelDistance = 8;
 
     private GameObject objectInstance;
 
@@ -37,6 +38,7 @@ public class ObjectSpawner : MonoBehaviour
                 {
                     ai.ReverseGravity();
                 }
+                ai.SetTravelDistance(travelDistance);
             }
 
             this.objectInstance.transform.localScale = Vector3.Scale(
