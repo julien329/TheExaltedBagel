@@ -108,6 +108,7 @@ public class MonsterAI : MonoBehaviour
             this.gameObject.SetActive(false);
             ParticleManager.instance.PlayParticleSystem(this.deathParticles, this.transform.position);
             SoundManager.instance.PlaySound(this.deathSound, 0.5f);
+            LevelManager.instance.KillCount++;
             Destroy(this.gameObject);
         }
     }
