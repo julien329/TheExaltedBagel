@@ -33,7 +33,7 @@ public class BlockGenerator : MonoBehaviour
                 || this.isWater != this.isWaterOld || this.useWaterTop != this.useWaterTopOld)
             {
                 this.sizeXOld = this.sizeX;
-                this.sizeYOld = this.sizeX;
+                this.sizeYOld = this.sizeY;
                 this.sizeZOld = this.sizeZ;
                 this.isDeathZoneOld = this.isDeathZone;
                 this.isWaterOld = this.isWater;
@@ -168,6 +168,7 @@ public class BlockGenerator : MonoBehaviour
         this.transform.rotation = Quaternion.identity;
 
         MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+        List<GameObject> combinedMeshes = new List<GameObject>();
 
         int maxMeshCount = MAX_VERTICES_COUNT / meshFilters[0].sharedMesh.vertexCount;
 
@@ -192,7 +193,6 @@ public class BlockGenerator : MonoBehaviour
             finalMesh.CombineMeshes(combineInstances);
 
             GameObject newObject = new GameObject("MergedMesh");
-            newObject.transform.parent = this.gameObject.transform;
             newObject.transform.gameObject.isStatic = true;
 
             MeshFilter meshFilter = newObject.AddComponent<MeshFilter>();
@@ -201,15 +201,22 @@ public class BlockGenerator : MonoBehaviour
             MeshRenderer meshRenderer = newObject.AddComponent<MeshRenderer>();
             meshRenderer.material = meshFilters[0].GetComponent<MeshRenderer>().sharedMaterial;
 
+            combinedMeshes.Add(newObject);
+
             combinedCount += currentMeshCount;
+        }
+
+        while (this.transform.childCount > 0)
+        {
+            DestroyImmediate(this.transform.GetChild(0).gameObject);
+        }
+
+        foreach (GameObject meshObject in combinedMeshes)
+        {
+            meshObject.transform.parent = this.gameObject.transform;
         }
 
         this.transform.position = oldPos;
         this.transform.rotation = oldRot;
-
-        for (int i = meshFilters.Length - 1; i >= 0; --i)
-        {
-            DestroyImmediate(meshFilters[i].gameObject);
-        }
     }
 }
