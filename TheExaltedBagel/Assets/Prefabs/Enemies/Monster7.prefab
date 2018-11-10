@@ -951,7 +951,7 @@ MonoBehaviour:
     type: 2}
   deathSound: {fileID: 8300000, guid: 67d3174fc361ce84ea04167b9849a3d2, type: 3}
   rotationSpeed: 750
-  moveSpeed: 2.5
+  moveSpeed: 2.45
   animSpeedModifier: 1.4
   detectionRadius: 5
   travelDisctance: 8
