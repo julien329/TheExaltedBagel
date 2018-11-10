@@ -72,7 +72,8 @@ public class Checkpoint : MonoBehaviour
     {
         if (!isFirstSpawn || this.isStart)
         {
-            ParticleManager.instance.PlayParticleSystem(this.spawnParticles, this.transform.position);
+            Vector3 eulerAngles = (this.gravityDirection == 1) ? new Vector3(270f, 0f, 0f) : new Vector3(90f, 0f, 0f);
+            ParticleManager.instance.PlayParticleSystem(this.spawnParticles, this.transform.position, eulerAngles);
         }
     }
 }

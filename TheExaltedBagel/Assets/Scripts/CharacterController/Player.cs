@@ -499,9 +499,11 @@ public class Player : MonoBehaviour
         this.oxygenCanvas.enabled = false;
 
         this.GravityChargeCount = this.GravityChargeMax;
-        this.transform.position = position;
         this.gravityDirection = gravityDirection;
-        this.rotationVTarget = (this.gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
+        this.transform.position = (gravityDirection == 1) ? position : position - new Vector3(0f, this.boxCollider.size.y, 0f);
+        this.rotationVTarget = (gravityDirection == 1) ? ROTATION_DOWN : ROTATION_UP;
+        this.rotZTransform.localEulerAngles = (gravityDirection == 1) ? new Vector3(0f, 0f, 0f) : new Vector3(0f, 0f, 180f);
+        this.rotZTransform.localPosition = (gravityDirection == 1) ? new Vector3(0f, 0f, 0f) : new Vector3(0f, this.boxCollider.size.y, 0f);
         this.velocity = Vector3.zero;
         this.velocityXSmoothing = 0f;  
     }
