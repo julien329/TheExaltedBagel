@@ -5,8 +5,10 @@ using UnityEngine;
 public class MonsterSpawner : Spawner
 { 
     enum Gravity { FLOOR, CEILING }
+    enum Direction { LEFT, RIGHT }
 
     [SerializeField] private Gravity gravDirection = Gravity.FLOOR;
+    [SerializeField] private Direction initialDirection = Direction.RIGHT;
     [SerializeField] private float travelDistance = 3f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,9 +20,15 @@ public class MonsterSpawner : Spawner
         {
             MonsterAI ai = this.objectInstance.GetComponent<MonsterAI>();
             ai.TravelDistance = this.travelDistance;
+
             if (this.gravDirection == Gravity.CEILING)
             {
                 ai.ReverseGravity();
+            }
+
+            if (this.initialDirection == Direction.LEFT)
+            {
+                ai.ReverseDirection();
             }
         }
     }
