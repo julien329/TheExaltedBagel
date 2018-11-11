@@ -399,7 +399,7 @@ public class Player : MonoBehaviour
                 ParticleManager.instance.PlayParticleSystem(this.splashParticles, contactPos);
             }
 
-            SoundManager.instance.PlaySound(this.splashSound);
+            SoundManager.instance.PlaySound(this.splashSound, 0.25f);
 
             // Change environment to water settings
             ChangeEnvironment(true);
@@ -444,7 +444,7 @@ public class Player : MonoBehaviour
         this.GravityChargeCount++;
 
         LevelManager.instance.KillCount++;
-        SoundManager.instance.PlaySound(this.killSound, 0.5f);
+        SoundManager.instance.PlaySound(this.killSound, 0.25f);
 
         GameObject monster = collider.transform.parent.gameObject;
         Vector3 position = new Vector3(monster.transform.position.x, monster.transform.position.y + 0.5f, monster.transform.position.z);
@@ -460,7 +460,7 @@ public class Player : MonoBehaviour
         LevelManager.instance.CrystalCount++;
 
         ParticleManager.instance.PlayParticleSystem(this.scoreCrytalParticles, collider.bounds.center);
-        SoundManager.instance.PlaySound(this.crystalSound);
+        SoundManager.instance.PlaySound(this.crystalSound, 0.5f);
 
         Destroy(collider.gameObject);
     }

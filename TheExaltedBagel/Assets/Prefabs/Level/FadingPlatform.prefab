@@ -170,6 +170,7 @@ MonoBehaviour:
   crumblingParticle: {fileID: 1652742018654070, guid: c05bca1bf4ae89a4691821c5f38c8705,
     type: 2}
   platform: {fileID: 1443786725500686}
+  crumbleSound: {fileID: 8300000, guid: 18530c1298fa349488dd3de56680eeb3, type: 3}
   fadeDelay: 1
   respawnDelay: 2
 --- !u!114 &114895305416618544
