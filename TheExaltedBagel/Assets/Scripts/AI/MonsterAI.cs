@@ -41,6 +41,8 @@ public class MonsterAI : MonoBehaviour
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
     private const float ROTATION_LEFT = 270f;
+    private const float ROTATION_UP = 180f;
+    private const float ROTATION_DOWN = 0f;
 
     [Header("Charger Settings")]
     [SerializeField] private float chargerSurpriseDelay = 1f;
@@ -59,7 +61,7 @@ public class MonsterAI : MonoBehaviour
         set
         {
             this.travelDisctance = value;
-            this.startPosition = new Vector3(this.transform.position.x - (this.travelDisctance / 2f), this.transform.position.y, this.transform.position.z);
+            this.startPosition = new Vector3(this.transform.position.x - this.direction * (this.travelDisctance / 2f), this.transform.position.y, this.transform.position.z);
         }
     }
 
@@ -80,7 +82,7 @@ public class MonsterAI : MonoBehaviour
     void Start()
     {
         this.surpriseTimer = this.chargerSurpriseDelay;
-        this.startPosition = new Vector3(this.transform.position.x - (this.travelDisctance / 2f), this.transform.position.y, this.transform.position.z);     
+        this.TravelDistance = this.travelDisctance;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +139,6 @@ public class MonsterAI : MonoBehaviour
         {
             this.velocity.y = 0;
         }
-
 
         if (input.y != 0 && isJumper)
         {
@@ -344,10 +345,17 @@ public class MonsterAI : MonoBehaviour
         this.gravityDirection *= -1;
         this.transform.localPosition -= new Vector3(0f, this.GetComponent<BoxCollider>().size.y, 0f);
 
-        this.rotZTransform.localEulerAngles = new Vector3(0f, 0f, 180f);
+        this.rotZTransform.localEulerAngles = new Vector3(0f, 0f, ROTATION_UP);
         this.rotZTransform.transform.localPosition = new Vector3(0f, this.GetComponent<BoxCollider>().size.y, 0f);
 
-        this.killTriggerObject.transform.localEulerAngles = new Vector3(180f, 0f, 0f);
+        this.killTriggerObject.transform.localEulerAngles = new Vector3(ROTATION_UP, 0f, 0f);
         this.killTriggerObject.transform.localPosition = new Vector3(0f, this.GetComponent<BoxCollider>().size.y, 0f);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void ReverseDirection()
+    {
+        this.direction = -1;
+        this.TravelDistance = this.travelDisctance;
     }
 }

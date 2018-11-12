@@ -6,6 +6,7 @@ public class FadePlatform : MonoBehaviour
 {
     [SerializeField] private GameObject crumblingParticle;
     [SerializeField] private GameObject platform;
+    [SerializeField] private AudioClip crumbleSound;
     [SerializeField] private float fadeDelay = 1f;
     [SerializeField] private float respawnDelay = 2f;
 
@@ -35,6 +36,8 @@ public class FadePlatform : MonoBehaviour
     IEnumerator DisablePlatform()
     {
         this.isActive = true;
+
+        SoundManager.instance.PlaySound(this.crumbleSound);
 
         GameObject particleObject = Instantiate(this.crumblingParticle, this.transform);
         particleObject.transform.position = this.platform.GetComponent<BoxCollider>().bounds.center;
