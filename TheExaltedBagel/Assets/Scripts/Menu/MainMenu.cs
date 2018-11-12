@@ -8,14 +8,19 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject lobbyScreen;
     [SerializeField] private GameObject controlsScreen;
     [SerializeField] private GameObject creditsScreen;
-    [SerializeField] private float continueTime = 0.5f;
+    [SerializeField] private AudioClip bagelClip;
+    [SerializeField] private AudioClip acceptSound;
 
+    private bool gameStarted;
+    private AudioSource audioSource;
     private Animator animator;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
         this.animator = GetComponent<Animator>();
+        this.audioSource = GetComponent<AudioSource>();
+
         this.lobbyScreen.SetActive(true);
     }
 
@@ -63,20 +68,35 @@ public class MainMenu : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void LoadLevel()
     {
+        this.audioSource.Stop();
         LevelLoader.instance.LoadNextLevel();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void PlayBagelSound()
+    {
+        this.audioSource.clip = this.bagelClip;
+        this.audioSource.loop = false;
+        this.audioSource.Play();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     IEnumerator DismissScroll()
     {
-        yield return new WaitForSeconds(this.continueTime);
+        this.audioSource.Stop();
 
         while (true)
         {
-            if (Input.GetButtonDown("Jump"))
+            if (Input.GetButtonDown("Jump") && !this.gameStarted)
             {
+                this.gameStarted = true;
+
                 this.animator.SetTrigger("ShowBagel");
+                this.audioSource.clip = this.acceptSound;
+                this.audioSource.loop = false;
+                this.audioSource.Play();
             }
+
             yield return null;
         }
     }
