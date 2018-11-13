@@ -40,7 +40,7 @@ public class Checkpoint : MonoBehaviour
         if (!this.triggered && collision.CompareTag("Player"))
         {
             TriggerCheckpoint();
-            SoundManager.instance.PlaySound(this.saveSound);
+            SoundManager.instance.PlaySound(this.saveSound, 0.75f);
         }
     }
 

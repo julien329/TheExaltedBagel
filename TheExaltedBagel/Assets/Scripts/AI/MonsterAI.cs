@@ -81,6 +81,8 @@ public class MonsterAI : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
+        this.controller.Initialize();
+
         this.surpriseTimer = this.chargerSurpriseDelay;
         this.TravelDistance = this.travelDisctance;
     }

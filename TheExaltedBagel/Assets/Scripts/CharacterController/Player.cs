@@ -116,6 +116,8 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start ()
     {
+        this.controller.Initialize();
+
         ChangeEnvironment(false);
         LevelManager.instance.InitGravityChargeUI();
     }
