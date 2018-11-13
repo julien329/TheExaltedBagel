@@ -23,7 +23,7 @@ public class Controller2D : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Start ()
+    public void Initialize()
     {   
         this.collisions = new CollisionInfo();
         CalculateRaySpacing();

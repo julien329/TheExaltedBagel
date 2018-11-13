@@ -1,13 +1,19 @@
 ﻿using System.Collections;
+using TMPro;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LevelLoader : MonoBehaviour {
 
     static public LevelLoader instance;
 
+    [SerializeField] private float fadeSpeed = 1f;
+
     private Canvas canvas;
+    private TextMeshProUGUI loadingText;
+    private Image background;
     private int levelIndex = 0;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,6 +23,11 @@ public class LevelLoader : MonoBehaviour {
         DontDestroyOnLoad(this.gameObject);
 
         this.canvas = GetComponent<Canvas>();
+        this.loadingText = GetComponentInChildren<TextMeshProUGUI>();
+        this.background = GetComponentInChildren<Image>();
+
+        this.canvas.enabled = true;
+        this.loadingText.enabled = false;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,7 +39,8 @@ public class LevelLoader : MonoBehaviour {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     IEnumerator LoadLevelASync()
     {
-        this.canvas.enabled = true;
+        this.loadingText.enabled = true;
+        this.background.color = new Color(0f, 0f, 0f, 1f);
 
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(++this.levelIndex);
         while (!asyncOperation.isDone)
@@ -36,6 +48,14 @@ public class LevelLoader : MonoBehaviour {
             yield return null;
         }
 
-        this.canvas.enabled = false;
+        this.loadingText.enabled = false;
+
+        float alpha = 1f;
+        while (alpha > 0)
+        {
+            alpha = Mathf.Clamp01(alpha - Time.deltaTime * this.fadeSpeed);
+            this.background.color = new Color(0f, 0f, 0f, alpha);
+            yield return null;
+        }
     }
 }

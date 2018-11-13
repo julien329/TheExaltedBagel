@@ -126,6 +126,8 @@ public class LevelManager : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
+        Time.timeScale = 1f;
+
         this.hudCanvas.enabled = true;
 
         this.LevelTimer = this.levelTotalTime;

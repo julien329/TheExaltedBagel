@@ -66,6 +66,12 @@ public class MonsterAI : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public float GravityDirection
+    {
+        get { return this.gravityDirection; }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
     {
         this.controller = GetComponent<Controller2D>();
@@ -81,6 +87,8 @@ public class MonsterAI : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
+        this.controller.Initialize();
+
         this.surpriseTimer = this.chargerSurpriseDelay;
         this.TravelDistance = this.travelDisctance;
     }

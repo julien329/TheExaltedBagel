@@ -35,7 +35,9 @@ public class Player : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private Image oxygenBar;
+    [SerializeField] private Transform oxygenBackground;
     [SerializeField] private Canvas oxygenCanvas;
+    [SerializeField] private float oxygenBarYOffset = 1.75f;
 
     [Header("Sound")]
     [SerializeField] private AudioClip bubblesSound;
@@ -50,7 +52,7 @@ public class Player : MonoBehaviour
     [SerializeField][Range(0, GRAVITY_CHARGES_MAX)] private uint gravityChargeMax = GRAVITY_CHARGES_MAX;
     [SerializeField] private float oxygenDuration = 10.0f;
 
-    private List<Collider> waterColliders = new List<Collider>();
+    private bool isPlayerOnBubbles = false;
     private uint gravityChargeCount = 3;
     private float moveSpeed;
     private float gravityDirection = 1f; 
@@ -60,15 +62,15 @@ public class Player : MonoBehaviour
     private float gravity;
     private float jumpVelocity;
     private float velocityXSmoothing;
+    private float timeLeftOxygen;
+    private Camera mainCamera;
     private Vector3 velocity;
     private Controller2D controller;
     private BoxCollider boxCollider;
     private Animator animator;
     private Transform rotYTransform;
     private Transform rotZTransform;
-
-    private bool isPlayerOnBubbles = false;
-    private float timeLeftOxygen;
+    private List<Collider> waterColliders = new List<Collider>();
 
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
@@ -108,14 +110,16 @@ public class Player : MonoBehaviour
         this.boxCollider = GetComponent<BoxCollider>();
 
         this.rotYTransform = this.transform.Find("RotationY");
-        this.rotZTransform = this.rotYTransform.Find("RotationZ");
-        
+        this.rotZTransform = this.rotYTransform.Find("RotationZ");       
         this.animator = this.rotZTransform.Find("Q-Mon1").GetComponent<Animator>();
+        this.mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start ()
     {
+        this.controller.Initialize();
+
         ChangeEnvironment(false);
         LevelManager.instance.InitGravityChargeUI();
     }
@@ -136,11 +140,15 @@ public class Player : MonoBehaviour
             // Send info to animator
             Animate();
 
-            WaterTimerToDeath();
-
             // Call move to check collisions and translate the player
             this.controller.Move(this.velocity * Time.deltaTime, gravityDirection);
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void LateUpdate()
+    {
+        WaterTimerToDeath();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -454,7 +462,7 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void OnKillMonster(Collider collider)
     {
-        this.velocity.y = this.bumpForce * this.gravityDirection;
+        this.velocity.y = this.bumpForce * collider.GetComponentInParent<MonsterAI>().GravityDirection;
         this.GravityChargeCount++;
 
         LevelManager.instance.KillCount++;
@@ -533,6 +541,7 @@ public class Player : MonoBehaviour
 
             // Update UI
             this.oxygenBar.fillAmount = this.timeLeftOxygen / this.oxygenDuration;
+            this.oxygenBackground.position = this.mainCamera.WorldToScreenPoint(this.transform.position + new Vector3(0f, this.oxygenBarYOffset, 0f));
 
             if (this.timeLeftOxygen < 0f)
             {
