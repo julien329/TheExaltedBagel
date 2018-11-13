@@ -9,6 +9,8 @@ public class EnterCastle : MonoBehaviour {
     [SerializeField] private GameObject pointLightPlayer;
     [SerializeField] private AudioClip  audioDoorClose;
 
+    private bool isAlreadyEnterCastle = false;
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
@@ -19,7 +21,7 @@ public class EnterCastle : MonoBehaviour {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void OnTriggerEnter(Collider collision)
     {
-        if (collision.CompareTag("Player"))
+        if (!this.isAlreadyEnterCastle && collision.CompareTag("Player"))
         {
             // Close the door
             this.door.SetActive(true);
@@ -30,6 +32,7 @@ public class EnterCastle : MonoBehaviour {
 
             // Sound
             SoundManager.instance.PlaySound(audioDoorClose);
+            this.isAlreadyEnterCastle = true;
         }
     }
 }
