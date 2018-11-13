@@ -161,6 +161,11 @@ public class Player : MonoBehaviour
         {
             OnKillMonster(collider);
         }
+        // DragonHit
+        else if (collider.transform.tag == "DragonHit")
+        {
+            OnHitDragon(collider);
+        }
         // KilledByMonster
         else if (collider.transform.tag == "Enemy")
         {
@@ -435,6 +440,15 @@ public class Player : MonoBehaviour
         this.transform.position = new Vector3(newPosition.x, newPosition.y, 0f);
         this.velocity = Vector3.zero;
         this.velocityXSmoothing = 0f;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void OnHitDragon(Collider collider)
+    {
+        this.velocity.y = this.bumpForce * this.gravityDirection;
+        this.GravityChargeCount++;
+        
+        SoundManager.instance.PlaySound(this.killSound, 0.25f);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
