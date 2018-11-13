@@ -448,7 +448,7 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void OnKillMonster(Collider collider)
     {
-        this.velocity.y = this.bumpForce * this.gravityDirection;
+        this.velocity.y = this.bumpForce * collider.GetComponentInParent<MonsterAI>().GravityDirection;
         this.GravityChargeCount++;
 
         LevelManager.instance.KillCount++;
