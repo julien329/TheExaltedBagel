@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Castle : MonoBehaviour {
+public class EnterCastle : MonoBehaviour {
 
     [SerializeField] private GameObject door;
     [SerializeField] private GameObject directionalLight;
     [SerializeField] private GameObject pointLightPlayer;
     [SerializeField] private AudioClip  audioDoorClose;
-
-    private bool isEnterCastle = true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
@@ -23,20 +21,15 @@ public class Castle : MonoBehaviour {
     {
         if (collision.CompareTag("Player"))
         {
-            // Enter Castle
-            if(isEnterCastle)
-            {
-                // Close the door
-                this.door.SetActive(true);
-                isEnterCastle = false;
+            // Close the door
+            this.door.SetActive(true);
 
-                //Illumination
-                directionalLight.SetActive(false);
-                pointLightPlayer.SetActive(true);
+            //Illumination
+            directionalLight.SetActive(false);
+            pointLightPlayer.SetActive(true);
 
-                // Sound
-                SoundManager.instance.PlaySound(audioDoorClose);
-            }
+            // Sound
+            SoundManager.instance.PlaySound(audioDoorClose);
         }
     }
 }
