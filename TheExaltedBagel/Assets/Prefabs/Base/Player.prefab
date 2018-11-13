@@ -1179,7 +1179,7 @@ MonoBehaviour:
   accTimeAir: 0.2
   accTimeGround: 0.1
   accTimeIce: 0.5
-  maxVelocityY: 17.5
+  maxVelocityY: 14
   timeToJumpApex: 0.35
   timeToJumpApexWater: 0.75
   jumpHeight: 2.5

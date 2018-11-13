@@ -11,7 +11,6 @@ public class LevelLoader : MonoBehaviour {
 
     [SerializeField] private float fadeSpeed = 1f;
 
-    private Animator animator;
     private Canvas canvas;
     private TextMeshProUGUI loadingText;
     private Image background;
@@ -24,7 +23,6 @@ public class LevelLoader : MonoBehaviour {
         DontDestroyOnLoad(this.gameObject);
 
         this.canvas = GetComponent<Canvas>();
-        this.animator = GetComponent<Animator>();
         this.loadingText = GetComponentInChildren<TextMeshProUGUI>();
         this.background = GetComponentInChildren<Image>();
 
