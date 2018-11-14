@@ -229,6 +229,8 @@ public class LevelManager : MonoBehaviour
         this.rejectedBagel.enabled = !this.approvedBagel.enabled;
         this.scoreApproval.SetText(totalScore.ToString());
         this.goalApproval.SetText(this.approvalGoalScore.ToString());
+
+        StartCoroutine(WaitingForNextLevel());
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,5 +250,21 @@ public class LevelManager : MonoBehaviour
     {
         yield return new WaitForSeconds(this.respawnTime);
         this.currentCheckpoint.ResetSection(this.player, false);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    IEnumerator WaitingForNextLevel()
+    {
+        while (!Input.GetButtonDown("Jump"))
+        {
+            yield return null;
+        }
+
+        if (LevelLoader.instance != null)
+        {
+            this.endingCanvas.enabled = false;
+            SoundManager.instance.StopAllSounds();
+            LevelLoader.instance.LoadNextLevel();
+        }
     }
 }

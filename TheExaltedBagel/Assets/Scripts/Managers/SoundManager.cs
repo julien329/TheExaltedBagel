@@ -6,8 +6,11 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager instance;
 
-    [SerializeField] uint channelCount = 16;
+    [SerializeField] private float ambiantVolumeScale = 0.5f;
+    [SerializeField] private AudioClip ambiantClip;
+    [SerializeField] private uint channelCount = 16;
 
+    private AudioSource ambiantSource;
     private AudioSource[] audioSources;
     private Queue<uint> availableChannelIndexes;
 
@@ -15,6 +18,15 @@ public class SoundManager : MonoBehaviour
     void Awake()
     {
         SoundManager.instance = this;
+
+        this.ambiantSource = this.gameObject.AddComponent<AudioSource>();
+        if (this.ambiantClip != null)
+        {
+            this.ambiantSource.clip = this.ambiantClip;
+            this.ambiantSource.loop = true;
+            this.ambiantSource.volume = 0.5f;
+            this.ambiantSource.Play();
+        }
 
         this.availableChannelIndexes = new Queue<uint>();
         this.audioSources = new AudioSource[this.channelCount];
@@ -47,6 +59,17 @@ public class SoundManager : MonoBehaviour
         {
             print("Warning: All sound channels are used, cannot play the requested sound.");
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void StopAllSounds()
+    {
+        foreach (AudioSource audioSource in this.audioSources)
+        {
+            audioSource.Stop();
+        }
+
+        this.ambiantSource.Stop();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

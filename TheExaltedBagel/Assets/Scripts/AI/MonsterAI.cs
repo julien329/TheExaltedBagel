@@ -130,7 +130,7 @@ public class MonsterAI : MonoBehaviour
         float targetVelocityX = input.x * this.moveSpeed;
         // Smooth velocity (use acceleration). Change smoothing value if grounded or airborne
         this.velocity.x = Mathf.SmoothDamp(this.velocity.x, targetVelocityX, ref this.velocityXSmoothing,
-            (this.controller.collisions.below) ? this.accelerationTimeGrounded : this.accelerationTimeAirborne);
+            (this.controller.Collisions.below) ? this.accelerationTimeGrounded : this.accelerationTimeAirborne);
 
         // If speed too small, set to null
         if (Mathf.Abs(this.velocity.x) < 0.1f)
@@ -143,7 +143,7 @@ public class MonsterAI : MonoBehaviour
     private void MoveV(Vector2 input, bool isJumper)
     {
         // If there is a collision in Y axis, reset velocity
-        if (this.controller.collisions.above || this.controller.collisions.below)
+        if (this.controller.Collisions.above || this.controller.Collisions.below)
         {
             this.velocity.y = 0;
         }
@@ -240,12 +240,12 @@ public class MonsterAI : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     Vector2 Wander()
     {
-        if (this.controller.collisions.left && this.direction == -1)
+        if (this.controller.Collisions.left && this.direction == -1)
         {
             this.startPosition = this.transform.position;
             this.direction = 1;
         }
-        else if (this.controller.collisions.right && this.direction == 1)
+        else if (this.controller.Collisions.right && this.direction == 1)
         {
             this.startPosition = this.transform.position;
             this.direction = -1;
@@ -276,7 +276,7 @@ public class MonsterAI : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     Vector2 Charge(float distance, int direction)
     {
-        if (this.controller.collisions.left || this.controller.collisions.right)
+        if (this.controller.Collisions.left || this.controller.Collisions.right)
         {
             this.transform.Find("Exclamation").GetComponent<TextMesh>().text = "";
             this.surpriseTimer = this.chargerSurpriseDelay;
@@ -316,12 +316,12 @@ public class MonsterAI : MonoBehaviour
     Vector2 Jumper()
     {
         //Horizontal direction
-        if (this.controller.collisions.left && this.direction == -1)
+        if (this.controller.Collisions.left && this.direction == -1)
         {
             this.startPosition = this.transform.position;
             this.direction = 1;
         }
-        else if (this.controller.collisions.right && this.direction == 1)
+        else if (this.controller.Collisions.right && this.direction == 1)
         {
             this.startPosition = this.transform.position;
             this.direction = -1;
@@ -333,7 +333,7 @@ public class MonsterAI : MonoBehaviour
         }
 
         //Vertical direction
-        if (this.controller.collisions.below)
+        if (this.controller.Collisions.below)
         {
             return new Vector2(this.direction, this.gravityDirection);
         }
