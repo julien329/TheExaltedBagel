@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
@@ -10,8 +11,12 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject creditsScreen;
     [SerializeField] private AudioClip bagelClip;
     [SerializeField] private AudioClip acceptSound;
+    [SerializeField] private float controllerPollRate = 1f;
+    [SerializeField] private Button[] mainButtons;
+    [SerializeField] private Button[] backButtons;
 
     private bool gameStarted;
+    private uint gamepadCount = 0;
     private AudioSource audioSource;
     private Animator animator;
 
@@ -22,6 +27,12 @@ public class MainMenu : MonoBehaviour
         this.audioSource = GetComponent<AudioSource>();
 
         this.lobbyScreen.SetActive(true);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void Start()
+    {
+        StartCoroutine(PollGamepads());
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +47,7 @@ public class MainMenu : MonoBehaviour
     {
         this.lobbyScreen.SetActive(false);
         this.controlsScreen.SetActive(true);
+        AutoSelectButton();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +55,7 @@ public class MainMenu : MonoBehaviour
     {
         this.lobbyScreen.SetActive(false);
         this.creditsScreen.SetActive(true);
+        AutoSelectButton();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +70,7 @@ public class MainMenu : MonoBehaviour
         this.lobbyScreen.SetActive(true);
         this.controlsScreen.SetActive(false);
         this.creditsScreen.SetActive(false);
+        AutoSelectButton();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,6 +95,28 @@ public class MainMenu : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void AutoSelectButton()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+
+        if (this.gamepadCount > 0)
+        {
+            if (this.lobbyScreen.activeSelf)
+            {
+                this.mainButtons[0].Select();
+            }
+            else if (this.controlsScreen.activeSelf)
+            {
+                this.backButtons[0].Select();
+            }
+            else if (this.creditsScreen.activeSelf)
+            {
+                this.backButtons[1].Select();
+            }
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     IEnumerator DismissScroll()
     {
         this.audioSource.Stop();
@@ -98,6 +134,46 @@ public class MainMenu : MonoBehaviour
             }
 
             yield return null;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    IEnumerator PollGamepads()
+    {
+        while (true)
+        {
+            uint nbConnectedGamepad = 0;
+            string[] names = Input.GetJoystickNames();
+            foreach (string name in names)
+            {
+                if (!string.IsNullOrEmpty(name))
+                {
+                    nbConnectedGamepad++;
+                }
+            }
+
+            if (nbConnectedGamepad != this.gamepadCount)
+            {
+                this.gamepadCount = nbConnectedGamepad;
+
+                for (int i = 0; i < this.mainButtons.Length; ++i)
+                {
+                    Navigation navigation = new Navigation();
+                    navigation.mode = (this.gamepadCount > 0) ? Navigation.Mode.Vertical : Navigation.Mode.None;
+                    this.mainButtons[i].navigation = navigation;
+                }
+
+                for (int i = 0; i < this.backButtons.Length; ++i)
+                {
+                    Navigation navigation = new Navigation();
+                    navigation.mode = (this.gamepadCount > 0) ? Navigation.Mode.Vertical : Navigation.Mode.None;
+                    this.backButtons[i].navigation = navigation;
+                }
+
+                AutoSelectButton();
+            }
+
+            yield return new WaitForSeconds(this.controllerPollRate);
         }
     }
 } 

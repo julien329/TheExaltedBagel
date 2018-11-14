@@ -24,7 +24,7 @@ public class SoundManager : MonoBehaviour
         {
             this.ambiantSource.clip = this.ambiantClip;
             this.ambiantSource.loop = true;
-            this.ambiantSource.volume = 0.5f;
+            this.ambiantSource.volume = this.ambiantVolumeScale;
             this.ambiantSource.Play();
         }
 
