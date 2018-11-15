@@ -9,12 +9,17 @@ public class Controller2D : MonoBehaviour
     [SerializeField] private int verticalRayCount = 4;
     [SerializeField] private LayerMask collisionMask;
 
-    public CollisionInfo collisions;
-
     private float horizontalRaySpacing;
     private float verticalRaySpacing;
+    private CollisionInfo collisions;
     private BoxCollider playerCollider;
     private RaycastOrigins raycastOrigins;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public CollisionInfo Collisions
+    {
+        get { return this.collisions; }
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Awake()
@@ -34,7 +39,7 @@ public class Controller2D : MonoBehaviour
     {
         // Get new Raycast origins, reset collision infos and save old velocity
         UpdateRaycastOrigins();
-        this.collisions.Reset(gravityDirection);
+        ResetCollisionsInfo();
 
         // If player moving horizontally, check horizontal collisions
         if (velocity.x != 0)
@@ -44,7 +49,7 @@ public class Controller2D : MonoBehaviour
         // If player moving horizontally, check vertical collisions
         if (velocity.y != 0)
         {
-            VerticalCollisions(ref velocity);
+            VerticalCollisions(ref velocity, gravityDirection);
         }
 
         // Translate player by the amount specified by the final velocity value
@@ -85,7 +90,7 @@ public class Controller2D : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void VerticalCollisions(ref Vector3 velocity)
+    void VerticalCollisions(ref Vector3 velocity, float gravityDirection)
     {
         // Get direction sign in y axis
         float directionY = Mathf.Sign(velocity.y);
@@ -113,8 +118,8 @@ public class Controller2D : MonoBehaviour
                 rayLength = hit.distance;
 
                 // Set collisions bool for above and below
-                this.collisions.below = (directionY * this.collisions.gravityDirection == -1);
-                this.collisions.above = (directionY * this.collisions.gravityDirection == 1);
+                this.collisions.below = (directionY * gravityDirection == -1);
+                this.collisions.above = (directionY * gravityDirection == 1);
 
                 // Set surface type under the middle ray only
                 if ((i + 1) == Mathf.CeilToInt(this.verticalRayCount / 2f))
@@ -156,9 +161,25 @@ public class Controller2D : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    private void ResetCollisionsInfo()
+    {
+        this.collisions.isSlippery = false;
+        this.collisions.above = this.collisions.below = false;
+        this.collisions.left = this.collisions.right = false;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private struct RaycastOrigins
     {
         public Vector2 topLeft, topRight;
         public Vector2 bottomLeft, bottomRight;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public struct CollisionInfo
+    {
+        public bool isSlippery;
+        public bool above, below;
+        public bool left, right;
     }
 }

@@ -16,7 +16,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float accTimeIce = 0.4f;
 
     [Header("MoveY")]
-    [SerializeField] private float maxVelocityY = 17.5f;
     [SerializeField] private float timeToJumpApex = 0.35f;
     [SerializeField] private float timeToJumpApexWater = 0.75f;
     [SerializeField] private float jumpHeight = 2.5f;
@@ -52,7 +51,6 @@ public class Player : MonoBehaviour
     [SerializeField][Range(0, GRAVITY_CHARGES_MAX)] private uint gravityChargeMax = GRAVITY_CHARGES_MAX;
     [SerializeField] private float oxygenDuration = 10.0f;
 
-    private bool isPlayerOnBubbles = false;
     private uint gravityChargeCount = 3;
     private float moveSpeed;
     private float gravityDirection = 1f; 
@@ -71,6 +69,7 @@ public class Player : MonoBehaviour
     private Transform rotYTransform;
     private Transform rotZTransform;
     private List<Collider> waterColliders = new List<Collider>();
+    private List<Collider> bubbleColliders = new List<Collider>();
 
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
@@ -182,7 +181,7 @@ public class Player : MonoBehaviour
         // TouchBubble
         else if (collider.transform.tag == "Bubble")
         {
-            this.isPlayerOnBubbles = true;
+            this.bubbleColliders.Add(collider);
             SoundManager.instance.PlaySound(this.bubblesSound, 0.75f);
         }
         // TouchCrystal
@@ -203,7 +202,7 @@ public class Player : MonoBehaviour
         // LeaveBubble
         if (collider.transform.tag == "Bubble")
         {
-            this.isPlayerOnBubbles = false;
+            this.bubbleColliders.Remove(collider);
         }
         // LeaveWater
         else if (collider.gameObject.layer == LayerMask.NameToLayer("Water"))
@@ -233,12 +232,12 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private void MoveV() {
         // If there is a collision in Y axis, reset velocity
-        if (this.controller.collisions.above || this.controller.collisions.below)
+        if (this.controller.Collisions.above || this.controller.Collisions.below)
         {
             this.velocity.y = 0;
         }
 
-        if (this.controller.collisions.below)
+        if (this.controller.Collisions.below)
         {
             this.GravityChargeCount = this.GravityChargeMax;
         }
@@ -253,7 +252,7 @@ public class Player : MonoBehaviour
         }
 
         // If the jump key is pressed
-        if (Input.GetButtonDown("Jump") && this.controller.collisions.below)
+        if (Input.GetButtonDown("Jump") && this.controller.Collisions.below)
         {
             this.velocity.y = this.jumpVelocity * this.gravityDirection;
         }
@@ -261,9 +260,9 @@ public class Player : MonoBehaviour
         // Add gravity force downward to Y velocity
         this.velocity.y += this.gravity * this.gravityDirection * Time.deltaTime;
 
-        if (Mathf.Abs(this.velocity.y) > this.maxVelocityY)
+        if (Mathf.Abs(this.velocity.y) > this.jumpVelocity)
         {
-            this.velocity.y = Mathf.Sign(this.velocity.y) * this.maxVelocityY;
+            this.velocity.y = Mathf.Sign(this.velocity.y) * this.jumpVelocity;
         }
     }
 
@@ -364,9 +363,9 @@ public class Player : MonoBehaviour
     private float GetAccelerationTime()
     {
         float accelerationTime;
-        if (this.controller.collisions.below)
+        if (this.controller.Collisions.below)
         {
-            accelerationTime = (this.controller.collisions.isSlippery) ? this.accTimeIce : this.accTimeGround;
+            accelerationTime = (this.controller.Collisions.isSlippery) ? this.accTimeIce : this.accTimeGround;
         }
         else
         {
@@ -386,7 +385,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            moveSpeedX = (this.controller.collisions.isSlippery) ? this.moveSpeedIce : this.moveSpeedNormal;
+            moveSpeedX = (this.controller.Collisions.isSlippery) ? this.moveSpeedIce : this.moveSpeedNormal;
         }
 
         return moveSpeedX;
@@ -518,6 +517,7 @@ public class Player : MonoBehaviour
         ChangeEnvironment(false);
 
         this.waterColliders.Clear();
+        this.bubbleColliders.Clear();
         this.oxygenCanvas.enabled = false;
 
         this.GravityChargeCount = this.GravityChargeMax;
@@ -537,7 +537,7 @@ public class Player : MonoBehaviour
         if (this.waterColliders.Count > 0)
         {
             // Update Timer
-            this.timeLeftOxygen = (this.isPlayerOnBubbles) ? this.oxygenDuration : this.timeLeftOxygen - Time.deltaTime;
+            this.timeLeftOxygen = (this.bubbleColliders.Count > 0) ? this.oxygenDuration : this.timeLeftOxygen - Time.deltaTime;
 
             // Update UI
             this.oxygenBar.fillAmount = this.timeLeftOxygen / this.oxygenDuration;
