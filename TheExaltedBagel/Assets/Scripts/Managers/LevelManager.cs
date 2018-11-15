@@ -267,4 +267,9 @@ public class LevelManager : MonoBehaviour
             LevelLoader.instance.LoadNextLevel();
         }
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public bool IsPlayerDead()
+    {
+        return !this.player.gameObject.activeSelf;
+    }
 }

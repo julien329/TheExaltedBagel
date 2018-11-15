@@ -8,31 +8,42 @@ public class EnterCastle : MonoBehaviour {
     [SerializeField] private GameObject directionalLight;
     [SerializeField] private GameObject pointLightPlayer;
     [SerializeField] private AudioClip  audioDoorClose;
+    [SerializeField] private GameObject dynamicSpike;
 
     private bool isAlreadyEnterCastle = false;
+    private Vector3 spikeStartPosition; 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
         // Enter in the castle , the close door is not suppose to be there
         this.door.SetActive(false);
+
+        spikeStartPosition = dynamicSpike.transform.position;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void OnTriggerEnter(Collider collision)
     {
-        if (!this.isAlreadyEnterCastle && collision.CompareTag("Player"))
+        if (collision.CompareTag("Player"))
         {
-            // Close the door
-            this.door.SetActive(true);
+            dynamicSpike.transform.position = spikeStartPosition;
+            dynamicSpike.SetActive(false);
 
-            //Illumination
-            directionalLight.SetActive(false);
-            pointLightPlayer.SetActive(true);
+            if(!this.isAlreadyEnterCastle)
+            {
+                // Close the door
+                this.door.SetActive(true);
 
-            // Sound
-            SoundManager.instance.PlaySound(audioDoorClose);
-            this.isAlreadyEnterCastle = true;
+                //Illumination
+                directionalLight.SetActive(false);
+                pointLightPlayer.SetActive(true);
+
+                // Sound
+                SoundManager.instance.PlaySound(audioDoorClose);
+                this.isAlreadyEnterCastle = true;
+            }
         }
+
     }
 }
