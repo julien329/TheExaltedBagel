@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpHeight = 2.5f;
     [SerializeField] private float jumpHeightWater = 3.5f;
     [SerializeField] private float bumpForce = 10f;
+    [SerializeField] private float dragonBumpForce = 18f;
 
     [Header("Anim")]
     [SerializeField] private float rotationSpeed = 1000f;
@@ -31,6 +32,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject scoreCrytalParticles;
     [SerializeField] private GameObject bagelParticles;
     [SerializeField] private GameObject killParticles;
+    [SerializeField] private GameObject dragonHitParticles;
 
     [Header("UI")]
     [SerializeField] private Image oxygenBar;
@@ -45,6 +47,7 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip splashSound;
     [SerializeField] private AudioClip gravitySound;
     [SerializeField] private AudioClip killSound;
+    [SerializeField] private AudioClip hitSound;
     [SerializeField] private AudioClip eatSound;
 
     [Header("Other")]
@@ -169,7 +172,7 @@ public class Player : MonoBehaviour
             OnKillMonster(collider);
         }
         // DragonHit
-        else if (collider.transform.tag == "DragonHit")
+        else if (collider.transform.tag == "HitDragon")
         {
             OnHitDragon(collider);
         }
@@ -452,10 +455,14 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void OnHitDragon(Collider collider)
     {
-        this.velocity.y = this.bumpForce * this.gravityDirection;
+        this.velocity.y = this.dragonBumpForce * this.gravityDirection;
         this.GravityChargeCount++;
         
-        SoundManager.instance.PlaySound(this.killSound, 0.25f);
+        SoundManager.instance.PlaySound(this.hitSound, 0.25f);
+
+        GameObject monster = collider.transform.parent.gameObject;
+        Vector3 position = new Vector3(this.transform.position.x, this.transform.position.y - 0.5f, this.transform.position.z);
+        ParticleManager.instance.PlayParticleSystem(this.dragonHitParticles, position);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
