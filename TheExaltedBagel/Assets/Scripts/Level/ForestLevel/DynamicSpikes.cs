@@ -13,12 +13,10 @@ public class DynamicSpikes : MonoBehaviour {
     private AudioSource m_AudioSource;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    void Start()
+    void Awake()
     {
         //Fetch the AudioSource component of the GameObject (make sure there is one in the Inspector)
         m_AudioSource = GetComponent<AudioSource>();
-        //Stop the Audio playing
-        m_AudioSource.Stop();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,25 +24,12 @@ public class DynamicSpikes : MonoBehaviour {
     {
         if (collision.CompareTag("Player") && LevelManager.instance.IsDynamicSpikesReset)
         {
-            if(audioSpikeFall != null)
-            {
-                SoundManager.instance.PlaySound(audioSpikeFall);
-            }
+            m_AudioSource.Play();
+            SoundManager.instance.PlaySound(audioSpikeFall);
 
             this.dynamicSpikes.SetActive(true);
-            Vector3 startPosition = dynamicSpikes.transform.position;
-            Vector3 endPosition;
-            if (directionXaxis)
-            {
-                endPosition = new Vector3(startPosition.x + (float)this.numberBlocToGo, startPosition.y, startPosition.z);
-            }
-            else
-            {
-                endPosition = new Vector3(startPosition.x, startPosition.y + (float)this.numberBlocToGo, startPosition.z);
-            }
-            StartCoroutine(MoveOverSpeed(endPosition, speedUnitPerSecond));
-            // Sound
-            m_AudioSource.Play();
+
+            StartCoroutine(MoveOverSpeed());         
         }
     }
 
@@ -58,23 +43,27 @@ public class DynamicSpikes : MonoBehaviour {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public IEnumerator MoveOverSpeed(Vector3 end, float speed)
+    public IEnumerator MoveOverSpeed()
     {
+        Vector3 startPosition = dynamicSpikes.transform.position;
+        Vector3 endPosition = (directionXaxis) ?
+            new Vector3(startPosition.x + (float)this.numberBlocToGo, startPosition.y, startPosition.z) :
+            new Vector3(startPosition.x, startPosition.y + (float)this.numberBlocToGo, startPosition.z);
+
         // speed should be 1 unit per second
-        while (this.dynamicSpikes.transform.position != end)
+        while (this.dynamicSpikes.transform.position != endPosition)
         {
-            if(LevelManager.instance.IsPlayerDead())
+            if (LevelManager.instance.IsPlayerDead())
             {
                 break;
             }
-            this.dynamicSpikes.transform.position = Vector3.MoveTowards(this.dynamicSpikes.transform.position, end, speed * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
+
+            this.dynamicSpikes.transform.position = Vector3.MoveTowards(this.dynamicSpikes.transform.position, endPosition, this.speedUnitPerSecond * Time.deltaTime);
+            yield return null;
         }
+
         m_AudioSource.Stop();
-        if (this.audioSpikeFall != null)
-        {
-            SoundManager.instance.PlaySound(this.audioSpikeFall);
-        }
+        SoundManager.instance.PlaySound(this.audioSpikeFall);
     }
 
 }

@@ -7,11 +7,12 @@ public class EnterExitCastle : MonoBehaviour {
     [SerializeField] private GameObject door;
     [SerializeField] private GameObject directionalLight;
     [SerializeField] private GameObject pointLightPlayer;
-    [SerializeField] private AudioClip  audioDoorClose;
+    [SerializeField] private AudioClip audioDoorClose;
     [SerializeField] private Material snowSkyBox;
-    [SerializeField] private bool  isEnterCastle = true;
+    [SerializeField] private bool isEnterCastle = true;
 
     private bool isAlreadyEnterInCastle = false;
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start()
     {
@@ -28,25 +29,27 @@ public class EnterExitCastle : MonoBehaviour {
         if (collision.CompareTag("Player"))
         {
             // Door
-            if(this.isEnterCastle)
+            if (this.isEnterCastle)
             {
-                if(!isAlreadyEnterInCastle)
+                if (!this.isAlreadyEnterInCastle)
                 {
-                    this.door.SetActive(this.isEnterCastle);
-                    SoundManager.instance.PlaySound(this.audioDoorClose);
-                    this.directionalLight.SetActive(false);
+                    this.door.SetActive(true);
                     this.isAlreadyEnterInCastle = true;
+                    SoundManager.instance.PlaySound(this.audioDoorClose);
                 }
             }
             else
             {
                 RenderSettings.skybox = snowSkyBox;
                 // TO CHANGE TO BRIGHHT MOTHAFUCKAA
-                RenderSettings.ambientLight = new Color(10f, 10f, 10f, 0f);
+                float ambiantColor = 138f / 255f;
+                RenderSettings.ambientLight = new Color(ambiantColor, ambiantColor, ambiantColor);
+                this.directionalLight.GetComponent<Light>().color = Color.white;
             }
 
             //Illumination
             this.pointLightPlayer.SetActive(this.isEnterCastle);
+            this.directionalLight.SetActive(!this.isEnterCastle);
         }
     }
 }
