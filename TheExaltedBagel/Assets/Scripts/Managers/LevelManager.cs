@@ -49,6 +49,7 @@ public class LevelManager : MonoBehaviour
     private float levelTimer;
     private Player player;
     private Checkpoint currentCheckpoint;
+    private bool isDynamicSpikesReset;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public Checkpoint CurrentCheckpoint
@@ -61,7 +62,14 @@ public class LevelManager : MonoBehaviour
     {
         get { return this.levelTotalTime; }
     }
-    
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public bool IsDynamicSpikesReset
+    {
+        set { this.isDynamicSpikesReset = value; }
+        get { return this.isDynamicSpikesReset; }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public float LevelTimer
     {

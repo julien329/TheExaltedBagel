@@ -10,7 +10,6 @@ public class DynamicSpikes : MonoBehaviour {
     [SerializeField] private bool directionXaxis = false;
     [SerializeField] private float speedUnitPerSecond = 2.0f;
 
-    private bool isActive = false;
     private AudioSource m_AudioSource;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,9 +24,13 @@ public class DynamicSpikes : MonoBehaviour {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     void OnTriggerEnter(Collider collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && LevelManager.instance.IsDynamicSpikesReset)
         {
-            SoundManager.instance.PlaySound(audioSpikeFall);
+            if(audioSpikeFall != null)
+            {
+                SoundManager.instance.PlaySound(audioSpikeFall);
+            }
+
             this.dynamicSpikes.SetActive(true);
             Vector3 startPosition = dynamicSpikes.transform.position;
             Vector3 endPosition;
@@ -46,6 +49,15 @@ public class DynamicSpikes : MonoBehaviour {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    void OnTriggerExit(Collider collision)
+    {
+        if (collision.CompareTag("Player") && LevelManager.instance.IsDynamicSpikesReset)
+        {
+            LevelManager.instance.IsDynamicSpikesReset = false;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     public IEnumerator MoveOverSpeed(Vector3 end, float speed)
     {
         // speed should be 1 unit per second
@@ -59,7 +71,10 @@ public class DynamicSpikes : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
         m_AudioSource.Stop();
-        SoundManager.instance.PlaySound(audioSpikeFall);
+        if (this.audioSpikeFall != null)
+        {
+            SoundManager.instance.PlaySound(this.audioSpikeFall);
+        }
     }
 
 }
