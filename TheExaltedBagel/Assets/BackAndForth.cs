@@ -2,25 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BackAndForth : MonoBehaviour {
+public class BackAndForth : MonoBehaviour
+{
+    [SerializeField] private float speed = 8f;
+    [SerializeField] private float displacement = 8f;
 
-    [SerializeField] private float movement;
-    [SerializeField] private float displacement;
     private Vector3 startPosition;
 
-	// Use this for initialization
-	void Start () {
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void Start ()
+    {
         this.startPosition = this.transform.position;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        this.transform.position = new Vector3(this.transform.position.x + this.movement, this.transform.position.y, this.transform.position.z);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void Update ()
+    {
+        this.transform.Translate(new Vector3(this.speed * Time.deltaTime, 0f, 0f));
 
         if (Mathf.Abs(this.startPosition.x - this.transform.position.x) >= displacement)
         {
-            this.startPosition = this.transform.position;
-            movement *= -1;
+            this.startPosition += new Vector3(Mathf.Sign(this.speed) * this.displacement, 0f, 0f);
+            this.speed *= -1;
         }
-	}
+    }
 }
