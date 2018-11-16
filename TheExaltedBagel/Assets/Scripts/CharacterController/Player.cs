@@ -368,7 +368,7 @@ public class Player : MonoBehaviour
         float accelerationTime;
         if (this.controller.Collisions.below)
         {
-            accelerationTime = (this.controller.Collisions.isSlippery) ? this.accTimeIce : this.accTimeGround;
+            accelerationTime = (this.controller.Collisions.isSlippery && this.waterColliders.Count == 0) ? this.accTimeIce : this.accTimeGround;
         }
         else
         {
