@@ -8,7 +8,7 @@ public class EnterExitCastle : MonoBehaviour {
     [SerializeField] private GameObject directionalLight;
     [SerializeField] private GameObject pointLightPlayer;
     [SerializeField] private AudioClip audioDoorClose;
-    [SerializeField] private Material snowSkyBox;
+    [SerializeField] private Material skyBox;
     [SerializeField] private bool isEnterCastle = true;
 
     private bool isAlreadyEnterInCastle = false;
@@ -33,14 +33,26 @@ public class EnterExitCastle : MonoBehaviour {
             {
                 if (!this.isAlreadyEnterInCastle)
                 {
-                    this.door.SetActive(true);
                     this.isAlreadyEnterInCastle = true;
                     SoundManager.instance.PlaySound(this.audioDoorClose);
+
+                    if (this.door != null)
+                    {
+                        this.door.SetActive(true);
+                    }
                 }
+
+                if (this.skyBox != null)
+                {
+                    RenderSettings.skybox = skyBox;
+                }
+                float directLightColor = 190f / 255f;
+                RenderSettings.ambientLight = new Color(0.0f, 0.0f, 0.0f);
+                this.directionalLight.GetComponent<Light>().color = new Color(directLightColor, directLightColor, directLightColor);
             }
             else
             {
-                RenderSettings.skybox = snowSkyBox;
+                RenderSettings.skybox = skyBox;
                 // TO CHANGE TO BRIGHHT MOTHAFUCKAA
                 float ambiantColor = 138f / 255f;
                 RenderSettings.ambientLight = new Color(ambiantColor, ambiantColor, ambiantColor);
