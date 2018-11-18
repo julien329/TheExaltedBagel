@@ -23,7 +23,7 @@ public class MonsterAI : MonoBehaviour
 
     private float gravity = -50f;
     private float gravityDirection = 1f;
-    private float maxVelocityY = 17.5f;
+    private float maxVelocityY = 20f;
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
 
@@ -50,7 +50,7 @@ public class MonsterAI : MonoBehaviour
     private float surpriseTimer;
     private int chargeDirection = 1;
 
-    [Header("Charger Settings")]
+    [Header("Jumper Settings")]
     [SerializeField] private float timeToBounceApex = 0.35f;
     [SerializeField] private float bounceHeight = 2.5f;
     private float bounceVelocity;
