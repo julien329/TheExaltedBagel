@@ -53,8 +53,8 @@ public class Player : MonoBehaviour
     [Header("Other")]
     [SerializeField][Range(0, GRAVITY_CHARGES_MAX)] private uint gravityChargeMax = GRAVITY_CHARGES_MAX;
     [SerializeField] private float oxygenDuration = 10.0f;
+    [SerializeField] private uint gravityChargeCount = 3;
 
-    private uint gravityChargeCount = 3;
     private float moveSpeed;
     private float gravityDirection = 1f; 
     private float rotationHTarget = 180f;
