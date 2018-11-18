@@ -17,7 +17,7 @@ public class EnterExitCastle : MonoBehaviour {
     void Start()
     {
         // Enter in the castle , the close door is not suppose to be there
-        if (this.isEnterCastle)
+        if (this.isEnterCastle && this.door != null)
         {
             this.door.SetActive(!this.isEnterCastle);
         }
@@ -34,17 +34,11 @@ public class EnterExitCastle : MonoBehaviour {
                 if (!this.isAlreadyEnterInCastle)
                 {
                     this.isAlreadyEnterInCastle = true;
-                    SoundManager.instance.PlaySound(this.audioDoorClose);
 
                     if (this.door != null)
                     {
                         this.door.SetActive(true);
                     }
-                }
-
-                if (this.skyBox != null)
-                {
-                    RenderSettings.skybox = skyBox;
                 }
                 float directLightColor = 190f / 255f;
                 RenderSettings.ambientLight = new Color(0.0f, 0.0f, 0.0f);
@@ -52,9 +46,12 @@ public class EnterExitCastle : MonoBehaviour {
             }
             else
             {
-                RenderSettings.skybox = skyBox;
+                if (this.door != null)
+                {
+                    this.door.SetActive(false);
+                }
                 // TO CHANGE TO BRIGHHT MOTHAFUCKAA
-                float ambiantColor = 138f / 255f;
+                float ambiantColor = 30f / 255f;
                 RenderSettings.ambientLight = new Color(ambiantColor, ambiantColor, ambiantColor);
                 this.directionalLight.GetComponent<Light>().color = Color.white;
             }
@@ -62,6 +59,16 @@ public class EnterExitCastle : MonoBehaviour {
             //Illumination
             this.pointLightPlayer.SetActive(this.isEnterCastle);
             this.directionalLight.SetActive(!this.isEnterCastle);
+
+            if (this.skyBox != null)
+            {
+                RenderSettings.skybox = skyBox;
+            }
+
+            if(this.audioDoorClose != null)
+            {
+                SoundManager.instance.PlaySound(this.audioDoorClose);
+            }
         }
     }
 }
