@@ -6,11 +6,9 @@ using UnityEditor;
 public class MonsterAI : MonoBehaviour
 {
     public enum EnemyType { SlowMover, FastMover, Charger, FastFollow, Jumper }
-    public enum EnemyTheme { Normal, Winter, Fire }
 
     [Header("Common Settings")]
     [SerializeField] public EnemyType type = EnemyType.SlowMover;
-    [SerializeField] public EnemyTheme theme = EnemyTheme.Normal;
     [SerializeField] private GameObject deathParticles;
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private float rotationSpeed = 500f;
@@ -18,25 +16,26 @@ public class MonsterAI : MonoBehaviour
     [SerializeField] private float animSpeedModifier = 1f;
     [SerializeField] private float detectionRadius = 5f;
     [SerializeField] private float travelDisctance = 5f;
+    [SerializeField] private float headPosRatio = 0.75f;
     [SerializeField] private LayerMask layerMask;
-    private Vector3 startPosition;
 
+    private Vector3 startPosition;
     private float gravity = -50f;
     private float gravityDirection = 1f;
     private float maxVelocityY = 20f;
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
-
     private float rotationHTarget = 180f;
     private float velocityXSmoothing;
     private int direction = 1;
     private Vector3 velocity;
     private Controller2D controller;
     private Animator animator;
-    private Transform killTriggerObject;
     private Transform rotYTransform;
     private Transform rotZTransform;
     private Transform playerTranform;
+    private BoxCollider boxCollider;
+    private BoxCollider hornCollider;
 
     private const float ROTATION_RIGHT = 90f;
     private const float ROTATION_IDLE = 180f;
@@ -75,13 +74,18 @@ public class MonsterAI : MonoBehaviour
     void Awake()
     {
         this.controller = GetComponent<Controller2D>();
+        this.boxCollider = GetComponent<BoxCollider>();
 
-        this.killTriggerObject = this.transform.Find("KillCollider");
         this.rotYTransform = this.transform.Find("RotationY");
         this.rotZTransform = this.rotYTransform.Find("RotationZ");
         this.animator = this.rotZTransform.Find("QMon").GetComponent<Animator>();
 
         this.playerTranform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+
+        if (this.type == EnemyType.Jumper)
+        {
+            this.hornCollider = this.transform.Find("HornTrigger").GetComponent<BoxCollider>();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,7 +268,7 @@ public class MonsterAI : MonoBehaviour
         if (distance <= this.detectionRadius)
         {
             RaycastHit hit;
-            if (Physics.Linecast(this.gameObject.GetComponent<BoxCollider>().bounds.center, this.playerTranform.gameObject.GetComponent<BoxCollider>().bounds.center, out hit, this.layerMask))
+            if (Physics.Linecast(this.boxCollider.bounds.center, this.playerTranform.gameObject.GetComponent<BoxCollider>().bounds.center, out hit, this.layerMask))
             {
                 return Wander();
             }
@@ -285,7 +289,7 @@ public class MonsterAI : MonoBehaviour
         else if (distance <= this.detectionRadius && distance > 1 && this.surpriseTimer == this.chargerSurpriseDelay)
         {
             RaycastHit hit;
-            if (Physics.Linecast(this.gameObject.GetComponent<BoxCollider>().bounds.center, this.playerTranform.gameObject.GetComponent<BoxCollider>().bounds.center, out hit, this.layerMask))
+            if (Physics.Linecast(this.boxCollider.bounds.center, this.playerTranform.gameObject.GetComponent<BoxCollider>().bounds.center, out hit, this.layerMask))
             {
                 return Wander();
             }
@@ -351,13 +355,16 @@ public class MonsterAI : MonoBehaviour
     public void ReverseGravity()
     {
         this.gravityDirection *= -1;
-        this.transform.localPosition -= new Vector3(0f, this.GetComponent<BoxCollider>().size.y, 0f);
+        this.transform.localPosition -= new Vector3(0f, this.boxCollider.size.y, 0f);
 
         this.rotZTransform.localEulerAngles = new Vector3(0f, 0f, ROTATION_UP);
-        this.rotZTransform.transform.localPosition = new Vector3(0f, this.GetComponent<BoxCollider>().size.y, 0f);
+        this.rotZTransform.transform.localPosition = new Vector3(0f, this.boxCollider.size.y, 0f);
 
-        this.killTriggerObject.transform.localEulerAngles = new Vector3(ROTATION_UP, 0f, 0f);
-        this.killTriggerObject.transform.localPosition = new Vector3(0f, this.GetComponent<BoxCollider>().size.y, 0f);
+        if (this.type == EnemyType.Jumper)
+        {
+            this.hornCollider.transform.localEulerAngles = new Vector3(ROTATION_UP, 0f, 0f);
+            this.hornCollider.transform.localPosition = new Vector3(0f, this.boxCollider.size.y, 0f);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -365,5 +372,23 @@ public class MonsterAI : MonoBehaviour
     {
         this.direction = -1;
         this.TravelDistance = this.travelDisctance;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public bool IsCollisionOnHead(BoxCollider otherCollider)
+    {
+        if (this.type == EnemyType.Jumper)
+        {
+            return false;
+        }
+
+        float collisionPosY = (this.gravityDirection == 1f) ? otherCollider.bounds.min.y : otherCollider.bounds.max.y;
+        float monsterBot = (this.gravityDirection == 1f) ? this.boxCollider.bounds.min.y : this.boxCollider.bounds.max.y;
+        float monsterTop = (this.gravityDirection == 1f) ? this.boxCollider.bounds.max.y : this.boxCollider.bounds.min.y;
+
+        float headPos = Mathf.Lerp(monsterBot, monsterTop, this.headPosRatio);
+        bool isOnHead = (this.gravityDirection == 1f) ? collisionPosY > headPos : collisionPosY < headPos;
+
+        return isOnHead;
     }
 }

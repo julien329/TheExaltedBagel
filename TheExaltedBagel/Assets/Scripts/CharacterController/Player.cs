@@ -167,19 +167,14 @@ public class Player : MonoBehaviour
             LevelManager.instance.KillPlayer(false);
         }
         // KillMonster
-        else if (collider.transform.tag == "KillTrigger")
+        else if (collider.transform.tag == "Enemy")
         {
-            OnKillMonster(collider);
+            OnHitMonster(collider);
         }
         // DragonHit
         else if (collider.transform.tag == "HitDragon")
         {
             OnHitDragon(collider);
-        }
-        // KilledByMonster
-        else if (collider.transform.tag == "Enemy")
-        {
-            LevelManager.instance.KillPlayer();
         }
         // TouchBubble
         else if (collider.transform.tag == "Bubble")
@@ -466,20 +461,26 @@ public class Player : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public void OnKillMonster(Collider collider)
+    public void OnHitMonster(Collider collider)
     {
-        this.velocity.y = this.bumpForce * collider.GetComponentInParent<MonsterAI>().GravityDirection;
-        this.GravityChargeCount++;
+        MonsterAI monsterAI = collider.GetComponentInParent<MonsterAI>();
+        if (monsterAI.IsCollisionOnHead(this.boxCollider))
+        {
+            this.velocity.y = this.bumpForce * collider.GetComponentInParent<MonsterAI>().GravityDirection;
+            this.GravityChargeCount++;
 
-        LevelManager.instance.KillCount++;
-        SoundManager.instance.PlaySound(this.killSound, 0.25f);
+            LevelManager.instance.KillCount++;
+            SoundManager.instance.PlaySound(this.killSound, 0.25f);
 
-        GameObject monster = collider.transform.parent.gameObject;
-        Vector3 position = new Vector3(monster.transform.position.x, monster.transform.position.y + 0.5f, monster.transform.position.z);
-        ParticleManager.instance.PlayParticleSystem(this.killParticles, position);
+            ParticleManager.instance.PlayParticleSystem(this.killParticles, collider.bounds.center);
 
-        monster.SetActive(false);
-        Destroy(monster);
+            collider.gameObject.SetActive(false);
+            Destroy(collider.gameObject);
+        }
+        else
+        {
+            LevelManager.instance.KillPlayer();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
