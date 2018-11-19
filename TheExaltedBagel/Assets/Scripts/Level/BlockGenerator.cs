@@ -146,7 +146,7 @@ public class BlockGenerator : MonoBehaviour
         {
             this.gameObject.layer = LayerMask.NameToLayer("Death");
 
-            boxCollider.size = new Vector3(this.sizeX - 0.5f, this.sizeY - 0.5f, this.sizeZ);
+            boxCollider.size = new Vector3(this.sizeX - 0.75f, this.sizeY - 0.5f, this.sizeZ);
             boxCollider.center = new Vector3((this.sizeX / 2f) - 0.5f, (this.sizeY / 2f), (this.sizeZ / 2f) - 0.5f);
         }
         else
