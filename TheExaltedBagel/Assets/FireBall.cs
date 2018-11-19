@@ -17,7 +17,7 @@ public class FireBall : MonoBehaviour {
         else
         {
             target = GameObject.Find("Player").GetComponent<Transform>();
-            direction = (target.position - this.transform.position).normalized;
+            direction = (target.position - this.transform.position + new Vector3(0f,0.5f,0f)).normalized;
         }
     }
 
@@ -25,15 +25,7 @@ public class FireBall : MonoBehaviour {
     {
         this.transform.position = this.transform.position + this.direction * this.speed * Time.deltaTime;
 
-        if (this.transform.position.z < -5)
-        {
-            Explode();
-        }
-    }
-
-    private void OnTriggerEnter(Collider collider)
-    {
-        if (collider.gameObject.layer == LayerMask.NameToLayer("Floor"))
+        if (this.transform.position.z < 0)
         {
             Explode();
         }

@@ -11,6 +11,7 @@ public class DragonManager : MonoBehaviour {
     [SerializeField] private Transform firingPoint;
     [SerializeField] private Collider[] bodyParts;
     [SerializeField] private AudioClip dyingSound;
+    [SerializeField] private AudioClip bitingSound;
     [SerializeField] private float rotationSpeed = 1000f;
     [SerializeField] private float speed = 10f;
     [SerializeField] private float flyAwaySpeed = 10f;
@@ -137,25 +138,32 @@ public class DragonManager : MonoBehaviour {
         if (new Vector3(this.target.x - this.transform.position.x, this.target.y - this.transform.position.y, this.target.z - this.transform.position.z).magnitude < 1f)
             return;
 
-        if (this.transform.position.y - this.target.y < -1)
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + this.speed * Time.deltaTime, this.transform.position.z);
-        else if (this.transform.position.y - this.target.y > -1)
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - this.speed * Time.deltaTime, this.transform.position.z);
-
-        if (this.transform.position.x - this.target.x < 0)
+        if (Mathf.Abs(this.transform.position.y - this.target.y) > 1)
         {
-            this.transform.position = new Vector3(this.transform.position.x + this.speed * Time.deltaTime, this.transform.position.y, this.transform.position.z);
-            this.rotationHTarget = ROTATION_RIGHT;
+            if (this.transform.position.y - this.target.y < -1)
+                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + this.speed * Time.deltaTime, this.transform.position.z);
+            else if (this.transform.position.y - this.target.y > -1)
+                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - this.speed * Time.deltaTime, this.transform.position.z);
         }
-        else if (this.transform.position.x - this.target.x > 0)
+
+        if (Mathf.Abs(this.transform.position.x - this.target.x) > 1)
         {
-            this.transform.position = new Vector3(this.transform.position.x - this.speed * Time.deltaTime, this.transform.position.y, this.transform.position.z);
-            this.rotationHTarget = ROTATION_LEFT;
+            if (this.transform.position.x - this.target.x < 0)
+            {
+                this.transform.position = new Vector3(this.transform.position.x + this.speed * Time.deltaTime, this.transform.position.y, this.transform.position.z);
+                this.rotationHTarget = ROTATION_RIGHT;
+            }
+            else if (this.transform.position.x - this.target.x > 0)
+            {
+                this.transform.position = new Vector3(this.transform.position.x - this.speed * Time.deltaTime, this.transform.position.y, this.transform.position.z);
+                this.rotationHTarget = ROTATION_LEFT;
+            }
         }
 
         if (new Vector3(this.player.transform.position.x - this.transform.position.x, this.player.transform.position.y - this.transform.position.y, this.player.transform.position.z - this.transform.position.z).magnitude < 3 && this.canAttack)
         {
             this.animator.SetTrigger("Fly Bite Attack");
+            SoundManager.instance.PlaySound(this.bitingSound, 1);
             this.canAttack = false;
             StartCoroutine(AttackDelay(this.biteDelay));
         }
@@ -172,7 +180,7 @@ public class DragonManager : MonoBehaviour {
         if (this.transform.position.x > 40)
         {
             this.stage = 3;
-            this.transform.position = new Vector3(68f, 6f, 10f);
+            this.transform.position = new Vector3(68f, 6f, 18f);
             this.rotYTransform.localEulerAngles = new Vector3(30f, 90f, 0f);
         }
     }
@@ -220,25 +228,32 @@ public class DragonManager : MonoBehaviour {
         if (new Vector3(this.target.x - this.transform.position.x, this.target.y - this.transform.position.y, this.target.z - this.transform.position.z).magnitude < 1f)
             return;
 
-        if (this.transform.position.y - this.target.y < -1)
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + this.speed * Time.deltaTime * 1.5f, this.transform.position.z);
-        else if (this.transform.position.y - this.target.y > -1)
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - this.speed * Time.deltaTime * 1.5f, this.transform.position.z);
-
-        if (this.transform.position.x - this.target.x < 0)
+        if (Mathf.Abs(this.transform.position.y - this.target.y) > 1)
         {
-            this.transform.position = new Vector3(this.transform.position.x + this.speed * Time.deltaTime * 1.5f, this.transform.position.y, this.transform.position.z);
-            this.rotationHTarget = ROTATION_RIGHT;
+            if (this.transform.position.y - this.target.y < -1)
+                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + this.speed * Time.deltaTime * 1.5f, this.transform.position.z);
+            else if (this.transform.position.y - this.target.y > -1)
+                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - this.speed * Time.deltaTime * 1.5f, this.transform.position.z);
         }
-        else if (this.transform.position.x - this.target.x > 0)
+
+        if (Mathf.Abs(this.transform.position.x - this.target.x) > 1)
         {
-            this.transform.position = new Vector3(this.transform.position.x - this.speed * Time.deltaTime * 1.5f, this.transform.position.y, this.transform.position.z);
-            this.rotationHTarget = ROTATION_LEFT;
+            if (this.transform.position.x - this.target.x < 0)
+            {
+                this.transform.position = new Vector3(this.transform.position.x + this.speed * Time.deltaTime * 1.5f, this.transform.position.y, this.transform.position.z);
+                this.rotationHTarget = ROTATION_RIGHT;
+            }
+            else if (this.transform.position.x - this.target.x > 0)
+            {
+                this.transform.position = new Vector3(this.transform.position.x - this.speed * Time.deltaTime * 1.5f, this.transform.position.y, this.transform.position.z);
+                this.rotationHTarget = ROTATION_LEFT;
+            }
         }
 
         if (new Vector3(this.player.transform.position.x - this.transform.position.x, this.player.transform.position.y - this.transform.position.y, this.player.transform.position.z - this.transform.position.z).magnitude < 3 && this.canAttack)
         {
             this.animator.SetTrigger("Fly Bite Attack");
+            SoundManager.instance.PlaySound(this.bitingSound, 1);
             this.canAttack = false;
             StartCoroutine(AttackDelay(this.biteDelay * 0.5f));
         }

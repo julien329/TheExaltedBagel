@@ -171,10 +171,20 @@ public class Player : MonoBehaviour
         {
             OnHitMonster(collider);
         }
+        // Fireball
+        else if (collider.transform.tag == "Fireball")
+        {
+            LevelManager.instance.KillPlayer();
+        }
         // DragonHit
         else if (collider.transform.tag == "HitDragon")
         {
             OnHitDragon(collider);
+        }
+        // Dragon death zone
+        else if (collider.transform.tag == "DragonScale")
+        {
+            LevelManager.instance.KillPlayer();
         }
         // TouchBubble
         else if (collider.transform.tag == "Bubble")
