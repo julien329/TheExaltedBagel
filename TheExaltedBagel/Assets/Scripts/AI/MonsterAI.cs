@@ -244,6 +244,9 @@ public class MonsterAI : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     Vector2 Wander()
     {
+        if (this.travelDisctance == 0)
+            return new Vector2(0, 0);
+
         if (this.controller.Collisions.left && this.direction == -1)
         {
             this.startPosition = this.transform.position;
