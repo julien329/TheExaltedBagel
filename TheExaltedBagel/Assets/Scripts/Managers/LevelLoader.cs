@@ -37,6 +37,13 @@ public class LevelLoader : MonoBehaviour {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void LoadMainMenu()
+    {
+        this.levelIndex = 0;
+        SceneManager.LoadSceneAsync(this.levelIndex);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     IEnumerator LoadLevelASync()
     {
         this.loadingText.enabled = true;
