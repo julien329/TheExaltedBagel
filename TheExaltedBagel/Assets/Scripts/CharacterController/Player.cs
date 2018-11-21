@@ -51,6 +51,7 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip eatSound;
 
     [Header("Other")]
+    [SerializeField] private GameObject transformationDragon;
     [SerializeField][Range(0, GRAVITY_CHARGES_MAX)] private uint gravityChargeMax = GRAVITY_CHARGES_MAX;
     [SerializeField] private float oxygenDuration = 10.0f;
 
@@ -201,6 +202,11 @@ public class Player : MonoBehaviour
         else if (collider.transform.tag == "Bagel")
         {
             OnTakeBagel(collider);
+        }
+        // TouchExaltedBagel
+        else if (collider.transform.tag == "ExaltedBagel")
+        {
+            OnTakeExaltedBagel(collider);
         }
     }
 
@@ -513,6 +519,18 @@ public class Player : MonoBehaviour
         SoundManager.instance.PlaySound(this.eatSound);
 
         Destroy(collider.gameObject);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void OnTakeExaltedBagel(Collider collider)
+    {
+        this.killParticles.transform.localScale = new Vector3(2f, 2f, 2f);
+        ParticleManager.instance.PlayParticleSystem(this.killParticles, collider.bounds.center);
+        Destroy(collider.gameObject);
+        GameObject dragon = Instantiate(this.transformationDragon);
+        dragon.GetComponent<Animator>().SetTrigger("Fly Idle");
+        dragon.GetComponent<Animator>().SetTrigger("Fly Cast Spell");
+        this.gameObject.SetActive(false);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

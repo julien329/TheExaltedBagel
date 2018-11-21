@@ -9,6 +9,7 @@ public class DragonManager : MonoBehaviour {
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject fireball;
     [SerializeField] private GameObject firstGate;
+    [SerializeField] private GameObject lastGate;
     [SerializeField] private Transform firingPoint;
     [SerializeField] private Collider[] bodyParts;
     [SerializeField] private AudioClip dyingSound;
@@ -100,6 +101,10 @@ public class DragonManager : MonoBehaviour {
         {
             this.firstGate.SetActive(false);
             this.stage = 2;
+        }
+        else if (this.health == 0)
+        {
+            this.lastGate.SetActive(false);
         }
     }
 
@@ -195,12 +200,12 @@ public class DragonManager : MonoBehaviour {
     {
         if (this.player.transform.position.x > 103f)
         {
-            this.transform.position = new Vector3(139f, 6f, 0f);
+            this.transform.position = new Vector3(139f, 4f, 0f);
             this.rotYTransform.localEulerAngles = new Vector3(0f, 180f, 0f);
             ToggleColliders(true);
             this.stage = 5;
         }
-        else if (this.player.transform.position.x > 50f && this.canAttack)
+        else if (this.player.transform.position.x > 50f && this.player.transform.position.x < 75f && this.canAttack)
         {
             this.animator.SetTrigger("Fly Projectile Attack");
             StartCoroutine(FireBallAnimDelay(0.65f));
@@ -211,6 +216,8 @@ public class DragonManager : MonoBehaviour {
 
     private void Stage5Behaviour()
     {
+        this.target = this.player.transform.position;
+
         // Check if dragon is dead
         if (this.health <= 0)
         {
@@ -227,35 +234,18 @@ public class DragonManager : MonoBehaviour {
             return;
         }
 
-        //Change target if player ran away
-        if (this.player.transform.position.x < 125f)
-            this.target = new Vector3(139f, 6f, 0f);
-        else
-            this.target = player.transform.position;
-
         //Don't move if the player is too close to avoid jitter
         if (new Vector3(this.target.x - this.transform.position.x, this.target.y - this.transform.position.y, this.target.z - this.transform.position.z).magnitude < 1f)
             return;
-
-
-        if (Mathf.Abs(this.transform.position.y - this.target.y) > 1)
-        {
-            if (this.transform.position.y - this.target.y < -1 && this.transform.position.y < 13)
-                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + this.speed * Time.deltaTime * 1.5f, this.transform.position.z);
-            else if (this.transform.position.y - this.target.y > -1)
-                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - this.speed * Time.deltaTime * 1.5f, this.transform.position.z);
-        }
 
         if (Mathf.Abs(this.transform.position.x - this.target.x) > 1)
         {
             if (this.transform.position.x - this.target.x < 0)
             {
-                this.transform.position = new Vector3(this.transform.position.x + this.speed * Time.deltaTime * 1.5f, this.transform.position.y, this.transform.position.z);
                 this.rotationHTarget = ROTATION_RIGHT;
             }
             else if (this.transform.position.x - this.target.x > 0)
             {
-                this.transform.position = new Vector3(this.transform.position.x - this.speed * Time.deltaTime * 1.5f, this.transform.position.y, this.transform.position.z);
                 this.rotationHTarget = ROTATION_LEFT;
             }
         }
@@ -270,6 +260,68 @@ public class DragonManager : MonoBehaviour {
 
         RotationH();
     }
+
+    //private void Stage5Behaviour()
+    //{
+    //    // Check if dragon is dead
+    //    if (this.health <= 0)
+    //    {
+    //        if (this.transform.position.y > 0)
+    //        {
+    //            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - 10f * Time.deltaTime, this.transform.position.z);
+    //        }
+    //        if (this.health == 0)
+    //        {
+    //            this.animator.SetTrigger("Fly Die");
+    //            StartCoroutine(WaitForTimer());
+    //            this.health--;
+    //        }
+    //        return;
+    //    }
+
+    //    //Change target if player ran away
+    //    if (this.player.transform.position.x < 125f)
+    //        this.target = new Vector3(139f, 6f, 0f);
+    //    else
+    //        this.target = player.transform.position;
+
+    //    //Don't move if the player is too close to avoid jitter
+    //    if (new Vector3(this.target.x - this.transform.position.x, this.target.y - this.transform.position.y, this.target.z - this.transform.position.z).magnitude < 1f)
+    //        return;
+
+
+    //    if (Mathf.Abs(this.transform.position.y - this.target.y) > 1)
+    //    {
+    //        if (this.transform.position.y - this.target.y < -1 && this.transform.position.y < 13)
+    //            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + this.speed * Time.deltaTime * 1.5f, this.transform.position.z);
+    //        else if (this.transform.position.y - this.target.y > -1)
+    //            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - this.speed * Time.deltaTime * 1.5f, this.transform.position.z);
+    //    }
+
+    //    if (Mathf.Abs(this.transform.position.x - this.target.x) > 1)
+    //    {
+    //        if (this.transform.position.x - this.target.x < 0)
+    //        {
+    //            this.transform.position = new Vector3(this.transform.position.x + this.speed * Time.deltaTime * 1.5f, this.transform.position.y, this.transform.position.z);
+    //            this.rotationHTarget = ROTATION_RIGHT;
+    //        }
+    //        else if (this.transform.position.x - this.target.x > 0)
+    //        {
+    //            this.transform.position = new Vector3(this.transform.position.x - this.speed * Time.deltaTime * 1.5f, this.transform.position.y, this.transform.position.z);
+    //            this.rotationHTarget = ROTATION_LEFT;
+    //        }
+    //    }
+
+    //    if (new Vector3(this.player.transform.position.x - this.transform.position.x, this.player.transform.position.y - this.transform.position.y, this.player.transform.position.z - this.transform.position.z).magnitude < 5 && this.canAttack)
+    //    {
+    //        this.animator.SetTrigger("Fly Bite Attack");
+    //        SoundManager.instance.PlaySound(this.bitingSound, 1);
+    //        this.canAttack = false;
+    //        StartCoroutine(AttackDelay(this.biteDelay * 0.5f));
+    //    }
+
+    //    RotationH();
+    //}
 
     private void ToggleColliders(bool enable)
     {
