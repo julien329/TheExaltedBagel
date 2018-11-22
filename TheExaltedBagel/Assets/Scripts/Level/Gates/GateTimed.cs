@@ -72,7 +72,7 @@ public class GateTimed : MonoBehaviour {
                 }
 
                 this.gate.SetActive(false);
-                SoundManager.instance.PlaySound(this.openGateClip);
+                SoundManager.instance.PlaySound(this.openGateClip, 0.5f);
                 StopAllRoutines();
             }
         }
