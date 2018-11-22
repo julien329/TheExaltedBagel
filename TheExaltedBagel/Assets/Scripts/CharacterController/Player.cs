@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject bagelParticles;
     [SerializeField] private GameObject killParticles;
     [SerializeField] private GameObject dragonHitParticles;
+    [SerializeField] private GameObject dragonTranformParticles;
 
     [Header("UI")]
     [SerializeField] private Image oxygenBar;
@@ -525,8 +526,7 @@ public class Player : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public void OnTakeExaltedBagel(Collider collider)
     {
-        this.killParticles.transform.localScale = new Vector3(2f, 2f, 2f);
-        ParticleManager.instance.PlayParticleSystem(this.killParticles, collider.bounds.center);
+        ParticleManager.instance.PlayParticleSystem(this.dragonTranformParticles, collider.bounds.center);
 
         SoundManager.instance.PlaySound(this.deathSound);
         SoundManager.instance.PlaySoundAfterDelay(this.dragonSound, 1.25f);
