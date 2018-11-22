@@ -49,6 +49,7 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip killSound;
     [SerializeField] private AudioClip hitSound;
     [SerializeField] private AudioClip eatSound;
+    [SerializeField] private AudioClip dragonSound;
 
     [Header("Other")]
     [SerializeField] private GameObject transformationDragon;
@@ -413,7 +414,7 @@ public class Player : MonoBehaviour
         {
             // Impact reduces current velocity according to difference in gravity
             float newGravity = -(2f * this.jumpHeightWater) / Mathf.Pow(this.timeToJumpApexWater, 2f);
-            float impactForce = Mathf.Clamp(newGravity / this.gravity, 0f, 1f);
+            float impactForce = Mathf.Clamp01(newGravity / this.gravity);
             this.velocity = new Vector3(this.velocity.x * impactForce, this.velocity.y * impactForce, 0f);
 
             // If we have a splash vfx
@@ -526,11 +527,23 @@ public class Player : MonoBehaviour
     {
         this.killParticles.transform.localScale = new Vector3(2f, 2f, 2f);
         ParticleManager.instance.PlayParticleSystem(this.killParticles, collider.bounds.center);
+
+        SoundManager.instance.PlaySound(this.deathSound);
+        SoundManager.instance.PlaySoundAfterDelay(this.dragonSound, 1.25f);
+
         Destroy(collider.gameObject);
+
         GameObject dragon = Instantiate(this.transformationDragon);
         dragon.GetComponent<Animator>().SetTrigger("Fly Idle");
         dragon.GetComponent<Animator>().SetTrigger("Fly Cast Spell");
+
+        LevelManager.instance.HideBagels();
         this.gameObject.SetActive(false);
+
+        if (LevelLoader.instance != null)
+        {
+            LevelLoader.instance.PlayEndingOutro();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

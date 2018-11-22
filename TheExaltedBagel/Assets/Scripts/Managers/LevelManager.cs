@@ -11,6 +11,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private float respawnTime = 1.5f;
     [SerializeField] private float levelTotalTime = 300;
     [SerializeField] private uint approvalGoalScore = 2500;
+    [SerializeField] private bool useMinimalHUD;
 
     [Header("ScoreMultipliers")]
     [SerializeField] private int scorePerDeath = -100;
@@ -22,6 +23,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private RawImage[] uiBagels = new RawImage[3];
     [SerializeField] private RawImage rejectedBagel;
     [SerializeField] private RawImage approvedBagel;
+    [SerializeField] private GameObject[] hideableHUD;
+    [SerializeField] private GameObject bagelsHUD;
     [SerializeField] private TextMeshProUGUI deathCountText;
     [SerializeField] private TextMeshProUGUI levelTimerText;
     [SerializeField] private TextMeshProUGUI killCountText;
@@ -140,6 +143,11 @@ public class LevelManager : MonoBehaviour
 
         this.LevelTimer = this.levelTotalTime;
         this.DeathCount = this.KillCount = this.CrystalCount = 0;
+
+        if (this.useMinimalHUD)
+        {
+            EnableMinimalHUD();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,6 +262,27 @@ public class LevelManager : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public bool IsPlayerDead()
+    {
+        return !this.player.gameObject.activeSelf;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void EnableMinimalHUD()
+    {
+        foreach (GameObject hudElement in this.hideableHUD)
+        {
+            hudElement.SetActive(false);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void HideBagels()
+    {
+        this.bagelsHUD.SetActive(false);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     IEnumerator WaitingForRespawn()
     {
         yield return new WaitForSeconds(this.respawnTime);
@@ -274,10 +303,5 @@ public class LevelManager : MonoBehaviour
             SoundManager.instance.StopAllSounds();
             LevelLoader.instance.LoadNextLevel();
         }
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    public bool IsPlayerDead()
-    {
-        return !this.player.gameObject.activeSelf;
     }
 }

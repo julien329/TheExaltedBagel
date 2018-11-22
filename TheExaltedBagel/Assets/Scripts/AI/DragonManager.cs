@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DragonManager : MonoBehaviour {
-
+public class DragonManager : MonoBehaviour
+{
     [SerializeField] private GameObject hitTrigger;
     [SerializeField] private GameObject deathParticles;
     [SerializeField] private GameObject player;
@@ -14,6 +14,7 @@ public class DragonManager : MonoBehaviour {
     [SerializeField] private Collider[] bodyParts;
     [SerializeField] private AudioClip dyingSound;
     [SerializeField] private AudioClip bitingSound;
+    [SerializeField] private AudioClip fireBallCastSound;
     [SerializeField] private float rotationSpeed = 1000f;
     [SerializeField] private float speed = 10f;
     [SerializeField] private float flyAwaySpeed = 10f;
@@ -35,6 +36,7 @@ public class DragonManager : MonoBehaviour {
     private const float ROTATION_BACK1 = 90f;
     private const float ROTATION_BACK2 = 270f;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
         this.animator = this.GetComponent<Animator>();
@@ -43,25 +45,27 @@ public class DragonManager : MonoBehaviour {
         //this.target = player.transform.position;
         this.rotYTransform = this.transform.Find("RotationY");
 
-        bodyParts = this.gameObject.GetComponentsInChildren<Collider>();
+        this.bodyParts = this.gameObject.GetComponentsInChildren<Collider>();
     }
 
-    // Use this for initialization
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     void Start ()
     {
         this.health = this.maxHealth;
         this.rotationHTarget = ROTATION_LEFT;
         this.stage = 1;
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    void Update ()
     {
         if (this.stage == 1 && this.isFlying)
         {
             Stage1Behaviour();
             if (!this.player.activeInHierarchy)
+            {
                 this.health = maxHealth;
+            }
         }
         else if (this.stage == 2)
         {
@@ -71,7 +75,9 @@ public class DragonManager : MonoBehaviour {
         else if (this.stage == 3)
         {
             if (this.player.transform.position.x > 50f)
+            {
                 this.stage = 4;
+            }
         }
         else if (this.stage == 4)
         {
@@ -81,15 +87,19 @@ public class DragonManager : MonoBehaviour {
         {
             Stage5Behaviour();
             if (!this.player.activeInHierarchy)
+            {
                 this.health = 2;
+            }
         }
-
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     public void OnHit(GameObject head)
     {
         if (this.isFlying)
+        {
             this.animator.SetTrigger("Fly Take Damage");
+        }
 
         this.health--;
 
@@ -108,17 +118,20 @@ public class DragonManager : MonoBehaviour {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void Die()
     {
         ParticleManager.instance.PlayParticleSystem(deathParticles, new Vector3(this.transform.position.x, this.transform.position.y + 1f, this.transform.position.z));
         Destroy(this.gameObject);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     public void ToggleFlying()
     {
         this.isFlying = !this.isFlying;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void RotationH()
     {
         if ((this.rotationHTarget == ROTATION_RIGHT && this.rotYTransform.localEulerAngles.y > ROTATION_RIGHT)
@@ -139,22 +152,26 @@ public class DragonManager : MonoBehaviour {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void Stage1Behaviour()
     {
-        if (this.player.transform.position.x < 2.5)
-            this.target = new Vector3(15f, 6f, 0f);
-        else
-            this.target = player.transform.position;
+        this.target = (this.player.transform.position.x < 2.5) ? new Vector3(15f, 6f, 0f) : player.transform.position;
 
         if (new Vector3(this.target.x - this.transform.position.x, this.target.y - this.transform.position.y, this.target.z - this.transform.position.z).magnitude < 1f)
+        {
             return;
+        }
 
         if (Mathf.Abs(this.transform.position.y - this.target.y) > 1)
         {
             if (this.transform.position.y - this.target.y < -1 && this.transform.position.y < 13)
+            {
                 this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + this.speed * Time.deltaTime, this.transform.position.z);
+            }
             else if (this.transform.position.y - this.target.y > -1)
+            {
                 this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - this.speed * Time.deltaTime, this.transform.position.z);
+            }
         }
 
         if (Mathf.Abs(this.transform.position.x - this.target.x) > 1)
@@ -182,6 +199,7 @@ public class DragonManager : MonoBehaviour {
         RotationH();
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void FlyAway()
     {
         this.transform.position = new Vector3(this.transform.position.x + this.flyAwaySpeed * Time.deltaTime, this.transform.position.y + this.flyAwaySpeed * Time.deltaTime, this.transform.position.z + this.flyAwaySpeed * Time.deltaTime);
@@ -196,6 +214,7 @@ public class DragonManager : MonoBehaviour {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void Stage4Behaviour()
     {
         if (this.player.transform.position.x > 103f)
@@ -214,6 +233,7 @@ public class DragonManager : MonoBehaviour {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void Stage5Behaviour()
     {
         this.target = this.player.transform.position;
@@ -236,7 +256,9 @@ public class DragonManager : MonoBehaviour {
 
         //Don't move if the player is too close to avoid jitter
         if (new Vector3(this.target.x - this.transform.position.x, this.target.y - this.transform.position.y, this.target.z - this.transform.position.z).magnitude < 1f)
+        {
             return;
+        }
 
         if (Mathf.Abs(this.transform.position.x - this.target.x) > 1)
         {
@@ -261,97 +283,43 @@ public class DragonManager : MonoBehaviour {
         RotationH();
     }
 
-    //private void Stage5Behaviour()
-    //{
-    //    // Check if dragon is dead
-    //    if (this.health <= 0)
-    //    {
-    //        if (this.transform.position.y > 0)
-    //        {
-    //            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - 10f * Time.deltaTime, this.transform.position.z);
-    //        }
-    //        if (this.health == 0)
-    //        {
-    //            this.animator.SetTrigger("Fly Die");
-    //            StartCoroutine(WaitForTimer());
-    //            this.health--;
-    //        }
-    //        return;
-    //    }
-
-    //    //Change target if player ran away
-    //    if (this.player.transform.position.x < 125f)
-    //        this.target = new Vector3(139f, 6f, 0f);
-    //    else
-    //        this.target = player.transform.position;
-
-    //    //Don't move if the player is too close to avoid jitter
-    //    if (new Vector3(this.target.x - this.transform.position.x, this.target.y - this.transform.position.y, this.target.z - this.transform.position.z).magnitude < 1f)
-    //        return;
-
-
-    //    if (Mathf.Abs(this.transform.position.y - this.target.y) > 1)
-    //    {
-    //        if (this.transform.position.y - this.target.y < -1 && this.transform.position.y < 13)
-    //            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + this.speed * Time.deltaTime * 1.5f, this.transform.position.z);
-    //        else if (this.transform.position.y - this.target.y > -1)
-    //            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - this.speed * Time.deltaTime * 1.5f, this.transform.position.z);
-    //    }
-
-    //    if (Mathf.Abs(this.transform.position.x - this.target.x) > 1)
-    //    {
-    //        if (this.transform.position.x - this.target.x < 0)
-    //        {
-    //            this.transform.position = new Vector3(this.transform.position.x + this.speed * Time.deltaTime * 1.5f, this.transform.position.y, this.transform.position.z);
-    //            this.rotationHTarget = ROTATION_RIGHT;
-    //        }
-    //        else if (this.transform.position.x - this.target.x > 0)
-    //        {
-    //            this.transform.position = new Vector3(this.transform.position.x - this.speed * Time.deltaTime * 1.5f, this.transform.position.y, this.transform.position.z);
-    //            this.rotationHTarget = ROTATION_LEFT;
-    //        }
-    //    }
-
-    //    if (new Vector3(this.player.transform.position.x - this.transform.position.x, this.player.transform.position.y - this.transform.position.y, this.player.transform.position.z - this.transform.position.z).magnitude < 5 && this.canAttack)
-    //    {
-    //        this.animator.SetTrigger("Fly Bite Attack");
-    //        SoundManager.instance.PlaySound(this.bitingSound, 1);
-    //        this.canAttack = false;
-    //        StartCoroutine(AttackDelay(this.biteDelay * 0.5f));
-    //    }
-
-    //    RotationH();
-    //}
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private void ToggleColliders(bool enable)
     {
         foreach (Collider collider in this.bodyParts)
+        {
             collider.enabled = enable;
+        }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private IEnumerator WaitForTimer()
     {
         yield return new WaitForSeconds(0.4f);
-        SoundManager.instance.PlaySound(dyingSound, 1f);
+        SoundManager.instance.PlaySound(this.dyingSound, 1f);
         yield return new WaitForSeconds(3f);
         Die();
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private IEnumerator AttackDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         this.canAttack = true;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private IEnumerator ImmunityDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         ToggleColliders(true);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private IEnumerator FireBallAnimDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+        SoundManager.instance.PlaySound(fireBallCastSound, 0.5f);
         Instantiate(this.fireball, this.firingPoint.position, this.firingPoint.localRotation);
     }
 }
