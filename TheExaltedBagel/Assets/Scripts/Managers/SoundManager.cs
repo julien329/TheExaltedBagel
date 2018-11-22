@@ -73,9 +73,28 @@ public class SoundManager : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void FadeOutAmbiant(float fadeSpeed)
+    {
+        StartCoroutine(FadeOut(this.ambiantSource, fadeSpeed));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private IEnumerator WaitForEndOfClip(uint index, float duration)
     {
         yield return new WaitForSeconds(duration);
         this.availableChannelIndexes.Enqueue(index);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private IEnumerator FadeOut(AudioSource audioSource, float fadeSpeed)
+    {
+        float normalizedSpeed = fadeSpeed *= audioSource.volume;
+        while (audioSource.volume > 0)
+        {
+            audioSource.volume = Mathf.Clamp01(audioSource.volume - Time.deltaTime * normalizedSpeed);
+            yield return null;
+        }
+
+        audioSource.Stop();
     }
 }
