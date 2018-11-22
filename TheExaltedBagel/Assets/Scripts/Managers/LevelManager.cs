@@ -163,11 +163,6 @@ public class LevelManager : MonoBehaviour
 
             if (!this.pauseCanvas.enabled)
             {
-                if (Input.GetKeyDown(KeyCode.K) && this.player.gameObject.activeSelf)
-                {
-                    KillPlayer(false);
-                }
-
                 if (this.LevelTimer > 0f)
                 {
                     this.LevelTimer -= Time.deltaTime;
