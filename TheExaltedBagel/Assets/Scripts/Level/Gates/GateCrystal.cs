@@ -46,7 +46,7 @@ public class GateCrystal : MonoBehaviour
         if (this.collectedCrystalsCount == this.crystals.Length)
         {
             this.gate.SetActive(false);
-            SoundManager.instance.PlaySound(openGateClip, 0.75f);
+            SoundManager.instance.PlaySound(openGateClip, 0.5f);
         }
     }
 }
