@@ -64,7 +64,7 @@ public class LevelLoader : MonoBehaviour
         this.loadingText.enabled = true;
         this.background.color = new Color(0f, 0f, 0f, 1f);
 
-        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(4);
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(++this.levelIndex);
         while (!asyncOperation.isDone)
         {
             yield return null;
