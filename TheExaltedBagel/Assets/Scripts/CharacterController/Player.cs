@@ -49,6 +49,7 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip killSound;
     [SerializeField] private AudioClip hitSound;
     [SerializeField] private AudioClip eatSound;
+    [SerializeField] private AudioClip dragonSound;
 
     [Header("Other")]
     [SerializeField] private GameObject transformationDragon;
@@ -526,10 +527,17 @@ public class Player : MonoBehaviour
     {
         this.killParticles.transform.localScale = new Vector3(2f, 2f, 2f);
         ParticleManager.instance.PlayParticleSystem(this.killParticles, collider.bounds.center);
+
+        SoundManager.instance.PlaySound(this.deathSound);
+        SoundManager.instance.PlaySoundAfterDelay(this.dragonSound, 1.25f);
+
         Destroy(collider.gameObject);
+
         GameObject dragon = Instantiate(this.transformationDragon);
         dragon.GetComponent<Animator>().SetTrigger("Fly Idle");
         dragon.GetComponent<Animator>().SetTrigger("Fly Cast Spell");
+
+        LevelManager.instance.HideBagels();
         this.gameObject.SetActive(false);
 
         if (LevelLoader.instance != null)

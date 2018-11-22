@@ -62,6 +62,12 @@ public class SoundManager : MonoBehaviour
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void PlaySoundAfterDelay(AudioClip audioClip, float delay, float volumeScale = 1.0f)
+    {
+        StartCoroutine(SoundDelay(audioClip, delay, volumeScale));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     public void StopAllSounds()
     {
         foreach (AudioSource audioSource in this.audioSources)
@@ -83,6 +89,13 @@ public class SoundManager : MonoBehaviour
     {
         yield return new WaitForSeconds(duration);
         this.availableChannelIndexes.Enqueue(index);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    private IEnumerator SoundDelay(AudioClip audioClip, float delay, float volumeScale)
+    {
+        yield return new WaitForSeconds(delay);
+        PlaySound(audioClip, volumeScale);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
